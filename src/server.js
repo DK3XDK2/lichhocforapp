@@ -4,13 +4,12 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const path = require("path");
 const fs = require("fs");
-
 const getLichThi = require("./getLichThi");
 const getLichHoc = require("./getLichHoc");
 
 const app = express();
 
-// 🛡️ Middleware kiểm tra đăng nhập
+
 function isAuthenticated(req, res, next) {
   if (req.session.mssv) return next();
   return res.status(403).json({ error: "Bạn chưa đăng nhập!" });

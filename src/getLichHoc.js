@@ -2,7 +2,10 @@ const puppeteer = require("puppeteer");
 const fs = require("fs");
 
 async function getLichHoc(mssv, matkhau) {
-  const browser = await puppeteer.launch({ headless: "new" });
+  const browser = await puppeteer.launch({
+    headless: "new",
+    args: ["--no-sandbox", "--disable-setuid-sandbox"],
+  });
   const page = await browser.newPage();
 
   try {
@@ -22,7 +25,6 @@ async function getLichHoc(mssv, matkhau) {
       page.waitForNavigation({ waitUntil: "networkidle2" }).catch(() => null),
     ]);
 
-   
     const loginError = await page.evaluate(() => {
       const err = document.querySelector(".labelError");
       return err ? err.innerText.trim() : null;
