@@ -4,7 +4,6 @@
     <meta charset="UTF-8" />
     <title>Lịch cá nhân</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
     <style>
       #theme-wave {
         pointer-events: none;
@@ -44,19 +43,19 @@
       }
 
       :root {
-        --bg: #ffffff;
-        --text: #1e1e1e;
-        --card: #f8f9fa;
-        --primary: #6200ee;
-        --primary-hover: #3700b3;
+        --bg: #f9fafb;
+        --text: #1e3a8a;
+        --card: #ffffff;
+        --primary: #0ea5e9;
+        --primary-hover: #0284c7;
       }
 
       [data-theme="dark"] {
-        --bg: #121212;
-        --text: #ffffff;
-        --card: #1e1e1e;
-        --primary: #bb86fc;
-        --primary-hover: #3700b3;
+        --bg: #0f172a;
+        --text: #e0f2fe;
+        --card: #1e293b;
+        --primary: #38bdf8;
+        --primary-hover: #0ea5e9;
       }
 
       body {
@@ -70,6 +69,13 @@
 
       h1 {
         font-size: 1.8rem;
+      }
+
+      .section-title {
+        font-size: 1.4rem;
+        color: var(--primary);
+        margin-bottom: 12px;
+        transition: color 0.4s ease;
       }
 
       .login-info {
@@ -130,29 +136,6 @@
         }
       }
 
-      table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 15px;
-        font-size: 0.95rem;
-      }
-
-      th,
-      td {
-        border-bottom: 1px solid #ccc;
-        padding: 10px;
-        text-align: left;
-      }
-
-      th {
-        background-color: var(--primary);
-        color: #fff;
-      }
-
-      tr:hover {
-        background-color: rgba(98, 0, 238, 0.1);
-      }
-
       .toggle-theme {
         position: fixed;
         top: 20px;
@@ -167,38 +150,39 @@
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
       }
 
+      .block-lich {
+        margin-bottom: 16px;
+        border-left: 5px solid #0ea5e9;
+        background: #ecfeff;
+        border-radius: 12px;
+        padding: 16px;
+        overflow: hidden;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+      }
+
+      [data-theme="dark"] .block-lich {
+        background-color: #1e3a8a;
+        border-left-color: #38bdf8;
+        color: #e0f2fe;
+        box-shadow: 0 2px 6px rgba(56, 189, 248, 0.1);
+      }
+
+      [data-theme="dark"] .block-lich * {
+        color: #e0f2fe !important;
+      }
+
+      [data-theme="dark"] .block-lich .block-time {
+        color: #facc15 !important;
+      }
+
+      [data-theme="dark"] .block-lich .block-title {
+        color: #fbbf24 !important;
+      }
+
       @media (max-width: 768px) {
         .tab {
           flex: 1 1 45%;
           font-size: 0.9rem;
-        }
-
-        table,
-        thead,
-        tbody,
-        th,
-        td,
-        tr {
-          display: block;
-        }
-
-        th {
-          position: sticky;
-          top: 0;
-        }
-
-        td {
-          border: none;
-          border-bottom: 1px solid #ddd;
-        }
-
-        td::before {
-          font-weight: bold;
-          display: block;
-        }
-
-        tr {
-          margin-bottom: 15px;
         }
       }
     </style>
@@ -223,25 +207,14 @@
       <button class="tab" onclick="showTab('lichHoc')">📚 Lịch Học</button>
     </div>
 
-    <% const lichThiHopLe = lichThi .filter(item => item.tenHocPhan &&
-    item.ngayThi) .sort((a, b) => new
-    Date(a.ngayThi.split('/').reverse().join('-')) - new
-    Date(b.ngayThi.split('/').reverse().join('-'))); %> <% if
+    <% const lichThiHopLe = lichThi.filter(i => i.tenHocPhan &&
+    i.ngayThi).sort((a, b) => new Date(a.ngayThi.split('/').reverse().join('-'))
+    - new Date(b.ngayThi.split('/').reverse().join('-'))); %> <% if
     (lichThiHopLe.length > 0) { %>
     <div id="lichThi" class="tab-content active">
-      <h2>Lịch Thi</h2>
-
+      <h2 class="section-title">Lịch Thi</h2>
       <% lichThiHopLe.forEach(item => { %>
-      <div
-        style="
-          margin-bottom: 16px;
-          border-left: 5px solid #f97316;
-          background: #fff7ed;
-          border-radius: 12px;
-          padding: 16px;
-          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-        "
-      >
+      <div class="block-lich">
         <div
           style="
             display: flex;
@@ -252,15 +225,11 @@
           "
         >
           <span><%= item.ngayThi %></span>
-          <span style="color: #ea580c"><%= item.caThi %></span>
+          <span class="block-time"><%= item.caThi %></span>
         </div>
         <div
-          style="
-            font-size: 1.1rem;
-            font-weight: bold;
-            color: #b45309;
-            margin-bottom: 6px;
-          "
+          class="block-title"
+          style="font-size: 1.1rem; font-weight: bold; margin-bottom: 6px"
         >
           <%= item.tenHocPhan %>
         </div>
@@ -276,25 +245,13 @@
       </div>
       <% }) %>
     </div>
-    <% } %> <% const lichHocHopLe = lichHoc .filter(item => item.monHoc &&
-    item.thu && item.tiet) .sort((a, b) => { const thuA = parseInt(a.thu), thuB
-    = parseInt(b.thu); if (thuA !== thuB) return thuA - thuB; return
-    parseInt(a.tiet) - parseInt(b.tiet); }); %>
-
+    <% } %> <% const lichHocHopLe = lichHoc.filter(i => i.monHoc && i.thu &&
+    i.tiet).sort((a, b) => parseInt(a.thu) - parseInt(b.thu) || parseInt(a.tiet)
+    - parseInt(b.tiet)); %>
     <div id="lichHoc" class="tab-content">
-      <h2>Lịch Học</h2>
-
+      <h2 class="section-title">Lịch Học</h2>
       <% if (lichHocHopLe.length > 0) { %> <% lichHocHopLe.forEach(item => { %>
-      <div
-        style="
-          margin-bottom: 16px;
-          border-left: 5px solid #3b82f6;
-          background: #f0f9ff;
-          border-radius: 12px;
-          padding: 16px;
-          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-        "
-      >
+      <div class="block-lich">
         <div
           style="
             display: flex;
@@ -305,15 +262,11 @@
           "
         >
           <span>Thứ <%= item.thu %></span>
-          <span style="color: #2563eb">Tiết: <%= item.tiet %></span>
+          <span class="block-time">Tiết: <%= item.tiet %></span>
         </div>
         <div
-          style="
-            font-size: 1.1rem;
-            font-weight: bold;
-            color: #1d4ed8;
-            margin-bottom: 6px;
-          "
+          class="block-title"
+          style="font-size: 1.1rem; font-weight: bold; margin-bottom: 6px"
         >
           <%= item.monHoc %>
         </div>
@@ -351,6 +304,8 @@
         const current = document.body.getAttribute("data-theme");
         const nextTheme = current === "dark" ? "light" : "dark";
 
+        localStorage.setItem("theme", nextTheme); //
+
         const btn = document.getElementById("toggleThemeBtn");
         btn.disabled = true;
         btn.style.opacity = "0.6";
@@ -369,6 +324,13 @@
           btn.style.cursor = "pointer";
         }, 1400);
       }
+
+      window.addEventListener("DOMContentLoaded", () => {
+        const savedTheme = localStorage.getItem("theme");
+        if (savedTheme) {
+          document.body.setAttribute("data-theme", savedTheme);
+        }
+      });
     </script>
   </body>
 </html>
