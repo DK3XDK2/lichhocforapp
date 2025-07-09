@@ -223,62 +223,112 @@
       <button class="tab" onclick="showTab('lichHoc')">📚 Lịch Học</button>
     </div>
 
+    <% const lichThiHopLe = lichThi .filter(item => item.tenHocPhan &&
+    item.ngayThi) .sort((a, b) => new
+    Date(a.ngayThi.split('/').reverse().join('-')) - new
+    Date(b.ngayThi.split('/').reverse().join('-'))); %> <% if
+    (lichThiHopLe.length > 0) { %>
     <div id="lichThi" class="tab-content active">
       <h2>Lịch Thi</h2>
-      <table>
-        <tr>
-          <th>STT</th>
-          <th>Mã HP</th>
-          <th>Tên HP</th>
-          <th>Số TC</th>
-          <th>Ngày Thi</th>
-          <th>Ca Thi</th>
-          <th>Hình Thức</th>
-          <th>SBD</th>
-          <th>Phòng</th>
-          <th>Ghi chú</th>
-        </tr>
-        <% lichThi.forEach(item => { %>
-        <tr>
-          <td><%= item.stt %></td>
-          <td><%= item.maHocPhan %></td>
-          <td><%= item.tenHocPhan %></td>
-          <td><%= item.soTC %></td>
-          <td><%= item.ngayThi %></td>
-          <td><%= item.caThi %></td>
-          <td><%= item.hinhThucThi %></td>
-          <td><%= item.soBaoDanh %></td>
-          <td><%= item.phongThi %></td>
-          <td><%= item.ghiChu %></td>
-        </tr>
-        <% }) %>
-      </table>
+
+      <% lichThiHopLe.forEach(item => { %>
+      <div
+        style="
+          margin-bottom: 16px;
+          border-left: 5px solid #f97316;
+          background: #fff7ed;
+          border-radius: 12px;
+          padding: 16px;
+          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        "
+      >
+        <div
+          style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+            margin-bottom: 8px;
+          "
+        >
+          <span><%= item.ngayThi %></span>
+          <span style="color: #ea580c"><%= item.caThi %></span>
+        </div>
+        <div
+          style="
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #b45309;
+            margin-bottom: 6px;
+          "
+        >
+          <%= item.tenHocPhan %>
+        </div>
+        <ul style="list-style: none; padding: 0; font-size: 0.95rem">
+          <li>📘 Mã HP: <%= item.maHocPhan %> (<%= item.soTC %> tín chỉ)</li>
+          <li>📝 Hình thức: <%= item.hinhThucThi %></li>
+          <li>🏫 Phòng thi: <%= item.phongThi %></li>
+          <li>🧑‍🎓 SBD: <%= item.soBaoDanh %></li>
+          <% if (item.ghiChu) { %>
+          <li>🗒️ Ghi chú: <%= item.ghiChu %></li>
+          <% } %>
+        </ul>
+      </div>
+      <% }) %>
     </div>
+    <% } %> <% const lichHocHopLe = lichHoc .filter(item => item.monHoc &&
+    item.thu && item.tiet) .sort((a, b) => { const thuA = parseInt(a.thu), thuB
+    = parseInt(b.thu); if (thuA !== thuB) return thuA - thuB; return
+    parseInt(a.tiet) - parseInt(b.tiet); }); %>
 
     <div id="lichHoc" class="tab-content">
       <h2>Lịch Học</h2>
-      <table>
-        <tr>
-          <th>Thứ</th>
-          <th>Lớp</th>
-          <th>Môn học</th>
-          <th>Tiết</th>
-          <th>Phòng</th>
-          <th>Giảng viên</th>
-          <th>Tuần</th>
-        </tr>
-        <% lichHoc.forEach(item => { %>
-        <tr>
-          <td><%= item.thu %></td>
-          <td><%= item.lop %></td>
-          <td><%= item.monHoc %></td>
-          <td><%= item.tiet %></td>
-          <td><%= item.phong %></td>
-          <td><%= item.giangVien %></td>
-          <td><%= item.tuan %></td>
-        </tr>
-        <% }) %>
-      </table>
+
+      <% if (lichHocHopLe.length > 0) { %> <% lichHocHopLe.forEach(item => { %>
+      <div
+        style="
+          margin-bottom: 16px;
+          border-left: 5px solid #3b82f6;
+          background: #f0f9ff;
+          border-radius: 12px;
+          padding: 16px;
+          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        "
+      >
+        <div
+          style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+            margin-bottom: 8px;
+          "
+        >
+          <span>Thứ <%= item.thu %></span>
+          <span style="color: #2563eb">Tiết: <%= item.tiet %></span>
+        </div>
+        <div
+          style="
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #1d4ed8;
+            margin-bottom: 6px;
+          "
+        >
+          <%= item.monHoc %>
+        </div>
+        <ul style="list-style: none; padding: 0; font-size: 0.95rem">
+          <li>🏫 Phòng: <%= item.phong %></li>
+          <li>👨‍🏫 Giảng viên: <%= item.giangVien %></li>
+          <li>📘 Lớp: <%= item.lop %></li>
+          <li>📅 Tuần: <%= item.tuan %></li>
+        </ul>
+      </div>
+      <% }) %> <% } else { %>
+      <p style="margin-top: 12px; font-style: italic; color: gray">
+        ⛔ Tạm thời không có lịch học.
+      </p>
+      <% } %>
     </div>
 
     <script>
