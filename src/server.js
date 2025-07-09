@@ -10,6 +10,12 @@ const getLichHoc = require("./getLichHoc");
 
 const app = express();
 
+// 🛡️ Middleware kiểm tra đăng nhập
+function isAuthenticated(req, res, next) {
+  if (req.session.mssv) return next();
+  return res.status(403).json({ error: "Bạn chưa đăng nhập!" });
+}
+
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json({ limit: "1mb" }));
@@ -34,27 +40,22 @@ app.post("/login", async (req, res) => {
   const { mssv, matkhau } = req.body;
 
   try {
-    // Gọi cả hai đồng thời
     const [lichThiRaw, lichHocRaw] = await Promise.all([
       getLichThi(mssv, matkhau),
       getLichHoc(mssv, matkhau),
     ]);
 
-    // Trích xuất dữ liệu
     const lichThi = Array.isArray(lichThiRaw?.data) ? lichThiRaw.data : [];
     const hoTenFromThi = lichThiRaw?.hoTen || null;
 
     const lichHoc = Array.isArray(lichHocRaw?.data) ? lichHocRaw.data : [];
     const hoTenFromHoc = lichHocRaw?.hoTen || null;
 
-    // Ưu tiên hoTen từ lịch thi (nếu không có thì lấy từ lịch học)
     const hoTen = hoTenFromThi || hoTenFromHoc || "Không rõ tên";
 
-    // Ghi session
     req.session.mssv = mssv;
     req.session.hoTen = hoTen;
 
-    // Lưu file JSON
     fs.writeFileSync(
       `./data/${mssv}_lichthi.json`,
       JSON.stringify(lichThi, null, 2)
@@ -105,7 +106,8 @@ app.get("/logout", (req, res) => {
   });
 });
 
-app.post("/api/lich-thi", async (req, res) => {
+// 🔐 BẢO VỆ các route API bằng middleware
+app.post("/api/lich-thi", isAuthenticated, async (req, res) => {
   const { mssv, matkhau } = req.body;
   try {
     const result = await getLichThi(mssv, matkhau);
@@ -115,7 +117,7 @@ app.post("/api/lich-thi", async (req, res) => {
   }
 });
 
-app.post("/api/lich-hoc", async (req, res) => {
+app.post("/api/lich-hoc", isAuthenticated, async (req, res) => {
   const { mssv, matkhau } = req.body;
   try {
     const result = await getLichHoc(mssv, matkhau);
@@ -130,7 +132,7 @@ app.listen(PORT, () => {
   console.log(`🚀 Server chạy tại: http://localhost:${PORT}`);
 });
 
-// Cron cleanup
+// 🧹 Cron cleanup file cũ
 const cron = require("node-cron");
 const cleanOldFiles = require("./cleanOldFiles");
 
