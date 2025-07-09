@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Đăng nhập</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+      }
+
+      @keyframes gradientShift {
+        0% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0% 50%;
+        }
+      }
+
+      .animated-bg {
+        background: linear-gradient(-45deg, #0f172a, #1e293b, #0ea5e9, #9333ea);
+        background-size: 400% 400%;
+        animation: gradientShift 15s ease infinite;
+      }
+    </style>
+  </head>
+
+  <body class="animated-bg min-h-screen flex items-center justify-center">
+    <div
+      class="w-full max-w-sm bg-white/5 backdrop-blur-lg rounded-2xl px-6 py-8 shadow-2xl text-white relative"
+    >
+      <div
+        class="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-indigo-500 to-cyan-400 w-16 h-16 flex items-center justify-center rounded-full shadow-lg"
+      >
+        <svg
+          class="w-7 h-7 text-white"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M12 14l9-5-9-5-9 5 9 5z"
+          />
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M12 14l6.16-3.422A12.083 12.083 0 0118 20.25c0 .414-.336.75-.75.75H6.75a.75.75 0 01-.75-.75c0-2.58.805-4.965 2.16-6.922L12 14z"
+          />
+        </svg>
+      </div>
+
+      <h2 class="text-xl font-semibold text-center mt-8">Lịch Học</h2>
+      <p class="text-sm text-center text-gray-300 mb-6">
+        Đăng nhập bằng tài khoản <strong>Đăng ký tín chỉ</strong>
+      </p>
+
+      <% if (typeof error !== 'undefined') { %>
+      <p class="text-red-300 text-sm text-center mb-3"><%= error %></p>
+      <% } %>
+
+      <form action="/login" method="POST" class="space-y-4">
+        <div class="relative">
+          <input
+            type="text"
+            name="mssv"
+            placeholder="Mã sinh viên"
+            class="w-full pl-10 pr-4 py-2 rounded-lg bg-white/10 border border-white/20 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-cyan-400"
+            required
+          />
+          <svg
+            class="absolute top-3.5 left-3 text-gray-300 w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M5.121 17.804A13.937 13.937 0 0112 15c2.485 0 4.797.658 6.879 1.804M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+            />
+          </svg>
+        </div>
+
+        <div class="relative">
+          <svg
+            class="absolute top-3.5 left-3 w-5 h-5 text-gray-300"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M12 15v2m0-2a2 2 0 100-4 2 2 0 000 4zm6 2V9a6 6 0 10-12 0v8a2 2 0 002 2h8a2 2 0 002-2z"
+            />
+          </svg>
+
+          <input
+            id="passwordInput"
+            name="matkhau"
+            type="password"
+            placeholder="Mật khẩu"
+            class="w-full pl-10 pr-10 py-2 rounded-lg bg-white/10 border border-white/20 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-cyan-400"
+            required
+          />
+
+          <button
+            type="button"
+            id="togglePassword"
+            class="absolute top-3.5 right-3 text-gray-300 hover:text-white focus:outline-none transition-all duration-200 cursor-pointer"
+            title="Hiện/Ẩn mật khẩu"
+          >
+            <svg
+              id="eyeIcon"
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5 pointer-events-none"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+              />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+              />
+            </svg>
+          </button>
+        </div>
+
+        <button
+          type="submit"
+          class="w-full bg-cyan-500 hover:bg-cyan-600 text-white font-semibold py-2 rounded-lg transition flex items-center justify-center gap-2"
+        >
+          <svg
+            class="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M10 6l6 6-6 6"
+            />
+          </svg>
+          Đăng Nhập
+        </button>
+      </form>
+
+      <p class="text-sm text-center mt-4 text-gray-400">
+        Chưa có tài khoản?
+        <span class="text-cyan-300 underline cursor-pointer"
+          >Liên hệ trường</span
+        >
+      </p>
+    </div>
+
+    <script>
+      const eyeIcon = document.getElementById("eyeIcon");
+      const passwordInput = document.getElementById("passwordInput");
+      const toggleBtn = document.getElementById("togglePassword");
+
+      let showing = false;
+
+      toggleBtn.addEventListener("click", () => {
+        showing = !showing;
+        passwordInput.type = showing ? "text" : "password";
+
+        eyeIcon.innerHTML = showing
+          ? `<path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.269-2.943-9.543-7a9.978 9.978 0 012.2-3.442m2.2-2.2A9.978 9.978 0 0112 5c4.478 0 8.269 2.943 9.543 7a9.977 9.977 0 01-1.249 2.592M15 12a3 3 0 11-6 0 3 3 0 016 0zM3 3l18 18" />`
+          : `<path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+       <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />`;
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Lịch cá nhân</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <style>
+      #theme-wave {
+        pointer-events: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 999;
+        background: linear-gradient(120deg, #0ea5e9aa, #9333eaaa);
+        opacity: 0;
+        mix-blend-mode: overlay;
+        filter: blur(60px);
+      }
+
+      @keyframes themeWave {
+        0% {
+          opacity: 0;
+          transform: scaleX(1) translateX(-100%);
+          filter: blur(80px);
+        }
+        40% {
+          opacity: 0.9;
+          transform: scaleX(1.4) translateX(-30%);
+          filter: blur(100px);
+        }
+        60% {
+          opacity: 1;
+          transform: scaleX(1.2) translateX(30%);
+          filter: blur(80px);
+        }
+        100% {
+          opacity: 0;
+          transform: scaleX(1) translateX(100%);
+          filter: blur(60px);
+        }
+      }
+
+      :root {
+        --bg: #ffffff;
+        --text: #1e1e1e;
+        --card: #f8f9fa;
+        --primary: #6200ee;
+        --primary-hover: #3700b3;
+      }
+
+      [data-theme="dark"] {
+        --bg: #121212;
+        --text: #ffffff;
+        --card: #1e1e1e;
+        --primary: #bb86fc;
+        --primary-hover: #3700b3;
+      }
+
+      body {
+        font-family: "Segoe UI", sans-serif;
+        background-color: var(--bg);
+        color: var(--text);
+        margin: 0;
+        padding: 20px;
+        transition: background-color 0.6s ease, color 0.6s ease;
+      }
+
+      h1 {
+        font-size: 1.8rem;
+      }
+
+      .login-info {
+        margin-bottom: 20px;
+        font-style: italic;
+        color: var(--primary);
+      }
+
+      .tab-container {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 10px;
+        flex-wrap: wrap;
+      }
+
+      .tab {
+        cursor: pointer;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 8px 8px 0 0;
+        background-color: var(--card);
+        color: var(--text);
+        font-weight: 500;
+        transition: 0.3s ease;
+      }
+
+      .tab:hover {
+        background-color: var(--primary);
+        color: #fff;
+      }
+
+      .tab.active {
+        background-color: var(--primary);
+        color: #fff;
+      }
+
+      .tab-content {
+        display: none;
+        animation: fadeIn 0.3s ease;
+        background: var(--card);
+        padding: 20px;
+        border-radius: 0 0 8px 8px;
+        box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .tab-content.active {
+        display: block;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+        font-size: 0.95rem;
+      }
+
+      th,
+      td {
+        border-bottom: 1px solid #ccc;
+        padding: 10px;
+        text-align: left;
+      }
+
+      th {
+        background-color: var(--primary);
+        color: #fff;
+      }
+
+      tr:hover {
+        background-color: rgba(98, 0, 238, 0.1);
+      }
+
+      .toggle-theme {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 10px 14px;
+        background: var(--primary);
+        border: none;
+        color: white;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      }
+
+      @media (max-width: 768px) {
+        .tab {
+          flex: 1 1 45%;
+          font-size: 0.9rem;
+        }
+
+        table,
+        thead,
+        tbody,
+        th,
+        td,
+        tr {
+          display: block;
+        }
+
+        th {
+          position: sticky;
+          top: 0;
+        }
+
+        td {
+          border: none;
+          border-bottom: 1px solid #ddd;
+        }
+
+        td::before {
+          font-weight: bold;
+          display: block;
+        }
+
+        tr {
+          margin-bottom: 15px;
+        }
+      }
+    </style>
+  </head>
+  <body data-theme="light">
+    <div id="theme-wave"></div>
+
+    <button id="toggleThemeBtn" class="toggle-theme" onclick="toggleTheme()">
+      🌗 Giao diện
+    </button>
+
+    <h1>Lịch Cá Nhân</h1>
+    <p class="login-info">
+      👤 Xin chào: <strong><%= hoTen || "Không rõ tên" %></strong><br />
+      📌 Đăng nhập với MSSV: <strong><%= mssv || "Không rõ MSSV" %></strong>
+    </p>
+
+    <div class="tab-container">
+      <button class="tab active" onclick="showTab('lichThi')">
+        📅 Lịch Thi
+      </button>
+      <button class="tab" onclick="showTab('lichHoc')">📚 Lịch Học</button>
+    </div>
+
+    <div id="lichThi" class="tab-content active">
+      <h2>Lịch Thi</h2>
+      <table>
+        <tr>
+          <th>STT</th>
+          <th>Mã HP</th>
+          <th>Tên HP</th>
+          <th>Số TC</th>
+          <th>Ngày Thi</th>
+          <th>Ca Thi</th>
+          <th>Hình Thức</th>
+          <th>SBD</th>
+          <th>Phòng</th>
+          <th>Ghi chú</th>
+        </tr>
+        <% lichThi.forEach(item => { %>
+        <tr>
+          <td><%= item.stt %></td>
+          <td><%= item.maHocPhan %></td>
+          <td><%= item.tenHocPhan %></td>
+          <td><%= item.soTC %></td>
+          <td><%= item.ngayThi %></td>
+          <td><%= item.caThi %></td>
+          <td><%= item.hinhThucThi %></td>
+          <td><%= item.soBaoDanh %></td>
+          <td><%= item.phongThi %></td>
+          <td><%= item.ghiChu %></td>
+        </tr>
+        <% }) %>
+      </table>
+    </div>
+
+    <div id="lichHoc" class="tab-content">
+      <h2>Lịch Học</h2>
+      <table>
+        <tr>
+          <th>Thứ</th>
+          <th>Lớp</th>
+          <th>Môn học</th>
+          <th>Tiết</th>
+          <th>Phòng</th>
+          <th>Giảng viên</th>
+          <th>Tuần</th>
+        </tr>
+        <% lichHoc.forEach(item => { %>
+        <tr>
+          <td><%= item.thu %></td>
+          <td><%= item.lop %></td>
+          <td><%= item.monHoc %></td>
+          <td><%= item.tiet %></td>
+          <td><%= item.phong %></td>
+          <td><%= item.giangVien %></td>
+          <td><%= item.tuan %></td>
+        </tr>
+        <% }) %>
+      </table>
+    </div>
+
+    <script>
+      function showTab(tabId) {
+        document.querySelectorAll(".tab-content").forEach((el) => {
+          el.classList.remove("active");
+        });
+        document.getElementById(tabId).classList.add("active");
+
+        document.querySelectorAll(".tab").forEach((el) => {
+          el.classList.remove("active");
+        });
+        document
+          .querySelector(`.tab[onclick="showTab('${tabId}')"]`)
+          .classList.add("active");
+      }
+
+      function toggleTheme() {
+        const wave = document.getElementById("theme-wave");
+        const current = document.body.getAttribute("data-theme");
+        const nextTheme = current === "dark" ? "light" : "dark";
+
+        const btn = document.getElementById("toggleThemeBtn");
+        btn.disabled = true;
+        btn.style.opacity = "0.6";
+        btn.style.cursor = "not-allowed";
+
+        wave.style.animation = "themeWave 1.3s ease-in-out forwards";
+
+        setTimeout(() => {
+          document.body.setAttribute("data-theme", nextTheme);
+        }, 650);
+
+        setTimeout(() => {
+          wave.style.animation = "";
+          btn.disabled = false;
+          btn.style.opacity = "1";
+          btn.style.cursor = "pointer";
+        }, 1400);
+      }
+    </script>
+  </body>
+</html>
