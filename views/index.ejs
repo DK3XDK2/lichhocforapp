@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Đăng nhập</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+      };
+    </script>
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
       rel="stylesheet"
@@ -12,6 +17,21 @@
     <style>
       body {
         font-family: "Inter", sans-serif;
+      }
+
+      @keyframes fadeUp {
+        0% {
+          opacity: 0;
+          transform: translateY(30px) scale(0.95);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+
+      .animate-form {
+        animation: fadeUp 0.8s ease-out both;
       }
 
       @keyframes gradientShift {
@@ -31,12 +51,35 @@
         background-size: 400% 400%;
         animation: gradientShift 15s ease infinite;
       }
+
+      .spinner {
+        border: 3px solid rgba(255, 255, 255, 0.2);
+        border-top: 3px solid white;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        animation: spin 0.6s linear infinite;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
     </style>
   </head>
 
   <body class="animated-bg min-h-screen flex items-center justify-center">
+    <button
+      id="themeToggle"
+      class="absolute top-6 right-6 bg-white/20 dark:bg-white/10 p-2 rounded-full text-white hover:bg-white/30 dark:hover:bg-white/20 transition-all duration-200 shadow-md backdrop-blur z-50"
+      title="Chuyển chế độ sáng/tối"
+    >
+      🌙
+    </button>
+
     <div
-      class="w-full max-w-sm bg-white/5 backdrop-blur-lg rounded-2xl px-6 py-8 shadow-2xl text-white relative"
+      class="w-full max-w-sm bg-white/10 dark:bg-white/5 backdrop-blur-xl ring-1 ring-white/20 dark:ring-white/10 rounded-2xl px-6 py-8 shadow-2xl dark:shadow-xl text-white relative animate-form"
     >
       <div
         class="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-indigo-500 to-cyan-400 w-16 h-16 flex items-center justify-center rounded-full shadow-lg"
@@ -62,7 +105,7 @@
       </div>
 
       <h2 class="text-xl font-semibold text-center mt-8">Lịch Học</h2>
-      <p class="text-sm text-center text-gray-300 mb-6">
+      <p class="text-sm text-center text-gray-300 dark:text-gray-200 mb-6">
         Đăng nhập bằng tài khoản <strong>Đăng ký tín chỉ</strong>
       </p>
 
@@ -70,17 +113,24 @@
       <p class="text-red-300 text-sm text-center mb-3"><%= error %></p>
       <% } %>
 
-      <form action="/login" method="POST" class="space-y-4">
+      <form
+        action="/login"
+        method="POST"
+        class="space-y-4"
+        onsubmit="return handleSubmit()"
+      >
         <div class="relative">
           <input
             type="text"
             name="mssv"
             placeholder="Mã sinh viên"
-            class="w-full pl-10 pr-4 py-2 rounded-lg bg-white/10 border border-white/20 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-cyan-400"
+            class="w-full pl-10 pr-4 py-2 rounded-lg bg-white/10 dark:bg-white/5 border border-white/20 dark:border-white/10 placeholder-gray-300 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all duration-300"
             required
+            oninvalid="this.setCustomValidity('Vui lòng nhập mã sinh viên')"
+            oninput="this.setCustomValidity('')"
           />
           <svg
-            class="absolute top-3.5 left-3 text-gray-300 w-5 h-5"
+            class="absolute top-3.5 left-3 text-gray-300 dark:text-gray-200 w-5 h-5"
             fill="none"
             stroke="currentColor"
             stroke-width="2"
@@ -96,7 +146,7 @@
 
         <div class="relative">
           <svg
-            class="absolute top-3.5 left-3 w-5 h-5 text-gray-300"
+            class="absolute top-3.5 left-3 w-5 h-5 text-gray-300 dark:text-gray-200"
             fill="none"
             stroke="currentColor"
             stroke-width="2"
@@ -114,14 +164,16 @@
             name="matkhau"
             type="password"
             placeholder="Mật khẩu"
-            class="w-full pl-10 pr-10 py-2 rounded-lg bg-white/10 border border-white/20 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-cyan-400"
+            class="w-full pl-10 pr-10 py-2 rounded-lg bg-white/10 dark:bg-white/5 border border-white/20 dark:border-white/10 placeholder-gray-300 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all duration-300"
             required
+            oninvalid="this.setCustomValidity('Vui lòng nhập mật khẩu')"
+            oninput="this.setCustomValidity('')"
           />
 
           <button
             type="button"
             id="togglePassword"
-            class="absolute top-3.5 right-3 text-gray-300 hover:text-white focus:outline-none transition-all duration-200 cursor-pointer"
+            class="absolute top-3.5 right-3 text-gray-300 dark:text-gray-200 hover:text-white focus:outline-none transition-all duration-200 cursor-pointer"
             title="Hiện/Ẩn mật khẩu"
           >
             <svg
@@ -148,27 +200,16 @@
         </div>
 
         <button
+          id="loginButton"
           type="submit"
-          class="w-full bg-cyan-500 hover:bg-cyan-600 text-white font-semibold py-2 rounded-lg transition flex items-center justify-center gap-2"
+          class="w-full bg-cyan-500 hover:bg-cyan-600 text-white font-semibold py-2 rounded-lg transition-all duration-300 flex items-center justify-center gap-2"
         >
-          <svg
-            class="w-5 h-5"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M10 6l6 6-6 6"
-            />
-          </svg>
-          Đăng Nhập
+          <span id="loginText">Đăng Nhập</span>
+          <div id="spinner" class="spinner hidden"></div>
         </button>
       </form>
 
-      <p class="text-sm text-center mt-4 text-gray-400">
+      <p class="text-sm text-center mt-4 text-gray-400 dark:text-gray-300">
         Chưa có tài khoản?
         <span class="text-cyan-300 underline cursor-pointer"
           >Liên hệ trường</span
@@ -177,20 +218,53 @@
     </div>
 
     <script>
+      // 👁 Toggle ẩn/hiện mật khẩu
       const eyeIcon = document.getElementById("eyeIcon");
       const passwordInput = document.getElementById("passwordInput");
-      const toggleBtn = document.getElementById("togglePassword");
+      const togglePasswordBtn = document.getElementById("togglePassword");
 
       let showing = false;
 
-      toggleBtn.addEventListener("click", () => {
+      togglePasswordBtn.addEventListener("click", () => {
         showing = !showing;
         passwordInput.type = showing ? "text" : "password";
-
         eyeIcon.innerHTML = showing
           ? `<path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.269-2.943-9.543-7a9.978 9.978 0 012.2-3.442m2.2-2.2A9.978 9.978 0 0112 5c4.478 0 8.269 2.943 9.543 7a9.977 9.977 0 01-1.249 2.592M15 12a3 3 0 11-6 0 3 3 0 016 0zM3 3l18 18" />`
           : `<path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-       <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />`;
+         <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />`;
+      });
+
+      // ⏳ Xử lý khi submit
+      function handleSubmit() {
+        const btn = document.getElementById("loginButton");
+        const text = document.getElementById("loginText");
+        const spinner = document.getElementById("spinner");
+
+        btn.disabled = true;
+        btn.classList.add("opacity-70", "cursor-not-allowed");
+        text.textContent = "Đang xử lý...";
+        spinner.classList.remove("hidden");
+
+        return true;
+      }
+    </script>
+
+    <script>
+      // 🌓 Toggle sáng/tối
+      const toggleThemeBtn = document.getElementById("themeToggle");
+
+      if (localStorage.getItem("theme") === "dark") {
+        document.documentElement.classList.add("dark");
+        toggleThemeBtn.textContent = "🌞";
+      } else {
+        document.documentElement.classList.remove("dark");
+        toggleThemeBtn.textContent = "🌙";
+      }
+
+      toggleThemeBtn.addEventListener("click", () => {
+        const isDark = document.documentElement.classList.toggle("dark");
+        localStorage.setItem("theme", isDark ? "dark" : "light");
+        toggleThemeBtn.textContent = isDark ? "🌞" : "🌙";
       });
     </script>
   </body>
