@@ -53,7 +53,7 @@ async function getLichThi(mssv, matkhau) {
       return rows
         .map((row) => {
           const cells = row.querySelectorAll("td");
-          if (cells.length < 10) return null; // loại bỏ dòng không đủ cột
+          if (cells.length < 10) return null;
           return {
             stt: cells[0].innerText.trim(),
             maHocPhan: cells[1].innerText.trim(),
@@ -67,7 +67,7 @@ async function getLichThi(mssv, matkhau) {
             ghiChu: cells[9].innerText.trim(),
           };
         })
-        .filter(Boolean); // loại bỏ dòng null
+        .filter(Boolean);
     });
 
     fs.writeFileSync(

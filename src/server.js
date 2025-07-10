@@ -9,7 +9,6 @@ const getLichHoc = require("./getLichHoc");
 
 const app = express();
 
-
 function isAuthenticated(req, res, next) {
   if (req.session.mssv) return next();
   return res.status(403).json({ error: "Bạn chưa đăng nhập!" });
@@ -19,11 +18,19 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json({ limit: "1mb" }));
 
+const isProduction = process.env.NODE_ENV === "production";
+
+app.set("trust proxy", 1);
+
 app.use(
   session({
     secret: "nogamenolifez",
     resave: false,
     saveUninitialized: true,
+    cookie: {
+      secure: isProduction,
+      maxAge: 1000 * 60 * 60,
+    },
   })
 );
 
@@ -53,6 +60,7 @@ app.post("/login", async (req, res) => {
     const hoTen = hoTenFromThi || hoTenFromHoc || "Không rõ tên";
 
     req.session.mssv = mssv;
+    req.session.password = matkhau;
     req.session.hoTen = hoTen;
 
     fs.writeFileSync(
@@ -78,6 +86,8 @@ app.get("/xem-lich", (req, res) => {
   const hoTen = req.session.hoTen || "Không rõ tên";
 
   if (!mssv) return res.redirect("/");
+
+  res.setHeader("Cache-Control", "no-store");
 
   try {
     const lichThi = JSON.parse(
@@ -105,7 +115,6 @@ app.get("/logout", (req, res) => {
   });
 });
 
-// 🔐 BẢO VỆ các route API bằng middleware
 app.post("/api/lich-thi", isAuthenticated, async (req, res) => {
   const { mssv, matkhau } = req.body;
   try {
@@ -126,12 +135,77 @@ app.post("/api/lich-hoc", isAuthenticated, async (req, res) => {
   }
 });
 
+app.post("/sync", async (req, res) => {
+  const { mssv, password, hoTen } = req.session;
+
+  if (!mssv || !password) {
+    return res.status(401).json({ success: false, message: "Chưa đăng nhập" });
+  }
+
+  try {
+    const [lichThiRaw, lichHocRaw] = await Promise.all([
+      getLichThi(mssv, password),
+      getLichHoc(mssv, password),
+    ]);
+
+    const lichThi = Array.isArray(lichThiRaw?.data) ? lichThiRaw.data : [];
+    const lichHoc = Array.isArray(lichHocRaw?.data) ? lichHocRaw.data : [];
+
+    fs.writeFileSync(
+      `./data/${mssv}_lichthi.json`,
+      JSON.stringify(lichThi, null, 2)
+    );
+    fs.writeFileSync(
+      `./data/${mssv}_lichhoc.json`,
+      JSON.stringify(lichHoc, null, 2)
+    );
+
+    delete req.session.password;
+
+    res.json({ success: true, lichHoc, lichThi });
+  } catch (err) {
+    console.error("Lỗi khi đồng bộ:", err);
+    res.status(500).json({ success: false, message: "Đồng bộ thất bại" });
+  }
+});
+
+app.get("/api/lich-hoc-no-auth", isAuthenticated, (req, res) => {
+  const mssv = req.session.mssv;
+
+  try {
+    const data = JSON.parse(
+      fs.readFileSync(`./data/${mssv}_lichhoc.json`, "utf8")
+    );
+    res.json({ success: true, data });
+  } catch (err) {
+    console.error("Lỗi đọc lichhoc.json:", err.message);
+    res
+      .status(500)
+      .json({ success: false, message: "Không đọc được dữ liệu lịch học" });
+  }
+});
+
+app.get("/api/lich-thi-no-auth", isAuthenticated, (req, res) => {
+  const mssv = req.session.mssv;
+
+  try {
+    const data = JSON.parse(
+      fs.readFileSync(`./data/${mssv}_lichthi.json`, "utf8")
+    );
+    res.json({ success: true, data });
+  } catch (err) {
+    console.error("Lỗi đọc lichthi.json:", err.message);
+    res
+      .status(500)
+      .json({ success: false, message: "Không đọc được dữ liệu lịch thi" });
+  }
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`🚀 Server chạy tại: http://localhost:${PORT}`);
 });
 
-// 🧹 Cron cleanup file cũ
 const cron = require("node-cron");
 const cleanOldFiles = require("./cleanOldFiles");
 
