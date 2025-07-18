@@ -8,7 +8,6 @@ const getLichThi = require("./getLichThi");
 const getLichHoc = require("./getLichHoc");
 
 const app = express();
-let onlineUsers = 0;
 
 function isAuthenticated(req, res, next) {
   if (req.session.mssv) return next();
@@ -34,21 +33,6 @@ app.use(
     },
   })
 );
-
-app.use((req, res, next) => {
-  if (!req.session.counted) {
-    onlineUsers++;
-    req.session.counted = true;
-
-    req.on("close", () => {
-      if (req.session.counted) {
-        onlineUsers--;
-        req.session.counted = false;
-      }
-    });
-  }
-  next();
-});
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "../views"));
@@ -126,11 +110,7 @@ app.get("/xem-lich", (req, res) => {
 });
 
 app.get("/logout", (req, res) => {
-  if (req.session.counted) {
-    onlineUsers--;
-  }
   delete req.session.password;
-
   req.session.destroy(() => {
     res.redirect("/");
   });
@@ -226,10 +206,6 @@ app.get("/api/lich-thi-no-auth", isAuthenticated, (req, res) => {
       .status(500)
       .json({ success: false, message: "Không đọc được dữ liệu lịch thi" });
   }
-});
-
-app.get("/api/online", (req, res) => {
-  res.json({ onlineUsers });
 });
 
 const PORT = process.env.PORT || 3000;

@@ -5,43 +5,6 @@
     <title>Lịch cá nhân</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <style>
-      .online-status {
-        position: fixed;
-        bottom: 10px;
-        left: 50%;
-        transform: translateX(-50%);
-        background-color: #ecfdf5;
-        color: #047857;
-        padding: 8px 14px;
-        border-radius: 12px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
-        font-size: 14px;
-        font-weight: 500;
-        z-index: 9999;
-        max-width: 90vw;
-        text-align: center;
-        opacity: 0.95;
-      }
-
-      [data-theme="dark"] .online-status {
-        background-color: #1f2937;
-        color: #d1fae5;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-      }
-
-      [data-theme="dark"] .online-status::before {
-        background: radial-gradient(circle, #6ee7b7 0%, #10b981 100%);
-      }
-
-      .online-status::before {
-        content: "";
-        display: inline-block;
-        width: 10px;
-        height: 10px;
-        background: radial-gradient(circle, #34d399 0%, #059669 100%);
-        border-radius: 50%;
-      }
-
       .logout-btn {
         background-color: #f44336;
         color: white;
@@ -767,37 +730,6 @@
         lichThiDiv.classList.add("fade-in");
         setTimeout(() => lichThiDiv.classList.remove("fade-in"), 500);
       }
-      function updateOnlineUsers() {
-        fetch("/api/online")
-          .then((res) => {
-            if (!res.ok) throw new Error("Không lấy được dữ liệu online");
-            return res.json();
-          })
-          .then((data) => {
-            const count = Number(data.onlineUsers) || 0;
-            const span = document.getElementById("onlineCount");
-            if (span) {
-              span.textContent = count.toLocaleString("vi-VN");
-            }
-          })
-          .catch((err) => {
-            if (!window._onlineErrLogged) {
-              console.warn("⚠️ Không thể lấy số người online:", err.message);
-              window._onlineErrLogged = true;
-            }
-
-            const span = document.getElementById("onlineCount");
-            if (span) {
-              span.textContent = "0";
-            }
-          });
-      }
-
-      updateOnlineUsers();
-      setInterval(updateOnlineUsers, 15000);
     </script>
-    <div id="onlineStatus" class="online-status">
-      🟢 Đang có <span id="onlineCount">0</span> người đang sử dụng trang web
-    </div>
   </body>
 </html>
