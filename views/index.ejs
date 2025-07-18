@@ -218,7 +218,6 @@
     </div>
 
     <script>
-      // 👁 Toggle ẩn/hiện mật khẩu
       const eyeIcon = document.getElementById("eyeIcon");
       const passwordInput = document.getElementById("passwordInput");
       const togglePasswordBtn = document.getElementById("togglePassword");
@@ -234,7 +233,6 @@
          <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />`;
       });
 
-      // ⏳ Xử lý khi submit
       function handleSubmit() {
         const btn = document.getElementById("loginButton");
         const text = document.getElementById("loginText");
@@ -250,7 +248,6 @@
     </script>
 
     <script>
-      // 🌓 Toggle sáng/tối
       const toggleThemeBtn = document.getElementById("themeToggle");
 
       if (localStorage.getItem("theme") === "dark") {

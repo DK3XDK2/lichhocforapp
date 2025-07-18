@@ -460,7 +460,9 @@
       (lichThiHopLe.length > 0) { %>
       <div id="lichThi" class="tab-content active">
         <h2 class="section-title">Lịch Thi</h2>
-        <% lichThiHopLe.forEach(item => { %>
+
+        <% if (lichThiHopLe.length > 0) { %> <% lichThiHopLe.forEach(item => {
+        %>
         <div class="block-lich">
           <div class="lich-header">
             <span><%= item.ngayThi %></span>
@@ -477,8 +479,13 @@
             <% } %>
           </ul>
         </div>
-        <% }) %>
+        <% }) %> <% } else { %>
+        <p style="margin-top: 12px; font-style: italic; color: gray">
+          ⛔ Tạm thời không có lịch thi.
+        </p>
+        <% } %>
       </div>
+
       <% } %> <% const lichHocHopLe = lichHoc.filter(i => i.monHoc && i.thu &&
       i.tiet).sort((a, b) => parseInt(a.thu) - parseInt(b.thu) ||
       parseInt(a.tiet) - parseInt(b.tiet)); %>
