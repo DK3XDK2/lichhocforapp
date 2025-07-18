@@ -594,8 +594,16 @@
           const syncRes = await fetch("/sync", { method: "POST" });
           const syncData = await syncRes.json();
 
-          if (!syncData.success || !syncData.lichHoc || !syncData.lichThi)
+         
+          if (
+            !syncData.success ||
+            !("lichHoc" in syncData) ||
+            !("lichThi" in syncData) ||
+            !Array.isArray(syncData.lichHoc) ||
+            !Array.isArray(syncData.lichThi)
+          ) {
             throw new Error("Sync thất bại");
+          }
 
           const lichHocData = syncData.lichHoc;
           const lichThiData = syncData.lichThi;

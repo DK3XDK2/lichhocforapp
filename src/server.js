@@ -136,7 +136,7 @@ app.post("/api/lich-hoc", isAuthenticated, async (req, res) => {
 });
 
 app.post("/sync", async (req, res) => {
-  const { mssv, password, hoTen } = req.session;
+  const { mssv, password } = req.session;
 
   if (!mssv || !password) {
     return res.status(401).json({ success: false, message: "Chưa đăng nhập" });
@@ -162,10 +162,14 @@ app.post("/sync", async (req, res) => {
 
     delete req.session.password;
 
-    res.json({ success: true, lichHoc, lichThi });
+    // ✅ LUÔN báo thành công nếu không lỗi
+    res.json({ success: true, message: "Đồng bộ xong" });
   } catch (err) {
-    console.error("Lỗi khi đồng bộ:", err);
-    res.status(500).json({ success: false, message: "Đồng bộ thất bại" });
+    console.error("❌ Lỗi khi đồng bộ:", err);
+    res.status(500).json({
+      success: false,
+      message: "Lỗi khi đồng bộ. Không thể truy cập hệ thống trường.",
+    });
   }
 });
 
