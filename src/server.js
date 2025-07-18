@@ -35,6 +35,21 @@ app.use(
   })
 );
 
+app.use((req, res, next) => {
+  if (!req.session.counted) {
+    onlineUsers++;
+    req.session.counted = true;
+
+    req.on("close", () => {
+      if (req.session.counted) {
+        onlineUsers--;
+        req.session.counted = false;
+      }
+    });
+  }
+  next();
+});
+
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "../views"));
 app.use(express.static(path.join(__dirname, "../public")));
@@ -63,11 +78,6 @@ app.post("/login", async (req, res) => {
     req.session.mssv = mssv;
     req.session.password = matkhau;
     req.session.hoTen = hoTen;
-
-    if (!req.session.counted) {
-      onlineUsers++;
-      req.session.counted = true;
-    }
 
     fs.writeFileSync(
       `./data/${mssv}_lichthi.json`,
