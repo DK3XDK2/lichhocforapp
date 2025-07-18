@@ -8,6 +8,7 @@ const getLichThi = require("./getLichThi");
 const getLichHoc = require("./getLichHoc");
 
 const app = express();
+let onlineUsers = 0;
 
 function isAuthenticated(req, res, next) {
   if (req.session.mssv) return next();
@@ -19,7 +20,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json({ limit: "1mb" }));
 
 const isProduction = process.env.NODE_ENV === "production";
-
 app.set("trust proxy", 1);
 
 app.use(
@@ -28,7 +28,8 @@ app.use(
     resave: false,
     saveUninitialized: true,
     cookie: {
-      secure: false,
+      secure: isProduction,
+      sameSite: isProduction ? "none" : "lax",
       maxAge: 1000 * 60 * 60,
     },
   })
@@ -62,6 +63,11 @@ app.post("/login", async (req, res) => {
     req.session.mssv = mssv;
     req.session.password = matkhau;
     req.session.hoTen = hoTen;
+
+    if (!req.session.counted) {
+      onlineUsers++;
+      req.session.counted = true;
+    }
 
     fs.writeFileSync(
       `./data/${mssv}_lichthi.json`,
@@ -110,6 +116,9 @@ app.get("/xem-lich", (req, res) => {
 });
 
 app.get("/logout", (req, res) => {
+  if (req.session.counted) {
+    onlineUsers--;
+  }
   delete req.session.password;
 
   req.session.destroy(() => {
@@ -207,6 +216,10 @@ app.get("/api/lich-thi-no-auth", isAuthenticated, (req, res) => {
       .status(500)
       .json({ success: false, message: "Không đọc được dữ liệu lịch thi" });
   }
+});
+
+app.get("/api/online", (req, res) => {
+  res.json({ onlineUsers });
 });
 
 const PORT = process.env.PORT || 3000;

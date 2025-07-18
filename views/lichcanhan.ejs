@@ -424,6 +424,9 @@
         👤 Xin chào: <strong><%= hoTen || "Không rõ tên" %></strong><br />
         📌 Đăng nhập với MSSV: <strong><%= mssv || "Không rõ MSSV" %></strong>
       </p>
+      <p id="onlineUsers" style="color: gray; font-size: 0.95rem">
+        🔄 Đang tải số người online...
+      </p>
 
       <div style="text-align: right; margin-top: 10px; margin-right: 16px">
         <form action="/logout" method="GET" style="display: inline">
@@ -723,10 +726,20 @@
 
         lichThiDiv.innerHTML = html;
 
-        // Thêm lại hiệu ứng fade-in nếu cần
         lichThiDiv.classList.add("fade-in");
         setTimeout(() => lichThiDiv.classList.remove("fade-in"), 500);
       }
+      fetch("/api/online")
+        .then((res) => res.json())
+        .then((data) => {
+          const p = document.getElementById("onlineUsers");
+          if (p) {
+            p.innerText = `🟢 Đang có ${data.onlineUsers} người đang sử dụng trang web`;
+          }
+        })
+        .catch((err) => {
+          console.error("Lỗi khi lấy số người online:", err);
+        });
     </script>
   </body>
 </html>
