@@ -424,11 +424,13 @@
         👤 Xin chào: <strong><%= hoTen || "Không rõ tên" %></strong><br />
         📌 Đăng nhập với MSSV: <strong><%= mssv || "Không rõ MSSV" %></strong>
       </p>
+
       <div style="text-align: right; margin-top: 10px; margin-right: 16px">
         <form action="/logout" method="GET" style="display: inline">
           <button type="submit" class="logout-btn">🔓 Đăng xuất</button>
         </form>
       </div>
+
       <button
         id="syncBtn"
         onclick="handleSyncClick()"
@@ -453,11 +455,10 @@
         <button class="tab" onclick="showTab('lichHoc')">📚 Lịch Học</button>
       </div>
 
-      <% const lichThiHopLe = lichThi.filter(i => i.tenHocPhan &&
-      i.ngayThi).sort((a, b) => new
-      Date(a.ngayThi.split('/').reverse().join('-')) - new
-      Date(b.ngayThi.split('/').reverse().join('-'))); %> <% if
-      (lichThiHopLe.length > 0) { %>
+      <% const lichThiHopLe = lichThi .filter(i => i.tenHocPhan && i.ngayThi)
+      .sort((a, b) => new Date(a.ngayThi.split('/').reverse().join('-')) - new
+      Date(b.ngayThi.split('/').reverse().join('-'))); %>
+
       <div id="lichThi" class="tab-content active">
         <h2 class="section-title">Lịch Thi</h2>
 
@@ -486,12 +487,13 @@
         <% } %>
       </div>
 
-      <% } %> <% const lichHocHopLe = lichHoc.filter(i => i.monHoc && i.thu &&
-      i.tiet).sort((a, b) => parseInt(a.thu) - parseInt(b.thu) ||
-      parseInt(a.tiet) - parseInt(b.tiet)); %>
+      <% const lichHocHopLe = lichHoc .filter(i => i.monHoc && i.thu && i.tiet)
+      .sort((a, b) => parseInt(a.thu) - parseInt(b.thu) || parseInt(a.tiet) -
+      parseInt(b.tiet)); %>
 
       <div id="lichHoc" class="tab-content">
         <h2 class="section-title">Lịch Học</h2>
+
         <% if (lichHocHopLe.length > 0) { %> <% lichHocHopLe.forEach(item => {
         %>
         <div class="block-lich">
@@ -513,6 +515,7 @@
         </p>
         <% } %>
       </div>
+
       <div id="loadingSync">
         <div class="spinner"></div>
         <p>⏳ Đang đồng bộ dữ liệu...</p>
