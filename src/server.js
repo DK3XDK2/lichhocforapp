@@ -28,7 +28,7 @@ app.use(
     resave: false,
     saveUninitialized: true,
     cookie: {
-      secure: isProduction,
+      secure: false,
       maxAge: 1000 * 60 * 60,
     },
   })
@@ -110,6 +110,8 @@ app.get("/xem-lich", (req, res) => {
 });
 
 app.get("/logout", (req, res) => {
+  delete req.session.password;
+
   req.session.destroy(() => {
     res.redirect("/");
   });
@@ -160,10 +162,12 @@ app.post("/sync", async (req, res) => {
       JSON.stringify(lichHoc, null, 2)
     );
 
-    delete req.session.password;
-
-    // ✅ LUÔN báo thành công nếu không lỗi
-    res.json({ success: true, message: "Đồng bộ xong" });
+    res.json({
+      success: true,
+      message: "Đồng bộ xong",
+      lichHoc,
+      lichThi,
+    });
   } catch (err) {
     console.error("❌ Lỗi khi đồng bộ:", err);
     res.status(500).json({

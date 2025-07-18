@@ -359,13 +359,13 @@
       }
 
       .lich-info li {
-        font-size: 1.1rem; /* hoặc 1.15rem nếu muốn to hơn nữa */
-        line-height: 1.7; /* tạo khoảng cách dễ nhìn */
-        margin-bottom: 6px; /* tạo khoảng cách giữa các dòng */
+        font-size: 1.1rem;
+        line-height: 1.7;
+        margin-bottom: 6px;
       }
 
       .block-title {
-        font-size: 1.25rem; /* to hơn chút */
+        font-size: 1.25rem;
         font-weight: 700;
         margin-bottom: 10px;
       }
@@ -584,17 +584,18 @@
 
         lichHocDiv.classList.remove("fade-in", "fade-out");
         lichThiDiv.classList.remove("fade-in", "fade-out");
-
         lichHocDiv.classList.add("fade-out");
         lichThiDiv.classList.add("fade-out");
-
         loading.style.display = "block";
 
         try {
-          const syncRes = await fetch("/sync", { method: "POST" });
+          const syncRes = await fetch("/sync", {
+            method: "POST",
+            credentials: "include",
+          });
+
           const syncData = await syncRes.json();
 
-         
           if (
             !syncData.success ||
             !("lichHoc" in syncData) ||
@@ -626,7 +627,11 @@
             status.innerText = "✅ Đồng bộ thành công!";
             status.style.display = "block";
 
-            setTimeout(() => {
+            if (window.syncStatusTimeout) {
+              clearTimeout(window.syncStatusTimeout);
+            }
+
+            window.syncStatusTimeout = setTimeout(() => {
               status.innerText = "";
               status.style.display = "none";
             }, 5000);
