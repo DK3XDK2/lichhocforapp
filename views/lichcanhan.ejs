@@ -23,6 +23,16 @@
         opacity: 0.95;
       }
 
+      [data-theme="dark"] .online-status {
+        background-color: #1f2937;
+        color: #d1fae5;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      }
+
+      [data-theme="dark"] .online-status::before {
+        background: radial-gradient(circle, #6ee7b7 0%, #10b981 100%);
+      }
+
       .online-status::before {
         content: "";
         display: inline-block;
@@ -764,14 +774,10 @@
             return res.json();
           })
           .then((data) => {
-            const container = document.getElementById("onlineUsers");
             const count = Number(data.onlineUsers) || 0;
-
-            if (container) {
-              const span = container.querySelector("span");
-              if (span) {
-                span.textContent = count.toLocaleString("vi-VN");
-              }
+            const span = document.getElementById("onlineCount");
+            if (span) {
+              span.textContent = count.toLocaleString("vi-VN");
             }
           })
           .catch((err) => {
@@ -780,10 +786,9 @@
               window._onlineErrLogged = true;
             }
 
-            const container = document.getElementById("onlineUsers");
-            if (container) {
-              const span = container.querySelector("span");
-              if (span) span.textContent = "0";
+            const span = document.getElementById("onlineCount");
+            if (span) {
+              span.textContent = "0";
             }
           });
       }
