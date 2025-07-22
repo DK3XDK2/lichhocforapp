@@ -30,15 +30,21 @@ async function getLichThi(mssv, matkhau) {
     });
     if (loginError) throw new Error("Sai mã sinh viên hoặc mật khẩu!");
 
-    const hoTen = await page.evaluate(() => {
+    const fullInfo = await page.evaluate(() => {
       const el = document.querySelector("#PageHeader1_lblUserFullName");
-      if (!el) return "__NOT_FOUND__";
-      const raw = el.innerText;
-      const match = raw.match(/^(.+?)\s*\(/);
-      return match ? match[1].trim() : raw.trim();
+      return el ? el.innerText.trim() : "__NOT_FOUND__";
     });
 
-    console.log("👤 Họ tên lấy được:", hoTen);
+    // fullInfo = "Vũ Văn Thái(DTC245260019)"
+    let name = "",
+      mssvFromWeb = "";
+    const match = fullInfo.match(/^(.+?)\s*\((.+)\)$/);
+    if (match) {
+      name = match[1].trim(); // "Vũ Văn Thái"
+      mssvFromWeb = match[2].trim(); // "DTC245260019"
+    }
+
+    console.log("👤 Họ tên lấy được sau login:", name);
 
     await page.goto(
       "https://dangkytinchi.ictu.edu.vn/kcntt/StudentViewExamList.aspx",
@@ -77,7 +83,7 @@ async function getLichThi(mssv, matkhau) {
     );
 
     console.log("✅ Đã lấy lịch thi thành công.");
-    return { hoTen, data };
+    return { name, mssv: mssvFromWeb, data };
   } catch (err) {
     console.error("❌ Lỗi khi lấy lịch thi:", err.message);
     throw err;

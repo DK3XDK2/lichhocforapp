@@ -17,6 +17,7 @@ function isAuthenticated(req, res, next) {
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json({ limit: "1mb" }));
+app.use(express.static(path.join(__dirname, "../public")));
 
 const isProduction = process.env.NODE_ENV === "production";
 app.set("trust proxy", 1);
@@ -37,6 +38,9 @@ app.use(
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "../views"));
 app.use(express.static(path.join(__dirname, "../public")));
+app.get("/lichcanhan", isAuthenticated, (req, res) => {
+  res.sendFile(path.join(__dirname, "../public/lichcanhan.html"));
+});
 
 app.get("/", (req, res) => {
   res.render("index", { error: null });
@@ -52,23 +56,21 @@ app.post("/login", async (req, res) => {
     ]);
 
     const lichThi = Array.isArray(lichThiRaw?.data) ? lichThiRaw.data : [];
-    const hoTenFromThi = lichThiRaw?.hoTen || null;
-
     const lichHoc = Array.isArray(lichHocRaw?.data) ? lichHocRaw.data : [];
-    const hoTenFromHoc = lichHocRaw?.hoTen || null;
 
-    const hoTen = hoTenFromThi || hoTenFromHoc || "Không rõ tên";
+    const name = lichHocRaw?.name || lichThiRaw?.name || "Không rõ tên";
+    const mssvFromWeb = lichHocRaw?.mssv || lichThiRaw?.mssv || mssv;
 
-    req.session.mssv = mssv;
+    req.session.name = name;
+    req.session.mssv = mssvFromWeb;
     req.session.password = matkhau;
-    req.session.hoTen = hoTen;
 
     fs.writeFileSync(
-      `./data/${mssv}_lichthi.json`,
+      `./data/${mssvFromWeb}_lichthi.json`,
       JSON.stringify(lichThi, null, 2)
     );
     fs.writeFileSync(
-      `./data/${mssv}_lichhoc.json`,
+      `./data/${mssvFromWeb}_lichhoc.json`,
       JSON.stringify(lichHoc, null, 2)
     );
 
@@ -83,30 +85,20 @@ app.post("/login", async (req, res) => {
 
 app.get("/xem-lich", (req, res) => {
   const mssv = req.session.mssv;
-  const hoTen = req.session.hoTen || "Không rõ tên";
 
   if (!mssv) return res.redirect("/");
 
   res.setHeader("Cache-Control", "no-store");
 
-  try {
-    const lichThi = JSON.parse(
-      fs.readFileSync(`./data/${mssv}_lichthi.json`, "utf8")
-    );
-    const lichHoc = JSON.parse(
-      fs.readFileSync(`./data/${mssv}_lichhoc.json`, "utf8")
-    );
+  const lichThiPath = `./data/${mssv}_lichthi.json`;
+  const lichHocPath = `./data/${mssv}_lichhoc.json`;
 
-    res.render("lichcanhan", {
-      lichThi: Array.isArray(lichThi) ? lichThi : [],
-      lichHoc: Array.isArray(lichHoc) ? lichHoc : [],
-      mssv,
-      hoTen,
-    });
-  } catch (err) {
-    console.error("❌ Lỗi đọc file lịch:", err.message);
-    res.send("Không có dữ liệu lịch để hiển thị.");
+  if (!fs.existsSync(lichThiPath) || !fs.existsSync(lichHocPath)) {
+    return res.send("Không có dữ liệu lịch để hiển thị.");
   }
+
+  // ✅ Dữ liệu đã sẵn sàng → cho phép frontend load lichcanhan.html
+  res.redirect("/lichcanhan");
 });
 
 app.get("/logout", (req, res) => {
@@ -114,6 +106,18 @@ app.get("/logout", (req, res) => {
   req.session.destroy(() => {
     res.redirect("/");
   });
+});
+
+app.get("/api/user-info", (req, res) => {
+  const { name, mssv } = req.session || {};
+  if (name && mssv) {
+    res.json({ success: true, data: { name, mssv } });
+  } else {
+    res.json({
+      success: false,
+      message: "Chưa đăng nhập hoặc thiếu thông tin",
+    });
+  }
 });
 
 app.post("/api/lich-thi", isAuthenticated, async (req, res) => {
