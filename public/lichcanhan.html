@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link href="/style.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
-    <script type="module" src="/main.js"></script>
+    <script type="module" src="/main.js" defer></script>
   </head>
   <body class="bg-gray-100 text-gray-800 min-h-screen">
     <!-- 📅 Toggle lịch tháng -->
@@ -42,6 +42,12 @@
       <div id="student-info" class="bg-gray-50 p-4 rounded-lg border">
         <p><strong>👤 Họ tên:</strong> <span id="student-name">...</span></p>
         <p><strong>🆔 MSSV:</strong> <span id="student-mssv">...</span></p>
+        <button
+          id="sync-btn"
+          class="bg-green-500 text-white px-4 py-2 rounded shadow hover:bg-green-600 transition ml-2"
+        >
+          🔄 Đồng Bộ Lịch Mới Nhất
+        </button>
       </div>
 
       <!-- 🔀 Tabs -->
@@ -65,5 +71,12 @@
         </div>
       </div>
     </main>
+    <!-- overlay -->
+    <div id="sync-overlay" class="sync-overlay">
+      <div class="sync-loader">
+        <div class="sync-ring"></div>
+        <p class="sync-text">Đang đồng bộ dữ liệu,vui lòng không thoát...</p>
+      </div>
+    </div>
   </body>
 </html>

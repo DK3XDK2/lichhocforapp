@@ -1,6 +1,6 @@
 import { getDateOfWeekday, START_DATE } from "./date.js";
 
-// Parse dd/mm/yyyy → Date object
+
 function parseDateVN(str) {
   const [dd, mm, yyyy] = str.split("/");
   return new Date(`${yyyy}-${mm}-${dd}`);
@@ -13,7 +13,7 @@ function formatDate(dateObj) {
   return `${dd}/${mm}/${yyyy}`;
 }
 
-// Tính số tuần giữa 2 ngày
+
 function diffInWeeks(date1, date2) {
   const msPerWeek = 7 * 24 * 60 * 60 * 1000;
   const d1 = new Date(date1);
@@ -149,3 +149,5 @@ export function transformTimetableData(rawData) {
 
   return weeks;
 }
+
+

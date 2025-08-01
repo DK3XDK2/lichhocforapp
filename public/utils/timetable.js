@@ -1,11 +1,11 @@
-// public/utils/timetable.js
+
 
 import { createClassCard, createEmptyCard } from "./card.js";
 import { getWeekdayLabel, formatVNDate } from "./date.js";
 
 /**
- * Render toàn bộ lịch học theo tuần/ngày ra HTML
- * @param {Object} data - dữ liệu đã transform
+ 
+ * @param {Object} data 
  */
 export function renderSchedule(data) {
   const container = document.getElementById("schedule-container");

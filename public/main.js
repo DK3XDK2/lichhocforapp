@@ -81,7 +81,6 @@ function renderGroupedDayCards(dayData, targetId = "schedule-container-hoc") {
       "day-card flex gap-3 items-start p-4 rounded-xl shadow bg-white border";
     dayBox.setAttribute("data-day", day);
 
-    // Left: ngày
     const dayLeft = document.createElement("div");
     dayLeft.className =
       "w-12 text-center flex flex-col justify-center items-center";
@@ -91,7 +90,7 @@ function renderGroupedDayCards(dayData, targetId = "schedule-container-hoc") {
     `;
     dayBox.appendChild(dayLeft);
 
-    // Right: nội dung
+ 
     const contentBox = document.createElement("div");
     contentBox.className = "flex-1 space-y-1";
 
@@ -164,7 +163,7 @@ function renderDayCard(dateObj, lessons = []) {
   dayCard.className = "day-card";
 
   const dayNumber = dateObj.getDate();
-  const weekdayName = getWeekdayName(dateObj.getDay()); // Chủ Nhật, T2, T3...
+  const weekdayName = getWeekdayName(dateObj.getDay()); 
 
   const headerHTML = `
     <div class="day-header">
@@ -247,7 +246,7 @@ function renderCalendarMonthView(dayData, type = "hoc") {
   const calendarContainer = document.getElementById("calendar-month-view");
   if (!calendarContainer) return;
 
-  // 🧹 Xóa nội dung cũ nhưng giữ class
+
   while (calendarContainer.firstChild) {
     calendarContainer.removeChild(calendarContainer.firstChild);
   }
@@ -326,7 +325,7 @@ async function renderStudentInfo() {
 async function renderLichThi() {
   const container = document.getElementById("schedule-container-thi");
 
-  // Hiển thị loading
+
   container.innerHTML = `
     <div class="text-center my-4">
       <div class="animate-spin rounded-full h-8 w-8 border-t-2 border-blue-500 border-solid mx-auto"></div>
@@ -348,9 +347,9 @@ async function renderLichThi() {
     const res = await fetch("/api/lich-thi-no-auth");
     const result = await res.json();
 
-    container.innerHTML = ""; // 👈 Reset nội dung
+    container.innerHTML = ""; 
 
-    const daysWrapper = document.createElement("div"); // ✅ wrapper
+    const daysWrapper = document.createElement("div"); 
     daysWrapper.className = "days-wrapper space-y-4";
 
     if (result.success && Array.isArray(result.data)) {
@@ -417,12 +416,12 @@ async function renderLichThi() {
       }
 
       dayBox.appendChild(contentBox);
-      daysWrapper.appendChild(dayBox); // ✅ Thêm vào wrapper
+      daysWrapper.appendChild(dayBox); 
     }
 
-    container.appendChild(daysWrapper); // ✅ Cuối cùng gắn vào container
+    container.appendChild(daysWrapper); 
 
-    // Đồng bộ dữ liệu lịch tháng
+  
     for (const dateStr of nextDates) {
       cachedCalendarDataThi[dateStr] = groupedByDay[dateStr] || [];
     }
@@ -451,14 +450,14 @@ async function renderFullTimetable() {
       const groupedByDay = groupByDay(transformed);
 
       const todayStr = format(new Date(), "yyyy-MM-dd");
-      const upcomingDates = generateNextDays(todayStr, 30); // tạo sẵn 120 ngày
+      const upcomingDates = generateNextDays(todayStr, 30); 
 
       const paddedData = {};
       for (const dateStr of upcomingDates) {
         paddedData[dateStr] = groupedByDay[dateStr] || [];
       }
 
-      // ⛔ KHÔNG gọi renderCalendarMonthView ở đây nữa
+     
       cachedCalendarDataHoc = paddedData;
       renderGroupedDayCards(paddedData, "schedule-container-hoc");
       renderUpcomingLessonNotice(paddedData);
@@ -541,14 +540,14 @@ document.addEventListener("click", function (e) {
     const rect = card.getBoundingClientRect();
     originalRect = rect;
 
-    // Tạo placeholder giữ chỗ đúng kích thước
+  
     placeholder = document.createElement("div");
     placeholder.style.height = `${rect.height}px`;
     placeholder.style.width = `${rect.width}px`;
     placeholder.style.display = "block";
     card.parentNode.insertBefore(placeholder, card);
 
-    // Clone card
+
     const clone = card.cloneNode(true);
     clone.classList.add("focused-clone");
     clone.style.position = "fixed";
@@ -562,7 +561,7 @@ document.addEventListener("click", function (e) {
 
     addOverlay();
 
-    // Ẩn card gốc
+
     card.style.visibility = "hidden";
     setTimeout(() => {
       if (clickedCard) clickedCard.style.display = "none";
@@ -655,7 +654,7 @@ document.querySelectorAll(".tab-btn").forEach((btn) => {
   btn.addEventListener("click", (e) => {
     const selectedTab = btn.dataset.tab;
 
-    // ✅ Cập nhật trạng thái nút tab
+  
     document
       .querySelectorAll(".tab-btn")
       .forEach((b) => b.classList.remove("active"));
@@ -668,16 +667,16 @@ document.querySelectorAll(".tab-btn").forEach((btn) => {
     btn.style.setProperty("--ripple-x", `${x}px`);
     btn.style.setProperty("--ripple-y", `${y}px`);
     btn.classList.remove("ripple-animate");
-    void btn.offsetWidth; // Trigger reflow để reset animation
+    void btn.offsetWidth; 
     btn.classList.add("ripple-animate");
     setTimeout(() => btn.classList.remove("ripple-animate"), 500);
 
-    // 🎬 Hiển thị tab tương ứng với hiệu ứng anime
+ 
     document.querySelectorAll(".tab-pane").forEach((pane) => {
       if (pane.id === `${selectedTab}-tab`) {
         pane.classList.add("active");
 
-        // ⚡ Anime.js effect
+      
         pane.style.opacity = 0;
         anime({
           targets: pane,
@@ -691,7 +690,7 @@ document.querySelectorAll(".tab-btn").forEach((btn) => {
       }
     });
 
-    // 📅 Lịch tháng
+
     const isCalendarOpen = document
       .getElementById("calendar-month-view")
       .classList.contains("open");
@@ -728,7 +727,7 @@ calendarToggle?.addEventListener("click", () => {
     calendarToggle.innerText = "❌ Đóng lịch tháng";
     calendarView.classList.add("open");
 
-    // 🛡️ Chỉ render nếu có dữ liệu
+ 
     if (data && Object.keys(data).length > 0) {
       renderCalendarMonthView(data, tab === "lich-thi" ? "thi" : "hoc");
     } else {
@@ -741,10 +740,10 @@ calendarToggle?.addEventListener("click", () => {
   }
 });
 
-// 🌙 Toggle Dark Mode
+
 const toggleBtn = document.getElementById("darkmode-toggle");
 
-// Khởi tạo theo localStorage
+
 if (localStorage.getItem("theme") === "dark") {
   document.body.classList.add("dark");
   toggleBtn.textContent = "☀️ Light Mode";
@@ -803,3 +802,42 @@ function renderUpcomingLessonNotice(dataByDay) {
     </div>
   `;
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+  const syncBtn = document.getElementById("sync-btn");
+  const overlay = document.getElementById("sync-overlay");
+
+  if (!syncBtn || !overlay) {
+    console.error("Không tìm thấy sync-btn hoặc sync-overlay trong DOM");
+    return;
+  }
+
+  syncBtn.addEventListener("click", async () => {
+    overlay.style.display = "flex";
+    overlay.classList.add("show");
+    document.body.style.overflow = "hidden";
+    syncBtn.disabled = true;
+    syncBtn.classList.add("disabled");
+
+    try {
+      const res = await fetch("/sync", { method: "POST" });
+      if (!res.ok) throw new Error("Đồng bộ thất bại");
+
+      const data = await res.json();
+      localStorage.removeItem("lichHocCache");
+      localStorage.removeItem("lichThiCache");
+
+      await renderFullTimetable();
+      await renderLichThi();
+    } catch (err) {
+      console.warn("[SYNC] Lỗi:", err);
+      alert("Đồng bộ thất bại: " + err.message);
+    } finally {
+      overlay.classList.remove("show");
+      overlay.style.display = "none";
+      document.body.style.overflow = "";
+      syncBtn.disabled = false;
+      syncBtn.classList.remove("disabled");
+    }
+  });
+});
