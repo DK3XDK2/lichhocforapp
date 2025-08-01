@@ -900,7 +900,7 @@ body.dark #calendar-month-view button.border-blue-500 {
   padding: 10px 20px;
   font-size: 15px;
   border: none;
-  border-radius: 8px;
+  border-radius: 9999px;
   cursor: pointer;
   font-weight: 600;
   box-shadow: 0 4px 10px rgba(0, 114, 255, 0.3);
@@ -923,4 +923,27 @@ body.dark #calendar-month-view button.border-blue-500 {
   cursor: not-allowed;
   background: #999;
   box-shadow: none;
+}
+
+.logout-btn-modern {
+  background: linear-gradient(to right, #ef4444, #f97316); /* đỏ sang cam */
+  color: white;
+  padding: 10px 20px;
+  border-radius: 9999px;
+  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.4); /* orange glow */
+  font-weight: 600;
+  font-size: 14px;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.logout-btn-modern:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(249, 115, 22, 0.6);
+}
+
+.logout-btn-modern:active {
+  transform: scale(0.98);
+  box-shadow: 0 3px 8px rgba(249, 115, 22, 0.3);
 }

@@ -7,6 +7,31 @@
     <link href="/style.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
     <script type="module" src="/main.js" defer></script>
+    <style>
+      @keyframes heartBeat {
+        0% {
+          transform: scale(1);
+        }
+        25% {
+          transform: scale(1.2);
+        }
+        50% {
+          transform: scale(1);
+        }
+        75% {
+          transform: scale(1.2);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      .heart-icon {
+        display: inline-block;
+        animation: heartBeat 1.2s ease-in-out infinite;
+        margin-right: 8px;
+      }
+    </style>
   </head>
   <body class="bg-gray-100 text-gray-800 min-h-screen">
     <!-- 📅 Toggle lịch tháng -->
@@ -48,6 +73,7 @@
         >
           🔄 Đồng Bộ Lịch Mới Nhất
         </button>
+        <button id="logout-btn" class="logout-btn-modern">🚪 Đăng Xuất</button>
       </div>
 
       <!-- 🔀 Tabs -->
@@ -79,4 +105,146 @@
       </div>
     </div>
   </body>
+  <script>
+    document.getElementById("logout-btn")?.addEventListener("click", () => {
+      localStorage.removeItem("autoLogin");
+      localStorage.removeItem("mssv");
+      localStorage.removeItem("matkhau");
+      window.location.href = "/logout";
+    });
+  </script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const btn = document.getElementById("logout-btn");
+      if (btn) {
+        anime({
+          targets: btn,
+          opacity: [0, 1],
+          scale: [0.8, 1],
+          duration: 700,
+          easing: "easeOutElastic(1, .6)",
+          delay: 500,
+        });
+      }
+    });
+  </script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const syncBtn = document.getElementById("sync-btn");
+      if (syncBtn) {
+        anime({
+          targets: syncBtn,
+          opacity: [0, 1],
+          scale: [0.8, 1],
+          duration: 700,
+          easing: "easeOutElastic(1, .6)",
+          delay: 300,
+        });
+      }
+    });
+  </script>
+  <style>
+    @keyframes heartBeat {
+      0% {
+        transform: scale(1);
+      }
+      25% {
+        transform: scale(1.2);
+      }
+      50% {
+        transform: scale(1);
+      }
+      75% {
+        transform: scale(1.2);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    .heart-icon {
+      display: inline-block;
+      animation: heartBeat 1.2s ease-in-out infinite;
+      margin-right: 8px;
+    }
+  </style>
+
+  <script>
+    function showPrincessGreeting() {
+      if (localStorage.getItem("princessGreeted") === "yes") return;
+
+      const mssvEl = document.getElementById("student-mssv");
+      if (!mssvEl) return;
+
+      const mssv = mssvEl.textContent?.trim().toLowerCase();
+      if (mssv !== "dtc245180076") return;
+
+      // ✅ Danh sách lời chào random
+      const messages = [
+        "Công chúa của anh đã đến rồi! Chúc em một ngày thật xinh 💖",
+        "Hôm nay có lớp đó nha, công chúa đừng trốn học nhe 😘",
+        "Trang lịch này chỉ dành riêng cho em, my princess 👑",
+        "Công chúa có biết là anh chờ em mở trang này mỗi ngày không? 🥺",
+        "Hôm nay trời đẹp, còn em thì tuyệt vời hơn thế 💌",
+        "Công chúa login = ngày đẹp trời bắt đầu ✨",
+        "Chúc em học hành vui vẻ nhé, nữ chính của lịch học này 💕",
+        "Có em trong danh sách thì lớp nào cũng đáng đi 💘",
+        "Trang lịch vừa sáng lên là anh biết em đang ở đây rồi 😍",
+      ];
+
+      const chosen = messages[Math.floor(Math.random() * messages.length)];
+
+      localStorage.setItem("princessGreeted", "yes");
+
+      const box = document.createElement("div");
+      box.innerHTML = `<span class="heart-icon">❤️‍🔥</span> ${chosen}`;
+
+      box.style.position = "fixed";
+      box.style.top = "20px";
+      box.style.left = "50%";
+      box.style.transform = "translateX(-50%)";
+      box.style.background = "linear-gradient(to right, #ec4899, #fbbf24)";
+      box.style.color = "#fff";
+      box.style.padding = "14px 24px";
+      box.style.borderRadius = "999px";
+      box.style.boxShadow = "0 8px 24px rgba(0,0,0,0.25)";
+      box.style.fontWeight = "600";
+      box.style.fontSize = "15px";
+      box.style.zIndex = "99999";
+      box.style.opacity = 0;
+      box.style.maxWidth = "90%";
+      box.style.textAlign = "center";
+
+      document.body.appendChild(box);
+
+      anime({
+        targets: box,
+        opacity: [0, 1],
+        translateY: [-20, 0],
+        duration: 1000,
+        easing: "easeOutExpo",
+      });
+
+      setTimeout(() => {
+        anime({
+          targets: box,
+          opacity: [1, 0],
+          translateY: [0, -20],
+          duration: 800,
+          easing: "easeInExpo",
+          complete: () => box.remove(),
+        });
+      }, 6000);
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      setTimeout(() => {
+        showPrincessGreeting();
+      }, 600);
+    });
+
+    document.getElementById("logout-btn")?.addEventListener("click", () => {
+      localStorage.removeItem("princessGreeted");
+    });
+  </script>
 </html>
