@@ -69,6 +69,8 @@ app.post("/login", async (req, res) => {
     req.session.name = name;
     req.session.mssv = mssvFromWeb;
     req.session.password = matkhau;
+    req.session.isPrincess =
+      mssvFromWeb.trim().toLowerCase() === "dtc245310153";
 
     fs.writeFileSync(
       `./data/${mssvFromWeb}_lichthi.json`,
@@ -121,7 +123,11 @@ app.get("/logout", (req, res) => {
 app.get("/api/user-info", (req, res) => {
   const { name, mssv } = req.session || {};
   if (name && mssv) {
-    res.json({ success: true, data: { name, mssv } });
+    const { name, mssv, isPrincess } = req.session || {};
+    res.json({
+      success: true,
+      data: { name, mssv, isPrincess: !!isPrincess },
+    });
   } else {
     res.json({
       success: false,
