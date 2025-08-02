@@ -61,6 +61,19 @@ function getSessionType(startTime) {
   return "tối";
 }
 
+function renderRoomWithWeeks(currentRoom, fullRoomMap, currentWeek) {
+  if (!fullRoomMap || !currentRoom) return currentRoom;
+
+  const weekList = Object.entries(fullRoomMap)
+    .filter(([w, r]) => r === currentRoom)
+    .map(([w]) => parseInt(w))
+    .sort((a, b) => a - b);
+
+  if (weekList.length <= 1) return currentRoom;
+
+  return `${currentRoom} (Tuần ${weekList.join(",")})`;
+}
+
 function renderGroupedDayCards(dayData, targetId = "schedule-container-hoc") {
   const container = document.getElementById(targetId);
   container.innerHTML = "";
@@ -90,7 +103,6 @@ function renderGroupedDayCards(dayData, targetId = "schedule-container-hoc") {
     `;
     dayBox.appendChild(dayLeft);
 
- 
     const contentBox = document.createElement("div");
     contentBox.className = "flex-1 space-y-1";
 
@@ -135,7 +147,11 @@ function renderGroupedDayCards(dayData, targetId = "schedule-container-hoc") {
             <div class="subject">${subject}</div>
             <div class="info">• Giảng viên: ${teacher}</div>
             <div class="info">• Tiết: ${period}</div>
-            <div class="info">• Phòng: ${room}</div>
+            <div class="info">• Phòng: ${renderRoomWithWeeks(
+              room,
+              lesson.fullRoomMap,
+              lesson.currentWeek
+            )}</div>
           `;
           contentBox.appendChild(card);
           const allCards = contentBox.querySelectorAll(".schedule-card");
@@ -163,7 +179,7 @@ function renderDayCard(dateObj, lessons = []) {
   dayCard.className = "day-card";
 
   const dayNumber = dateObj.getDate();
-  const weekdayName = getWeekdayName(dateObj.getDay()); 
+  const weekdayName = getWeekdayName(dateObj.getDay());
 
   const headerHTML = `
     <div class="day-header">
@@ -246,7 +262,6 @@ function renderCalendarMonthView(dayData, type = "hoc") {
   const calendarContainer = document.getElementById("calendar-month-view");
   if (!calendarContainer) return;
 
-
   while (calendarContainer.firstChild) {
     calendarContainer.removeChild(calendarContainer.firstChild);
   }
@@ -325,7 +340,6 @@ async function renderStudentInfo() {
 async function renderLichThi() {
   const container = document.getElementById("schedule-container-thi");
 
-
   container.innerHTML = `
     <div class="text-center my-4">
       <div class="animate-spin rounded-full h-8 w-8 border-t-2 border-blue-500 border-solid mx-auto"></div>
@@ -347,9 +361,9 @@ async function renderLichThi() {
     const res = await fetch("/api/lich-thi-no-auth");
     const result = await res.json();
 
-    container.innerHTML = ""; 
+    container.innerHTML = "";
 
-    const daysWrapper = document.createElement("div"); 
+    const daysWrapper = document.createElement("div");
     daysWrapper.className = "days-wrapper space-y-4";
 
     if (result.success && Array.isArray(result.data)) {
@@ -416,12 +430,11 @@ async function renderLichThi() {
       }
 
       dayBox.appendChild(contentBox);
-      daysWrapper.appendChild(dayBox); 
+      daysWrapper.appendChild(dayBox);
     }
 
-    container.appendChild(daysWrapper); 
+    container.appendChild(daysWrapper);
 
-  
     for (const dateStr of nextDates) {
       cachedCalendarDataThi[dateStr] = groupedByDay[dateStr] || [];
     }
@@ -450,14 +463,13 @@ async function renderFullTimetable() {
       const groupedByDay = groupByDay(transformed);
 
       const todayStr = format(new Date(), "yyyy-MM-dd");
-      const upcomingDates = generateNextDays(todayStr, 30); 
+      const upcomingDates = generateNextDays(todayStr, 90);
 
       const paddedData = {};
       for (const dateStr of upcomingDates) {
         paddedData[dateStr] = groupedByDay[dateStr] || [];
       }
 
-     
       cachedCalendarDataHoc = paddedData;
       renderGroupedDayCards(paddedData, "schedule-container-hoc");
       renderUpcomingLessonNotice(paddedData);
@@ -540,13 +552,11 @@ document.addEventListener("click", function (e) {
     const rect = card.getBoundingClientRect();
     originalRect = rect;
 
-  
     placeholder = document.createElement("div");
     placeholder.style.height = `${rect.height}px`;
     placeholder.style.width = `${rect.width}px`;
     placeholder.style.display = "block";
     card.parentNode.insertBefore(placeholder, card);
-
 
     const clone = card.cloneNode(true);
     clone.classList.add("focused-clone");
@@ -560,7 +570,6 @@ document.addEventListener("click", function (e) {
     document.body.appendChild(clone);
 
     addOverlay();
-
 
     card.style.visibility = "hidden";
     setTimeout(() => {
@@ -654,7 +663,6 @@ document.querySelectorAll(".tab-btn").forEach((btn) => {
   btn.addEventListener("click", (e) => {
     const selectedTab = btn.dataset.tab;
 
-  
     document
       .querySelectorAll(".tab-btn")
       .forEach((b) => b.classList.remove("active"));
@@ -667,16 +675,14 @@ document.querySelectorAll(".tab-btn").forEach((btn) => {
     btn.style.setProperty("--ripple-x", `${x}px`);
     btn.style.setProperty("--ripple-y", `${y}px`);
     btn.classList.remove("ripple-animate");
-    void btn.offsetWidth; 
+    void btn.offsetWidth;
     btn.classList.add("ripple-animate");
     setTimeout(() => btn.classList.remove("ripple-animate"), 500);
 
- 
     document.querySelectorAll(".tab-pane").forEach((pane) => {
       if (pane.id === `${selectedTab}-tab`) {
         pane.classList.add("active");
 
-      
         pane.style.opacity = 0;
         anime({
           targets: pane,
@@ -689,7 +695,6 @@ document.querySelectorAll(".tab-btn").forEach((btn) => {
         pane.classList.remove("active");
       }
     });
-
 
     const isCalendarOpen = document
       .getElementById("calendar-month-view")
@@ -727,7 +732,6 @@ calendarToggle?.addEventListener("click", () => {
     calendarToggle.innerText = "❌ Đóng lịch tháng";
     calendarView.classList.add("open");
 
- 
     if (data && Object.keys(data).length > 0) {
       renderCalendarMonthView(data, tab === "lich-thi" ? "thi" : "hoc");
     } else {
@@ -740,9 +744,7 @@ calendarToggle?.addEventListener("click", () => {
   }
 });
 
-
 const toggleBtn = document.getElementById("darkmode-toggle");
-
 
 if (localStorage.getItem("theme") === "dark") {
   document.body.classList.add("dark");
@@ -787,20 +789,24 @@ function renderUpcomingLessonNotice(dataByDay) {
   const next = lessons[0];
 
   container.innerHTML = `
-    <div class="upcoming-box">
-      <i>⏰</i>
-      <span>
-        <strong>Buổi học gần nhất</strong>: 
-        <span style="font-weight: 600">${next.subject}</span> 
-        (Tiết ${next.period}) lúc 
-        <strong>${next.lessonTime.toLocaleTimeString([], {
-          hour: "2-digit",
-          minute: "2-digit",
-        })}</strong> 
-        tại <strong>${next.room}</strong> — ${formatVNDate(next.day)}
-      </span>
-    </div>
-  `;
+  <div class="upcoming-box">
+    <i>⏰</i>
+    <span>
+      <strong>Buổi học gần nhất</strong>: 
+      <span style="font-weight: 600">${next.subject}</span> 
+      (Tiết ${next.period}) lúc 
+      <strong>${next.lessonTime.toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      })}</strong> 
+      tại <strong>${renderRoomWithWeeks(
+        next.room,
+        next.fullRoomMap,
+        next.currentWeek
+      )}</strong> — ${formatVNDate(next.day)}
+    </span>
+  </div>
+`;
 }
 
 document.addEventListener("DOMContentLoaded", () => {
