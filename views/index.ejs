@@ -3,42 +3,45 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Đăng nhập - WebView</title>
+    <title>Đăng nhập</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="theme-color" content="#f0f4f8" />
   </head>
-  <body class="h-[100dvh] flex items-center justify-center bg-[#f0f4f8] font-sans">
-    <div class="w-full max-w-sm bg-white p-6 rounded-xl shadow-md">
-      <h2 class="text-xl font-bold text-center text-gray-800 mb-4">Lịch Học</h2>
-      <p class="text-sm text-center text-gray-500 mb-6">
+  <body class="h-[100dvh] bg-[#f0f4f8] flex flex-col justify-between px-6 py-10 font-sans">
+    <div>
+      <h1 class="text-3xl font-bold text-center text-gray-900 mb-3">Lịch Học</h1>
+      <p class="text-center text-gray-500 mb-8 text-sm">
         Đăng nhập bằng tài khoản <strong>Đăng ký tín chỉ</strong>
       </p>
 
       <% if (typeof error !== 'undefined') { %>
-      <p class="text-red-500 text-sm text-center mb-4"><%= error %></p>
+        <p class="text-red-500 text-sm text-center mb-4"><%= error %></p>
       <% } %>
 
-      <form action="/login" method="POST" class="space-y-4">
+      <form action="/login" method="POST" class="space-y-5">
         <input
           type="text"
           name="mssv"
           placeholder="Mã sinh viên"
-          class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+          class="w-full px-4 py-3 border border-gray-300 rounded-xl text-base focus:outline-none focus:ring-2 focus:ring-blue-400"
           required
         />
         <input
           type="password"
           name="matkhau"
           placeholder="Mật khẩu"
-          class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+          class="w-full px-4 py-3 border border-gray-300 rounded-xl text-base focus:outline-none focus:ring-2 focus:ring-blue-400"
           required
         />
         <button
           type="submit"
-          class="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition"
+          class="w-full bg-blue-500 text-white py-3 rounded-xl text-base font-semibold hover:bg-blue-600 transition"
         >
           Đăng Nhập
         </button>
       </form>
     </div>
+
+    <p class="text-xs text-gray-400 text-center">© 2025 ICTU - App Lịch Học</p>
   </body>
 </html>
