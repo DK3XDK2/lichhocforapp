@@ -1,5 +1,41 @@
 [
   {
+    "thu": "1",
+    "lop": "Cơ sở dữ liệu-1-25 (K23B.KTPM.D1.K1.N14)",
+    "monHoc": "BAD131",
+    "tiet": "Từ 04/08/2025 đến 05/10/2025:\n   Thứ 5 tiết 1,2,3,4,5 (LT)",
+    "phong": "C5.304 C5",
+    "giangVien": "Lê Thu Trang ( Mã Meet: ivx-bwna-ens link: meet.google.com/ivx-bwna-ens )",
+    "tuan": "60"
+  },
+  {
+    "thu": "2",
+    "lop": "Mạng máy tính-1-25 (K23B.KTPM.D1.K1.N14)",
+    "monHoc": "CON131",
+    "tiet": "Từ 04/08/2025 đến 24/08/2025: (1)\n   Thứ 7 tiết 1,2,3,4,5 (LT)\nTừ 01/09/2025 đến 05/10/2025: (2)\n   Thứ 7 tiết 1,2,3,4,5 (LT)\nTừ 06/10/2025 đến 12/10/2025: (3)\n   Thứ 7 tiết 1,2,3,4,5 (LT)",
+    "phong": "C5.104 C5",
+    "giangVien": "Lê Tuấn Anh",
+    "tuan": "60"
+  },
+  {
+    "thu": "3",
+    "lop": "Ngoại ngữ nhóm ngành máy tính và CNTT-1-25 (K23B.KTPM.D1.K1.N14)",
+    "monHoc": "FCI130",
+    "tiet": "Từ 04/08/2025 đến 31/08/2025: (1)\n   Thứ 3 tiết 1,2,3,4,5 (LT)\nTừ 08/09/2025 đến 05/10/2025: (2)\n   Thứ 3 tiết 1,2,3,4,5 (LT)\nTừ 06/10/2025 đến 12/10/2025: (3)\n   Thứ 3 tiết 1,2,3,4,5 (LT)",
+    "phong": "C3.101 C3",
+    "giangVien": "Hoàng Văn Sáu ( Mã Meet: wpk-nnjf-awm link: meet.google.com/wpk-nnjf-awm )",
+    "tuan": "60"
+  },
+  {
+    "thu": "4",
+    "lop": "Thiết kế web-1-25 (K23B.KTPM.D1.K1.N14)",
+    "monHoc": "WED331",
+    "tiet": "Từ 04/08/2025 đến 10/08/2025: (1)\n   Chủ nhật tiết 1,2,3,4,5 (LT)\nTừ 11/08/2025 đến 05/10/2025: (2)\n   Thứ 6 tiết 1,2,3,4,5 (LT)",
+    "phong": "C5.303 C5",
+    "giangVien": "Phạm Xuân Kiên ( Mã Meet: kwd-kgsx-tqc link: https://meet.google.com/kwd-kgsx-tqc )",
+    "tuan": "60"
+  },
+  {
     "thu": "",
     "lop": "Tổng",
     "monHoc": "",
