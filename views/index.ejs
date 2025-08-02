@@ -56,11 +56,4 @@
       </form>
     </div>
   </body>
-  <script>
-    const ua = navigator.userAgent || "";
-    const isAndroidWebView = /Android/.test(ua) && /wv/.test(ua);
-    if (isAndroidWebView && window.location.pathname !== "/login-webview") {
-      window.location.href = "/login-webview";
-    }
-  </script>
 </html>
