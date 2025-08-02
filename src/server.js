@@ -84,9 +84,8 @@ app.post("/login", async (req, res) => {
     return res.redirect("/lichcanhan");
   } catch (err) {
     console.error("❌ Lỗi đăng nhập:", err.message);
-    return res.status(401).json({
-      success: false,
-      message: "Sai mã sinh viên hoặc mật khẩu hoặc lỗi hệ thống!",
+    return res.render("index", {
+      error: "Sai mã sinh viên hoặc mật khẩu hoặc lỗi hệ thống!",
     });
   }
 });
