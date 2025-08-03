@@ -186,11 +186,20 @@ function resolveRoomByWeekAndSessionDates(roomStr, weekNumber, sessions) {
   return "Không rõ phòng";
 }
 
-function getRoomByGroupNumber(roomStr, groupNumber) {
+function getRoomByGroupNumber(roomStr, groupNumber, weekday = null) {
   const lines = roomStr
     .split("\n")
     .map((l) => l.trim())
     .filter(Boolean);
+
+  // 🆕 Ưu tiên xử lý dòng có [Tn] nếu weekday được cung cấp
+  if (weekday !== null) {
+    const tag = `[T${weekday}]`;
+    const matchedLine = lines.find((line) => line.includes(tag));
+    if (matchedLine) {
+      return matchedLine.replace(tag, "").trim();
+    }
+  }
 
   // 1️⃣ Match kiểu (1,2,3)\nGĐTV1
   for (let i = 0; i < lines.length - 1; i++) {
@@ -284,7 +293,7 @@ export function transformTimetableData(rawData) {
 
         const buoiIndex = ++buoiIndexMap[subjectKey];
 
-        let resolvedRoom = getRoomByGroupNumber(phong, ses.group);
+        let resolvedRoom = getRoomByGroupNumber(phong, ses.group, ses.thu);
 
         // ✅ fallback nếu không tìm thấy theo group (vì không có (1,2,3))
         if (resolvedRoom === "Không rõ phòng") {
