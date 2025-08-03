@@ -322,6 +322,7 @@ async function renderStudentInfo() {
   try {
     const res = await fetch("/api/user-info");
     const json = await res.json();
+    console.log(json);
 
     if (json.success && json.data) {
       const { name, mssv } = json.data;
@@ -453,30 +454,34 @@ async function renderFullTimetable() {
     const res = await fetch("/api/lich-hoc-no-auth");
     const json = await res.json();
 
-    if (json.success && Array.isArray(json.data)) {
-      const cleanedData = json.data.filter(
-        (item) => item.monHoc && item.tuan && item.tiet
-      );
-
-      const transformed = transformTimetableData(cleanedData);
-
-      const groupedByDay = groupByDay(transformed);
-
-      const todayStr = format(new Date(), "yyyy-MM-dd");
-      const upcomingDates = generateNextDays(todayStr, 90);
-
-      const paddedData = {};
-      for (const dateStr of upcomingDates) {
-        paddedData[dateStr] = groupedByDay[dateStr] || [];
-      }
-
-      cachedCalendarDataHoc = paddedData;
-      renderGroupedDayCards(paddedData, "schedule-container-hoc");
-      renderUpcomingLessonNotice(paddedData);
-    } else {
-      document.body.innerHTML =
-        '<p class="text-red-500 text-center mt-10">Lỗi tải lịch học.</p>';
+    // ⚠️ Validate dữ liệu trước khi xử lý
+    if (!json.success || !Array.isArray(json.data)) {
+      document.body.innerHTML = `
+        <p class="text-red-500 text-center mt-10">
+          Không thể tải lịch học. Có thể tài khoản chưa được đồng bộ hoặc dữ liệu sai định dạng.
+        </p>`;
+      console.warn("⛔ Dữ liệu không hợp lệ từ API:", json);
+      return;
     }
+
+    const cleanedData = json.data.filter(
+      (item) => item.monHoc && item.tuan && item.tiet
+    );
+
+    const transformed = transformTimetableData(cleanedData);
+    const groupedByDay = groupByDay(transformed);
+
+    const todayStr = format(new Date(), "yyyy-MM-dd");
+    const upcomingDates = generateNextDays(todayStr, 90);
+
+    const paddedData = {};
+    for (const dateStr of upcomingDates) {
+      paddedData[dateStr] = groupedByDay[dateStr] || [];
+    }
+
+    cachedCalendarDataHoc = paddedData;
+    renderGroupedDayCards(paddedData, "schedule-container-hoc");
+    renderUpcomingLessonNotice(paddedData);
   } catch (err) {
     console.error("Lỗi fetch:", err);
     document.body.innerHTML =

@@ -1,0 +1,47 @@
+[
+  {
+    "thu": "1",
+    "lop": "Phân tích dữ liệu kinh doanh-1-25 (K23.QTKDSO.K1.D1.N01)",
+    "monHoc": "PTD334",
+    "tiet": "Từ 04/08/2025 đến 14/09/2025: (1)\n   Thứ 4 tiết 1,2,3,4,5 (LT)\nTừ 15/09/2025 đến 05/10/2025: (2)\n   Thứ 4 tiết 1,2,3,4,5 (LT)",
+    "phong": "(1)\nC6.606 CLC C6 Lý Thuyết\n(2)\nC6.303 C6 Lý Thuyết",
+    "giangVien": "Nguyễn Văn Giáp",
+    "tuan": "38"
+  },
+  {
+    "thu": "2",
+    "lop": "Quản lý quy trình nghiệp vụ-1-25 (K23AB.LQTVP.QTKDSO.K1.D1.N01)",
+    "monHoc": "QNV334",
+    "tiet": "Từ 04/08/2025 đến 17/08/2025: (1)\n   Thứ 3 tiết 6,7,8,9,10 (LT)\nTừ 18/08/2025 đến 05/10/2025: (2)\n   Thứ 3 tiết 6,7,8,9,10 (LT)",
+    "phong": "(1)\nC6.302 C6 Lý Thuyết\n(2)\nC5.206 C5",
+    "giangVien": "Nguyễn Thị Thanh Mai",
+    "tuan": "60"
+  },
+  {
+    "thu": "3",
+    "lop": "Quản trị nguồn nhân lực-1-25 (K23AB.QTVP.QTKDSO.K1.D1.N02)",
+    "monHoc": "HRM231",
+    "tiet": "Từ 04/08/2025 đến 05/10/2025:\n   Thứ 7 tiết 6,7,8,9,10 (LT)",
+    "phong": "C5.404 C5",
+    "giangVien": "Hà Văn Vương ( Mã Meet: qaz-biak-cte link: meet.google.com/qaz-biak-cte )",
+    "tuan": "60"
+  },
+  {
+    "thu": "4",
+    "lop": "Tiếng nhật 4-1-25 (K23.Tiếng Nhật 3.K1.D1.N02)",
+    "monHoc": "JPN134",
+    "tiet": "Từ 04/08/2025 đến 12/10/2025: (1)\n   Thứ 2 tiết 11,12 (LT)\nTừ 04/08/2025 đến 12/10/2025: (2)\n   Thứ 4 tiết 11,12 (LT)\nTừ 06/10/2025 đến 12/10/2025: (3)\n   Thứ 3 tiết 11,12 (LT)\n   Thứ 6 tiết 11,12,13 (LT)",
+    "phong": "C5.207 C5",
+    "giangVien": "Nguyễn Thị Châm",
+    "tuan": "60"
+  },
+  {
+    "thu": "",
+    "lop": "Tổng",
+    "monHoc": "",
+    "tiet": "",
+    "phong": "",
+    "giangVien": "",
+    "tuan": ""
+  }
+]
