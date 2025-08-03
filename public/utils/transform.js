@@ -187,7 +187,29 @@ function resolveRoomByWeekAndSessionDates(roomStr, weekNumber, sessions) {
 }
 
 function getRoomByGroupNumber(roomStr, groupNumber) {
-  const matches = [...roomStr.matchAll(/\(([\d,\s]+)\)\s*([A-Z0-9.]+)/g)];
+  const lines = roomStr
+    .split("\n")
+    .map((l) => l.trim())
+    .filter(Boolean);
+
+  // 1️⃣ Match kiểu (1,2,3)\nGĐTV1
+  for (let i = 0; i < lines.length - 1; i++) {
+    const groupMatch = lines[i].match(/^\(([\d,\s]+)\)$/);
+    if (groupMatch) {
+      const groups = groupMatch[1]
+        .split(",")
+        .map((s) => parseInt(s.trim(), 10));
+      if (groups.includes(groupNumber)) {
+        const nextLine = lines[i + 1];
+        if (nextLine && !nextLine.startsWith("(")) {
+          return nextLine.trim();
+        }
+      }
+    }
+  }
+
+  // 2️⃣ Fallback kiểu (1,2,3) C5.205
+  const matches = [...roomStr.matchAll(/\(([\d,\s]+)\)\s*([^\n()]+)/g)];
   for (const match of matches) {
     const groups = match[1].split(",").map((s) => parseInt(s.trim(), 10));
     const room = match[2].trim();
@@ -195,6 +217,7 @@ function getRoomByGroupNumber(roomStr, groupNumber) {
       return room;
     }
   }
+
   return "Không rõ phòng";
 }
 
@@ -265,11 +288,43 @@ export function transformTimetableData(rawData) {
 
         // ✅ fallback nếu không tìm thấy theo group (vì không có (1,2,3))
         if (resolvedRoom === "Không rõ phòng") {
-          resolvedRoom = phong.trim();
-        }
+          const lines = phong
+            .trim()
+            .split("\n")
+            .map((line) => line.trim())
+            .filter(Boolean);
 
-        // ✅ luôn lấy phần phòng chính (C5.405 thay vì "C5.405 C5")
-        resolvedRoom = resolvedRoom.split(" ")[0];
+          // Ưu tiên lấy dòng sau (1,2,3) nếu có
+          let found = false;
+          for (let i = 0; i < lines.length - 1; i++) {
+            if (/^\((\d+(,\d+)*)\)$/.test(lines[i])) {
+              const nextLine = lines[i + 1];
+              if (nextLine && !nextLine.startsWith("(")) {
+                resolvedRoom = nextLine.trim();
+                found = true;
+                break;
+              }
+            }
+          }
+
+          // Nếu không có dòng (1,2,3), dùng toàn bộ phong.trim()
+          if (!found) {
+            if (lines.length === 1) {
+              // Nếu chỉ có 1 dòng như "C5.402 C5", lấy token đầu tiên là phòng
+              const tokens = lines[0].split(/\s+/);
+              const maybeRoom = tokens.find((token) =>
+                /[A-Za-z]+\d+(\.\d+)?/.test(token)
+              );
+              resolvedRoom = maybeRoom || lines[0]; // fallback dùng cả dòng nếu ko match gì
+            } else {
+              // Nếu nhiều dòng thì ưu tiên dòng có định dạng phòng
+              const fallbackLine = lines.find((line) =>
+                /[A-Za-z]+\d+(\.\d+)?/.test(line)
+              );
+              resolvedRoom = fallbackLine || "Không rõ phòng";
+            }
+          }
+        }
 
         console.log(
           `🧪 Buổi ${ses.group} | Môn ${monHoc} | Phòng: ${resolvedRoom}`
