@@ -70,7 +70,7 @@ app.post("/login", async (req, res) => {
     req.session.mssv = mssvFromWeb;
     req.session.password = matkhau;
     req.session.isPrincess =
-      mssvFromWeb.trim().toLowerCase() === "dtc245310153";
+      mssvFromWeb.trim().toLowerCase() === "dtc245180076";
 
     fs.writeFileSync(
       `./data/${mssvFromWeb}_lichthi.json`,

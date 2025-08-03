@@ -1,4 +1,5 @@
 import { getDateOfWeekday, START_DATE } from "./date.js";
+import { parsePeriodRange, getTimeRangeFromPeriods } from "./period.js";
 
 function parseDateVN(str) {
   const [dd, mm, yyyy] = str.split("/");
@@ -274,11 +275,19 @@ export function transformTimetableData(rawData) {
           `🧪 Buổi ${ses.group} | Môn ${monHoc} | Phòng: ${resolvedRoom}`
         );
 
+        const { firstPeriod, lastPeriod } = parsePeriodRange(period);
+        const { start: startTime, end: endTime } = getTimeRangeFromPeriods(
+          firstPeriod,
+          lastPeriod
+        );
+
         scheduleByDate.push({
           subject: `${monHoc.trim()} - ${tenMon}`,
           teacher: giangVien.split("(")[0].trim(),
           room: resolvedRoom,
           period,
+          startTime,
+          endTime,
           day: realDate,
           week: weekNumber,
         });
@@ -325,6 +334,8 @@ export function transformTimetableData(rawData) {
       teacher: lesson.teacher,
       room: lesson.room,
       period: lesson.period,
+      startTime: lesson.startTime,
+      endTime: lesson.endTime,
       day: dayKey,
       week: lesson.week,
     });

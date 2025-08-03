@@ -17,9 +17,8 @@ let cachedCalendarDataHoc = {};
 let cachedCalendarDataThi = {};
 
 function createClassCard(data) {
-  const { firstPeriod, lastPeriod } = parsePeriodRange(period);
-  const { start, end } = getTimeRangeFromPeriods(firstPeriod, lastPeriod);
-  const timeRange = `${start} - ${end}`;
+  const { subject, teacher, room, period, startTime, endTime } = data;
+  const timeRange = `${startTime} - ${endTime}`;
 
   const card = document.createElement("div");
   card.className = "p-3 rounded-xl shadow border bg-white";
@@ -131,13 +130,8 @@ function renderGroupedDayCards(dayData, targetId = "schedule-container-hoc") {
         contentBox.appendChild(label);
 
         for (const lesson of group) {
-          const { subject, teacher, room, period } = lesson;
-          const { firstPeriod, lastPeriod } = parsePeriodRange(period);
-          const { start, end } = getTimeRangeFromPeriods(
-            firstPeriod,
-            lastPeriod
-          );
-          const timeRange = `${start} - ${end}`;
+          const { subject, teacher, room, period, startTime, endTime } = lesson;
+          const timeRange = `${startTime} - ${endTime}`;
 
           const card = document.createElement("div");
           card.className =
@@ -773,9 +767,7 @@ function renderUpcomingLessonNotice(dataByDay) {
 
   for (const [dayStr, items] of Object.entries(dataByDay)) {
     for (const item of items) {
-      const { firstPeriod } = parsePeriodRange(item.period);
-      const { start } = getTimeRangeFromPeriods(firstPeriod, firstPeriod);
-      const [h, m] = start.split(":").map(Number);
+      const [h, m] = item.startTime.split(":").map(Number);
       const [year, month, day] = dayStr.split("-").map(Number);
       const lessonTime = new Date(year, month - 1, day, h, m);
 
@@ -794,24 +786,21 @@ function renderUpcomingLessonNotice(dataByDay) {
   const next = lessons[0];
 
   container.innerHTML = `
-  <div class="upcoming-box">
-    <i>⏰</i>
-    <span>
-      <strong>Buổi học gần nhất</strong>: 
-      <span style="font-weight: 600">${next.subject}</span> 
-      (Tiết ${next.period}) lúc 
-      <strong>${next.lessonTime.toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-      })}</strong> 
-      tại <strong>${renderRoomWithWeeks(
-        next.room,
-        next.fullRoomMap,
-        next.currentWeek
-      )}</strong> — ${formatVNDate(next.day)}
-    </span>
-  </div>
-`;
+    <div class="upcoming-box">
+      <i>⏰</i>
+      <span>
+        <strong>Buổi học gần nhất</strong>: 
+        <span style="font-weight: 600">${next.subject}</span> 
+        (Tiết ${next.period}) lúc 
+        <strong>${next.startTime}</strong> 
+        tại <strong>${renderRoomWithWeeks(
+          next.room,
+          next.fullRoomMap,
+          next.currentWeek
+        )}</strong> — ${formatVNDate(next.day)}
+      </span>
+    </div>
+  `;
 }
 
 document.addEventListener("DOMContentLoaded", () => {
