@@ -1,7 +1,7 @@
 {
   "name": "Lịch Cá Nhân ICTU",
   "short_name": "Lịch ICTU",
-  "start_url": "/",
+  "start_url": "lichcanhan.html",
   "display": "standalone",
   "background_color": "#f1faff",
   "theme_color": "#3b82f6",
