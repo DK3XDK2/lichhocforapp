@@ -937,10 +937,12 @@ function showSyncModal(message) {
 
   okBtn.onclick = () => {
     modalOverlay.remove();
+    document.body.style.overflow = "";
   };
 
   modalBox.appendChild(text);
   modalBox.appendChild(okBtn);
   modalOverlay.appendChild(modalBox);
   document.body.appendChild(modalOverlay);
+  document.body.style.overflow = "hidden";
 }
