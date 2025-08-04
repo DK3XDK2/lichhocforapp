@@ -876,12 +876,16 @@ function showSyncModal(message) {
 
   const modalOverlay = document.createElement("div");
   modalOverlay.id = "sync-modal";
+
+  // 👉 Dùng chiều cao thực tế thay vì '100vh'
+  const screenHeight = window.innerHeight + "px";
+
   Object.assign(modalOverlay.style, {
     position: "fixed",
     top: "0",
     left: "0",
     width: "100vw",
-    height: "100vh",
+    height: screenHeight,
     backgroundColor: "rgba(0,0,0,0.4)",
     zIndex: 999999,
     display: "flex",
@@ -891,7 +895,6 @@ function showSyncModal(message) {
 
   const modalBox = document.createElement("div");
   Object.assign(modalBox.style, {
-    position: "fixed",
     background: "white",
     padding: "24px 32px",
     borderRadius: "16px",
@@ -901,6 +904,7 @@ function showSyncModal(message) {
     width: "80%",
     maxWidth: "360px",
     boxSizing: "border-box",
+    position: "relative", // ⚠ Đừng để fixed ở đây nữa
   });
 
   const text = document.createElement("div");
