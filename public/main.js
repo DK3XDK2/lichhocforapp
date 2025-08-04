@@ -353,16 +353,15 @@ async function renderLichThi() {
   }
 
   try {
-    const res = await fetch("/api/lich-thi-no-auth");
-    const result = await res.json();
+    const data = await fetchWithCache("/api/lich-thi-no-auth", "lichThiCache");
 
     container.innerHTML = "";
 
     const daysWrapper = document.createElement("div");
     daysWrapper.className = "days-wrapper space-y-4";
 
-    if (result.success && Array.isArray(result.data)) {
-      for (const item of result.data) {
+    if (Array.isArray(data)) {
+      for (const item of data) {
         const date = item.ngayThi;
         if (!groupedByDay[date]) groupedByDay[date] = [];
         groupedByDay[date].push(item);
@@ -445,20 +444,10 @@ async function renderLichThi() {
 
 async function renderFullTimetable() {
   try {
-    const res = await fetch("/api/lich-hoc-no-auth");
-    const json = await res.json();
+    const data = await fetchWithCache("/api/lich-hoc-no-auth", "lichHocCache");
+    if (!Array.isArray(data)) return;
 
-    // ⚠️ Validate dữ liệu trước khi xử lý
-    if (!json.success || !Array.isArray(json.data)) {
-      document.body.innerHTML = `
-        <p class="text-red-500 text-center mt-10">
-          Không thể tải lịch học. Có thể tài khoản chưa được đồng bộ hoặc dữ liệu sai định dạng.
-        </p>`;
-      console.warn("⛔ Dữ liệu không hợp lệ từ API:", json);
-      return;
-    }
-
-    const cleanedData = json.data.filter(
+    const cleanedData = data.filter(
       (item) => item.monHoc && item.tuan && item.tiet
     );
 
@@ -946,3 +935,44 @@ function showSyncModal(message) {
   document.body.appendChild(modalOverlay);
   document.body.style.overflow = "hidden";
 }
+
+async function fetchWithCache(url, cacheKey) {
+  try {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error("Fetch failed");
+    const data = await res.json();
+    if (data.success && data.data) {
+      localStorage.setItem(cacheKey, JSON.stringify(data.data));
+      return data.data;
+    } else {
+      throw new Error("Invalid response");
+    }
+  } catch (err) {
+    console.warn(`⚠️ Không thể fetch ${url}, đang dùng cache.`);
+    const cached = localStorage.getItem(cacheKey);
+    if (cached) {
+      showOfflineNotice();
+      return JSON.parse(cached);
+    } else {
+      alert("Không có mạng và chưa từng lưu cache.");
+      return null;
+    }
+  }
+}
+
+function showOfflineNotice() {
+  if (document.getElementById("offline-banner")) return;
+
+  const banner = document.createElement("div");
+  banner.id = "offline-banner";
+  banner.className =
+    "text-center bg-yellow-100 text-yellow-800 p-2 text-sm fixed top-0 left-0 w-full z-[9999] shadow";
+  banner.innerHTML = `⚠️ <strong>Đang dùng dữ liệu đã lưu (offline)</strong> – hãy kết nối mạng để cập nhật mới nhất.`;
+
+  document.body.prepend(banner);
+}
+
+window.addEventListener("online", () => {
+  const banner = document.getElementById("offline-banner");
+  if (banner) banner.remove();
+});
