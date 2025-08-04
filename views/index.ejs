@@ -123,27 +123,26 @@
 
       <!-- Tiêu đề -->
       <h2 class="text-2xl font-semibold text-white text-center">Lịch Học</h2>
-      <p class="text-sm text-center text-gray-200 mb-3">
+      <p class="text-sm text-center text-gray-200 mb-6">
         Đăng nhập bằng tài khoản <strong>Đăng ký tín chỉ</strong>
       </p>
 
-      <!-- Thông báo lỗi -->
-      <p
-        id="loginError"
-        class="text-red-300 text-sm text-center mb-3 hidden"
-      ></p>
+      <% if (typeof error !== 'undefined') { %>
+      <p class="text-red-300 text-sm text-center mb-3"><%= error %></p>
+      <% } %>
 
       <!-- Form login -->
       <form
-        id="loginForm"
+        action="/login"
+        method="POST"
         autocomplete="off"
         class="w-full max-w-md space-y-4 animate-form px-4"
+        onsubmit="return handleSubmit()"
       >
         <div class="relative">
           <input
             type="text"
             name="mssv"
-            id="mssvInput"
             autocomplete="off"
             placeholder="Mã sinh viên"
             class="w-full pl-10 pr-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-cyan-400"
@@ -235,7 +234,36 @@
       </p>
     </div>
 
-    <!-- Script xử lý theme -->
+    <script>
+      const eyeIcon = document.getElementById("eyeIcon");
+      const passwordInput = document.getElementById("passwordInput");
+      const togglePasswordBtn = document.getElementById("togglePassword");
+
+      let showing = false;
+
+      togglePasswordBtn.addEventListener("click", () => {
+        showing = !showing;
+        passwordInput.type = showing ? "text" : "password";
+        eyeIcon.innerHTML = showing
+          ? `<path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.269-2.943-9.543-7a9.978 9.978 0 012.2-3.442m2.2-2.2A9.978 9.978 0 0112 5c4.478 0 8.269 2.943 9.543 7a9.977 9.977 0 01-1.249 2.592M15 12a3 3 0 11-6 0 3 3 0 016 0zM3 3l18 18" />`
+          : `<path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+         <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />`;
+      });
+
+      function handleSubmit() {
+        const btn = document.getElementById("loginButton");
+        const text = document.getElementById("loginText");
+        const spinner = document.getElementById("spinner");
+
+        btn.disabled = true;
+        btn.classList.add("opacity-70", "cursor-not-allowed");
+        text.textContent = "Đang xử lý...";
+        spinner.classList.remove("hidden");
+
+        return true;
+      }
+    </script>
+
     <script>
       const toggleThemeBtn = document.getElementById("themeToggle");
 
@@ -252,84 +280,6 @@
         localStorage.setItem("theme", isDark ? "dark" : "light");
         toggleThemeBtn.textContent = isDark ? "🌞" : "🌙";
       });
-    </script>
-
-    <!-- Script hiện/ẩn mật khẩu -->
-    <script>
-      const eyeIcon = document.getElementById("eyeIcon");
-      const passwordInput = document.getElementById("passwordInput");
-      const togglePasswordBtn = document.getElementById("togglePassword");
-
-      let showing = false;
-
-      togglePasswordBtn.addEventListener("click", () => {
-        showing = !showing;
-        passwordInput.type = showing ? "text" : "password";
-        eyeIcon.innerHTML = showing
-          ? `<path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.269-2.943-9.543-7a9.978 9.978 0 012.2-3.442m2.2-2.2A9.978 9.978 0 0112 5c4.478 0 8.269 2.943 9.543 7a9.977 9.977 0 01-1.249 2.592M15 12a3 3 0 11-6 0 3 3 0 016 0zM3 3l18 18" />`
-          : `<path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-             <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />`;
-      });
-    </script>
-
-    <!-- Script xử lý login -->
-    <script>
-      const loginForm = document.getElementById("loginForm");
-      const mssvInput = document.getElementById("mssvInput");
-      const loginText = document.getElementById("loginText");
-      const loginButton = document.getElementById("loginButton");
-      const spinner = document.getElementById("spinner");
-      const loginError = document.getElementById("loginError");
-
-      loginForm.addEventListener("submit", async (e) => {
-        e.preventDefault();
-
-        loginButton.disabled = true;
-        loginButton.classList.add("opacity-70", "cursor-not-allowed");
-        loginText.textContent = "Đang xử lý...";
-        spinner.classList.remove("hidden");
-        loginError.classList.add("hidden");
-
-        try {
-          const res = await fetch("/login", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              mssv: mssvInput.value,
-              matkhau: passwordInput.value,
-            }),
-          });
-
-          if (res.ok) {
-            window.location.href = "/lichcanhan.html";
-          } else {
-            loginError.textContent =
-              "Đăng nhập thất bại. Kiểm tra MSSV hoặc mật khẩu.";
-            loginError.classList.remove("hidden");
-          }
-        } catch (err) {
-          loginError.textContent = "Không thể kết nối đến server.";
-          loginError.classList.remove("hidden");
-        } finally {
-          loginButton.disabled = false;
-          loginButton.classList.remove("opacity-70", "cursor-not-allowed");
-          loginText.textContent = "Đăng Nhập";
-          spinner.classList.add("hidden");
-        }
-      });
-    </script>
-    <script>
-      // Kiểm tra nếu đã login, redirect sang /lichcanhan
-      fetch("/api/user-info")
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.success) {
-            window.location.href = "/lichcanhan";
-          }
-        })
-        .catch((err) => {
-          console.warn("Không thể kiểm tra trạng thái đăng nhập:", err);
-        });
     </script>
   </body>
 </html>

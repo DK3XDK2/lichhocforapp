@@ -13,8 +13,17 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "../views"));
 
 function isAuthenticated(req, res, next) {
-  if (req.session.mssv) return next();
-  return res.status(403).json({ error: "Bạn chưa đăng nhập!" });
+  // Có session => tiếp tục
+  if (req.session && req.session.mssv) return next();
+
+  // Nếu là request HTML (user gõ URL), redirect về login
+  const accept = req.headers.accept || "";
+  if (accept.includes("text/html")) {
+    return res.redirect("/");
+  }
+
+  // Nếu là request API (AJAX fetch) → trả JSON lỗi
+  return res.status(401).json({ error: "Bạn chưa đăng nhập!" });
 }
 
 const isProduction = process.env.NODE_ENV === "production";
@@ -46,11 +55,10 @@ app.get("/", (req, res) => {
   if (req.session.mssv && req.session.password) {
     return res.redirect("/lichcanhan");
   }
-  res.sendFile(path.join(__dirname, "../public/index.html"));
+  res.render("index", { error: null });
 });
 
 // Login route
-
 app.post("/login", async (req, res) => {
   const { mssv, matkhau } = req.body;
 
@@ -81,12 +89,11 @@ app.post("/login", async (req, res) => {
       JSON.stringify(lichHoc, null, 2)
     );
 
-    return res.status(200).json({ success: true });
+    return res.redirect("/lichcanhan");
   } catch (err) {
     console.error("❌ Lỗi đăng nhập:", err.message);
-    return res.status(401).json({
-      success: false,
-      message: "Sai MSSV hoặc mật khẩu hoặc lỗi hệ thống!",
+    return res.render("index", {
+      error: "Sai mã sinh viên hoặc mật khẩu hoặc lỗi hệ thống!",
     });
   }
 });
@@ -120,7 +127,7 @@ app.get("/logout", (req, res) => {
 });
 
 // API trả thông tin user
-app.get("/api/user-info", isAuthenticated, (req, res) => {
+app.get("/api/user-info", (req, res) => {
   const { name, mssv } = req.session || {};
   if (name && mssv) {
     const { name, mssv, isPrincess } = req.session || {};

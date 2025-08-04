@@ -320,21 +320,18 @@ async function renderStudentInfo() {
 
     if (json.success && json.data) {
       const { name, mssv } = json.data;
-
-      // ✅ Lưu cache user info vào localStorage
-      localStorage.setItem("userInfo", JSON.stringify({ name, mssv }));
-
       document.getElementById("student-name").textContent = name;
       document.getElementById("student-mssv").textContent = mssv;
     } else {
-      showUserInfoOfflineFallback();
+      document.getElementById("student-info").innerHTML =
+        "<p class='text-red-500'>Không thể tải thông tin sinh viên.</p>";
     }
   } catch (err) {
     console.error("Lỗi khi lấy thông tin sinh viên:", err);
-    showUserInfoOfflineFallback(); // 🔄 fallback khi không fetch được
+    document.getElementById("student-info").innerHTML =
+      "<p class='text-red-500'>Lỗi kết nối máy chủ.</p>";
   }
 }
-
 async function renderLichThi() {
   const container = document.getElementById("schedule-container-thi");
 
@@ -838,7 +835,6 @@ document.addEventListener("DOMContentLoaded", () => {
       // Xoá cache cũ
       localStorage.removeItem("lichHocCache");
       localStorage.removeItem("lichThiCache");
-      localStorage.removeItem("userInfo");
 
       await renderFullTimetable();
       await renderLichThi();
@@ -980,30 +976,3 @@ window.addEventListener("online", () => {
   const banner = document.getElementById("offline-banner");
   if (banner) banner.remove();
 });
-
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker
-      .register("/service-worker.js")
-      .then((reg) => console.log("✅ Service Worker registered!", reg))
-      .catch((err) => console.error("❌ Service Worker failed:", err));
-  });
-}
-
-function showUserInfoOfflineFallback() {
-  const cached = localStorage.getItem("userInfo");
-  if (cached) {
-    try {
-      const { name, mssv } = JSON.parse(cached);
-      document.getElementById("student-name").textContent = name;
-      document.getElementById("student-mssv").textContent = mssv;
-    } catch (err) {
-      console.warn("❌ Dữ liệu userInfo trong localStorage bị lỗi:", err);
-      document.getElementById("student-info").innerHTML =
-        "<p class='text-red-500'>Dữ liệu sinh viên lỗi (offline).</p>";
-    }
-  } else {
-    document.getElementById("student-info").innerHTML =
-      "<p class='text-red-500'>Không có thông tin sinh viên (offline).</p>";
-  }
-}
