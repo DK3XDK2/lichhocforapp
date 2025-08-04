@@ -838,6 +838,14 @@ body.dark #calendar-month-view button.border-blue-500 {
   transition: opacity 0.3s ease;
 }
 
+.offline-warning {
+  background: #ffeb3b;
+  padding: 8px;
+  text-align: center;
+  color: #000;
+  font-weight: bold;
+}
+
 .sync-overlay.show {
   display: flex;
 }

@@ -46,10 +46,11 @@ app.get("/", (req, res) => {
   if (req.session.mssv && req.session.password) {
     return res.redirect("/lichcanhan");
   }
-  res.render("index", { error: null });
+  res.sendFile(path.join(__dirname, "../public/index.html"));
 });
 
 // Login route
+
 app.post("/login", async (req, res) => {
   const { mssv, matkhau } = req.body;
 
@@ -80,11 +81,12 @@ app.post("/login", async (req, res) => {
       JSON.stringify(lichHoc, null, 2)
     );
 
-    return res.redirect("/lichcanhan");
+    return res.status(200).json({ success: true });
   } catch (err) {
     console.error("❌ Lỗi đăng nhập:", err.message);
-    return res.render("index", {
-      error: "Sai mã sinh viên hoặc mật khẩu hoặc lỗi hệ thống!",
+    return res.status(401).json({
+      success: false,
+      message: "Sai MSSV hoặc mật khẩu hoặc lỗi hệ thống!",
     });
   }
 });
@@ -118,7 +120,7 @@ app.get("/logout", (req, res) => {
 });
 
 // API trả thông tin user
-app.get("/api/user-info", (req, res) => {
+app.get("/api/user-info", isAuthenticated, (req, res) => {
   const { name, mssv } = req.session || {};
   if (name && mssv) {
     const { name, mssv, isPrincess } = req.session || {};
