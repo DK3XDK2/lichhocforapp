@@ -887,7 +887,6 @@ function showSyncModal(message) {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    animation: "fadeIn 0.3s ease",
   });
 
   const modalBox = document.createElement("div");
@@ -898,18 +897,19 @@ function showSyncModal(message) {
     boxShadow: "0 12px 28px rgba(0,0,0,0.25)",
     textAlign: "center",
     fontFamily: "system-ui, sans-serif",
-    transform: "scale(0.8)",
-    opacity: "0",
-    animation: "scaleFadeIn 0.4s ease forwards",
+    width: "80%",
+    maxWidth: "360px",
+    boxSizing: "border-box",
   });
 
   const text = document.createElement("div");
   text.textContent = message;
   Object.assign(text.style, {
     marginBottom: "20px",
-    fontSize: "18px",
+    fontSize: "17px",
     color: "#16a34a",
     fontWeight: "700",
+    wordBreak: "break-word",
   });
 
   const okBtn = document.createElement("button");
@@ -924,15 +924,12 @@ function showSyncModal(message) {
     cursor: "pointer",
     fontSize: "15px",
     boxShadow: "0 4px 12px rgba(22, 163, 74, 0.4)",
-    transition: "transform 0.2s ease",
+    width: "100%",
+    maxWidth: "120px",
+    margin: "0 auto",
+    display: "block",
   });
 
-  okBtn.onmouseover = () => {
-    okBtn.style.transform = "scale(1.05)";
-  };
-  okBtn.onmouseleave = () => {
-    okBtn.style.transform = "scale(1)";
-  };
   okBtn.onclick = () => {
     modalOverlay.remove();
   };
@@ -941,18 +938,4 @@ function showSyncModal(message) {
   modalBox.appendChild(okBtn);
   modalOverlay.appendChild(modalBox);
   document.body.appendChild(modalOverlay);
-
-  // CSS keyframes
-  const style = document.createElement("style");
-  style.textContent = `
-    @keyframes scaleFadeIn {
-      0% { transform: scale(0.8); opacity: 0; }
-      100% { transform: scale(1); opacity: 1; }
-    }
-    @keyframes fadeIn {
-      from { background-color: rgba(0,0,0,0); }
-      to { background-color: rgba(0,0,0,0.4); }
-    }
-  `;
-  document.head.appendChild(style);
 }
