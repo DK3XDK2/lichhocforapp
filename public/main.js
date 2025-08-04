@@ -822,18 +822,19 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const res = await fetch("/sync", {
         method: "POST",
-        credentials: "include", // đảm bảo gửi cookie
+        credentials: "include",
       });
 
-      const text = await res.text();
+      if (!res.ok) {
+        throw new Error("Máy chủ phản hồi lỗi. Có thể bạn đã bị đăng xuất.");
+      }
 
+      const text = await res.text();
       let json;
       try {
         json = JSON.parse(text);
-      } catch (err) {
-        throw new Error(
-          "Phản hồi không hợp lệ từ server. Có thể bạn đã bị đăng xuất."
-        );
+      } catch {
+        throw new Error("Phản hồi không hợp lệ. Có thể bạn đã bị đăng xuất.");
       }
 
       if (!json.success) {
@@ -848,10 +849,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
       await renderFullTimetable();
       await renderLichThi();
-      alert("✅ Đồng bộ thành công!");
+
+      // ✅ Thông báo thành công bằng modal đẹp
+      showSyncModal("✅ Đồng bộ thành công!");
     } catch (err) {
       console.warn("[SYNC] Lỗi:", err);
-      alert("❌ Đồng bộ thất bại: " + err.message);
+      // ❌ Thông báo thất bại bằng modal (ẩn an toàn)
+      showSyncModal(
+        "❌ Đồng bộ thất bại. Vui lòng thử lại hoặc đăng nhập lại."
+      );
     } finally {
       overlay.classList.remove("show");
       overlay.style.display = "none";
@@ -861,3 +867,92 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
+// ✅ Hàm toast nổi đơn giản
+
+function showSyncModal(message) {
+  const existing = document.getElementById("sync-modal");
+  if (existing) existing.remove();
+
+  const modalOverlay = document.createElement("div");
+  modalOverlay.id = "sync-modal";
+  Object.assign(modalOverlay.style, {
+    position: "fixed",
+    top: "0",
+    left: "0",
+    width: "100vw",
+    height: "100vh",
+    backgroundColor: "rgba(0,0,0,0.4)",
+    zIndex: 999999,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    animation: "fadeIn 0.3s ease",
+  });
+
+  const modalBox = document.createElement("div");
+  Object.assign(modalBox.style, {
+    background: "white",
+    padding: "24px 32px",
+    borderRadius: "16px",
+    boxShadow: "0 12px 28px rgba(0,0,0,0.25)",
+    textAlign: "center",
+    fontFamily: "system-ui, sans-serif",
+    transform: "scale(0.8)",
+    opacity: "0",
+    animation: "scaleFadeIn 0.4s ease forwards",
+  });
+
+  const text = document.createElement("div");
+  text.textContent = message;
+  Object.assign(text.style, {
+    marginBottom: "20px",
+    fontSize: "18px",
+    color: "#16a34a",
+    fontWeight: "700",
+  });
+
+  const okBtn = document.createElement("button");
+  okBtn.textContent = "OK";
+  Object.assign(okBtn.style, {
+    padding: "10px 24px",
+    backgroundColor: "#16a34a",
+    color: "white",
+    border: "none",
+    borderRadius: "8px",
+    fontWeight: "600",
+    cursor: "pointer",
+    fontSize: "15px",
+    boxShadow: "0 4px 12px rgba(22, 163, 74, 0.4)",
+    transition: "transform 0.2s ease",
+  });
+
+  okBtn.onmouseover = () => {
+    okBtn.style.transform = "scale(1.05)";
+  };
+  okBtn.onmouseleave = () => {
+    okBtn.style.transform = "scale(1)";
+  };
+  okBtn.onclick = () => {
+    modalOverlay.remove();
+  };
+
+  modalBox.appendChild(text);
+  modalBox.appendChild(okBtn);
+  modalOverlay.appendChild(modalBox);
+  document.body.appendChild(modalOverlay);
+
+  // CSS keyframes
+  const style = document.createElement("style");
+  style.textContent = `
+    @keyframes scaleFadeIn {
+      0% { transform: scale(0.8); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    @keyframes fadeIn {
+      from { background-color: rgba(0,0,0,0); }
+      to { background-color: rgba(0,0,0,0.4); }
+    }
+  `;
+  document.head.appendChild(style);
+}
