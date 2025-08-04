@@ -6,7 +6,6 @@ const path = require("path");
 const fs = require("fs");
 const getLichThi = require("./getLichThi");
 const getLichHoc = require("./getLichHoc");
-const cleanOldFiles = require("./cleanOldFiles");
 const cron = require("node-cron");
 
 const app = express();
@@ -35,7 +34,7 @@ app.use(
     cookie: {
       secure: isProduction,
       sameSite: isProduction ? "none" : "lax",
-      maxAge: 1000 * 60 * 60 * 24 * 7, // 1 hour
+      maxAge: 1000 * 60 * 60 * 24 * 30, // 1 hour
     },
   })
 );
@@ -221,12 +220,6 @@ app.post("/sync", async (req, res) => {
       message: "Lỗi khi đồng bộ. Không thể truy cập hệ thống trường.",
     });
   }
-});
-
-// CRON tự động dọn file cũ
-cron.schedule("*/10 * * * *", () => {
-  console.log("🧹 Dọn file cũ...");
-  cleanOldFiles();
 });
 
 // Start server

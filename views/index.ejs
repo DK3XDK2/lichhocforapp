@@ -135,6 +135,7 @@
       <form
         action="/login"
         method="POST"
+        autocomplete="off"
         class="w-full max-w-md space-y-4 animate-form px-4"
         onsubmit="return handleSubmit()"
       >
@@ -142,6 +143,7 @@
           <input
             type="text"
             name="mssv"
+            autocomplete="off"
             placeholder="Mã sinh viên"
             class="w-full pl-10 pr-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-cyan-400"
             required
@@ -166,6 +168,7 @@
             id="passwordInput"
             name="matkhau"
             type="password"
+            autocomplete="off"
             placeholder="Mật khẩu"
             class="w-full pl-10 pr-10 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-cyan-400"
             required
