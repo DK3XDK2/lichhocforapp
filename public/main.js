@@ -891,6 +891,7 @@ function showSyncModal(message) {
 
   const modalBox = document.createElement("div");
   Object.assign(modalBox.style, {
+    position: "fixed",
     background: "white",
     padding: "24px 32px",
     borderRadius: "16px",
