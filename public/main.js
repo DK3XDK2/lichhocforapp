@@ -820,18 +820,38 @@ document.addEventListener("DOMContentLoaded", () => {
     syncBtn.classList.add("disabled");
 
     try {
-      const res = await fetch("/sync", { method: "POST" });
-      if (!res.ok) throw new Error("Đồng bộ thất bại");
+      const res = await fetch("/sync", {
+        method: "POST",
+        credentials: "include", // đảm bảo gửi cookie
+      });
 
-      const data = await res.json();
+      const text = await res.text();
+
+      let json;
+      try {
+        json = JSON.parse(text);
+      } catch (err) {
+        throw new Error(
+          "Phản hồi không hợp lệ từ server. Có thể bạn đã bị đăng xuất."
+        );
+      }
+
+      if (!json.success) {
+        throw new Error(
+          json.message || "Đồng bộ thất bại không rõ nguyên nhân."
+        );
+      }
+
+      // Xoá cache cũ
       localStorage.removeItem("lichHocCache");
       localStorage.removeItem("lichThiCache");
 
       await renderFullTimetable();
       await renderLichThi();
+      alert("✅ Đồng bộ thành công!");
     } catch (err) {
       console.warn("[SYNC] Lỗi:", err);
-      alert("Đồng bộ thất bại: " + err.message);
+      alert("❌ Đồng bộ thất bại: " + err.message);
     } finally {
       overlay.classList.remove("show");
       overlay.style.display = "none";
