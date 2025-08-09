@@ -959,20 +959,3 @@ async function fetchWithCache(url, cacheKey) {
     }
   }
 }
-
-function showOfflineNotice() {
-  if (document.getElementById("offline-banner")) return;
-
-  const banner = document.createElement("div");
-  banner.id = "offline-banner";
-  banner.className =
-    "text-center bg-yellow-100 text-yellow-800 p-2 text-sm fixed top-0 left-0 w-full z-[9999] shadow";
-  banner.innerHTML = `⚠️ <strong>Đang dùng dữ liệu đã lưu (offline)</strong> – hãy kết nối mạng để cập nhật mới nhất.`;
-
-  document.body.prepend(banner);
-}
-
-window.addEventListener("online", () => {
-  const banner = document.getElementById("offline-banner");
-  if (banner) banner.remove();
-});

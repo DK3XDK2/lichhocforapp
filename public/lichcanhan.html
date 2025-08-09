@@ -9,6 +9,7 @@
     <link rel="icon" href="/favicon.ico" />
     <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="stylesheet" href="style.css" />
     <link rel="manifest" href="/site.webmanifest" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <script type="module" src="/main.js" defer></script>
@@ -183,8 +184,6 @@
   </script>
   <script>
     function showPrincessGreeting() {
-      if (localStorage.getItem("princessGreeted") === "yes") return;
-
       const messages = [
         "Công chúa của anh đã đến rồi! Chúc em một ngày thật xinh 💖",
         "Trang lịch này chỉ dành riêng cho em, my princess 👑",
@@ -198,7 +197,6 @@
       ];
 
       const chosen = messages[Math.floor(Math.random() * messages.length)];
-      localStorage.setItem("princessGreeted", "yes");
 
       const wrapper = document.createElement("div");
       wrapper.className = "princess-wrapper";

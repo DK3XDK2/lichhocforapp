@@ -3,7 +3,7 @@ const fs = require("fs");
 
 async function getLichHoc(mssv, matkhau) {
   const browser = await puppeteer.launch({
-    headless: "new",
+    headless: false,
     slowMo: 0,
     args: ["--no-sandbox", "--disable-setuid-sandbox"],
     timeout: 0,
@@ -14,13 +14,12 @@ async function getLichHoc(mssv, matkhau) {
   let popupMessage = null;
   let popupAppeared = false;
 
-  // Xử lý dialog + chờ load lại nếu có
+  // Xử lý dialog
   page.on("dialog", async (dialog) => {
     popupAppeared = true;
     popupMessage = dialog.message();
     console.log("⚠️ [POPUP] Xuất hiện:", popupMessage);
 
-    // Bấm OK và chờ trang chuyển nếu có
     await Promise.all([
       dialog.accept(),
       page
@@ -84,13 +83,102 @@ async function getLichHoc(mssv, matkhau) {
       { waitUntil: "domcontentloaded", timeout: 60000 }
     );
 
-    // Kiểm tra bị redirect sau khi vào trang lịch học
     const currentUrl = page.url();
     if (currentUrl.includes("StudyRegister")) {
       throw new Error(
         "❌ Bị chuyển hướng vì tài khoản đã hết hạn đăng ký học."
       );
     }
+
+    // ===== Helper =====
+    async function waitForTableData(page) {
+      await page.waitForFunction(
+        () => {
+          const tbl = document.querySelector("#gridRegistered");
+          if (!tbl) return false;
+          const rows = tbl.querySelectorAll("tr").length;
+          return rows > 1 && !tbl.innerText.includes("Không có dữ liệu");
+        },
+        { timeout: 20000 }
+      );
+    }
+
+    async function changeSemester(page, value) {
+      console.log(`🔄 Đang đổi sang học kỳ (value): ${value}`);
+
+      const hasDropdown = await page.$("#drpSemester");
+      if (!hasDropdown) {
+        console.warn("⚠️ Không tìm thấy #drpSemester — bỏ qua đổi kỳ");
+        return;
+      }
+
+      const oldHTML = await page.$eval("#gridRegistered", (el) => el.innerHTML);
+      const oldValue = await page.$eval("#drpSemester", (el) => el.value);
+
+      await page.select("#drpSemester", value);
+      await page.evaluate(() => __doPostBack("drpSemester", ""));
+
+      // Chờ load lại bảng
+      await page.waitForFunction(
+        (old) => document.querySelector("#gridRegistered")?.innerHTML !== old,
+        { timeout: 20000 },
+        oldHTML
+      );
+
+      const currentValue = await page
+        .$eval("#drpSemester", (el) => el.value)
+        .catch(() => null);
+      console.log(
+        `📅 Đã đổi sang kỳ: ${currentValue || "(Không có dropdown)"}`
+      );
+    }
+
+    // 1. Chờ kỳ 1 load ban đầu
+    await waitForTableData(page);
+    console.log("✅ Kỳ 1 load lần đầu");
+
+    // 📋 Lấy danh sách kỳ từ dropdown và tạo map
+    const semesters = await page.$$eval("#drpSemester option", (opts) =>
+      opts.map((o) => ({
+        text: o.textContent.trim(),
+        value: o.value,
+      }))
+    );
+    console.log("📋 Danh sách kỳ:", semesters);
+
+    const semesterMap = Object.fromEntries(
+      semesters.map((s) => [s.text, s.value])
+    );
+
+    // Kiểm tra tồn tại kỳ
+    if (!semesterMap["2_2025_2026"]) {
+      throw new Error("Không tìm thấy kỳ 2_2025_2026");
+    }
+    if (!semesterMap["1_2025_2026"]) {
+      throw new Error("Không tìm thấy kỳ 1_2025_2026");
+    }
+
+    // 2. Chuyển sang kỳ 2
+    await changeSemester(page, semesterMap["2_2025_2026"]);
+    console.log("✅ Đã chuyển sang kỳ 2");
+
+    // 3. Chuyển lại kỳ 1
+    await changeSemester(page, semesterMap["1_2025_2026"]);
+    console.log("✅ Đã quay lại kỳ 1");
+
+    // 4. Chọn đợt 1
+    // 4. Chọn đợt 1 (nếu có)
+    if (await page.$("#drpTerm")) {
+      await page.select("#drpTerm", "1");
+      await Promise.all([
+        page.evaluate(() => __doPostBack("drpTerm", "")),
+        page.waitForNavigation({ waitUntil: "domcontentloaded" }),
+      ]);
+    } else {
+      console.warn("⚠️ Không tìm thấy #drpTerm — bỏ qua chọn đợt");
+    }
+
+    await waitForTableData(page);
 
     const hasTable = await page.$("#gridRegistered");
     if (!hasTable) {
