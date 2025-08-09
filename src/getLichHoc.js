@@ -3,7 +3,7 @@ const fs = require("fs");
 
 async function getLichHoc(mssv, matkhau) {
   const browser = await puppeteer.launch({
-    headless: false,
+    headless: "true",
     slowMo: 0,
     args: ["--no-sandbox", "--disable-setuid-sandbox"],
     timeout: 0,
