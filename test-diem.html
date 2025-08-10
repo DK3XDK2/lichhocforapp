@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Test Hiển Thị Bảng Điểm</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+      }
+      .summary-cards {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .summary-card {
+        border: 1px solid #ccc;
+        padding: 10px;
+        border-radius: 5px;
+        background: #f9f9f9;
+      }
+      .table-wrapper {
+        overflow-x: auto;
+      }
+      table {
+        border-collapse: collapse;
+        width: 100%;
+      }
+      th,
+      td {
+        border: 1px solid #ccc;
+        padding: 6px;
+        text-align: left;
+      }
+      th {
+        background: #eee;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Tóm tắt kết quả học tập</h2>
+    <div class="summary-cards" id="summary-container"></div>
+
+    <h2>Chi tiết điểm từng môn</h2>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>STT</th>
+            <th>Mã HP</th>
+            <th>Tên học phần</th>
+            <th>Số TC</th>
+            <th>Lần học</th>
+            <th>Lần thi</th>
+            <th>CC</th>
+            <th>Thi</th>
+            <th>TKHP</th>
+            <th>Điểm chữ</th>
+            <th>Đánh giá</th>
+          </tr>
+        </thead>
+        <tbody id="details-container"></tbody>
+      </table>
+    </div>
+
+    <script>
+      async function loadData() {
+        const res = await fetch("./data/DTC245180076_diem.json"); // đường dẫn tới file thật
+        const json = await res.json();
+
+        const { summary = [], details = [] } = json.data || {};
+
+        const summaryHTML = summary
+          .map(
+            (row) => `
+        <div class="summary-card">
+          <div><strong>${row.namHoc} - ${row.hocKy || ""}</strong></div>
+          <div>TBTL Hệ 10: ${row.tbtlHe10N1}</div>
+          <div>TBTL Hệ 4: ${row.tbtlHe4N1}</div>
+          <div>Số TCTL: ${row.soTCTLN1}</div>
+          <div>TBC Hệ 10: ${row.tbcHe10N1}</div>
+          <div>Số TC: ${row.soTCN1}</div>
+        </div>
+      `
+          )
+          .join("");
+        document.getElementById("summary-container").innerHTML = summaryHTML;
+
+        const detailsHTML = details
+          .map(
+            (row) => `
+        <tr>
+          <td>${row.stt}</td>
+          <td>${row.maHocPhan}</td>
+          <td>${row.tenHocPhan}</td>
+          <td>${row.soTC}</td>
+          <td>${row.lanHoc}</td>
+          <td>${row.lanThi}</td>
+          <td>${row.cc}</td>
+          <td>${row.thi}</td>
+          <td>${row.tkhp}</td>
+          <td>${row.diemChu}</td>
+          <td>${row.danhGia}</td>
+        </tr>
+      `
+          )
+          .join("");
+        document.getElementById("details-container").innerHTML = detailsHTML;
+      }
+
+      loadData();
+    </script>
+  </body>
+</html>

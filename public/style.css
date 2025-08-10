@@ -955,3 +955,128 @@ body.dark #calendar-month-view button.border-blue-500 {
   transform: scale(0.98);
   box-shadow: 0 3px 8px rgba(249, 115, 22, 0.3);
 }
+
+/* --- WRAPPER GIỮ TABLE KHÔNG VỠ --- */
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch; /* mượt trên iOS/Android */
+}
+
+/* --- SUMMARY CARDS --- */
+.summary-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.summary-card {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 15px 20px;
+  min-width: 220px;
+  flex: 1;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.summary-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
+}
+
+.summary-header {
+  font-weight: bold;
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+.summary-body div {
+  font-size: 14px;
+  margin: 4px 0;
+}
+
+/* --- TABLE --- */
+.table-diem {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.table-diem th,
+.table-diem td {
+  padding: 10px;
+  text-align: center;
+  border-bottom: 1px solid #ddd;
+}
+
+.table-diem th {
+  background: #4a90e2;
+  color: white;
+  font-weight: bold;
+}
+
+.table-diem tr:nth-child(even) {
+  background-color: #f8f8f8;
+}
+
+.table-diem tr:hover {
+  background-color: #f1faff;
+}
+
+/* --- GRADE COLORS --- */
+.grade-A {
+  background-color: #e6ffed !important;
+  color: #0f5132;
+}
+.grade-B {
+  background-color: #fff9e6 !important;
+  color: #664d03;
+}
+.grade-C {
+  background-color: #ffe6e6 !important;
+  color: #842029;
+}
+.grade-D {
+  background-color: #fce8ff !important;
+  color: #4b006e;
+}
+.grade-F {
+  background-color: #ffeaea !important;
+  color: #721c24;
+}
+
+/* --- RESPONSIVE --- */
+@media (max-width: 768px) {
+  /* Card xuống 1 cột */
+  .summary-cards {
+    flex-direction: column;
+  }
+  .summary-card {
+    min-width: 100%;
+    font-size: 14px;
+  }
+
+  /* Giảm chữ + padding cho bảng */
+  .table-diem th,
+  .table-diem td {
+    font-size: 12px;
+    padding: 6px;
+    white-space: nowrap; /* tránh xuống dòng xấu */
+  }
+}
+
+@media (max-width: 480px) {
+  .summary-card {
+    padding: 10px;
+    font-size: 13px;
+  }
+  .table-diem th,
+  .table-diem td {
+    font-size: 11px;
+    padding: 5px;
+  }
+}

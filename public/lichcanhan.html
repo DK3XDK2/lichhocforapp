@@ -118,6 +118,7 @@
       <div class="center-tabs">
         <button class="tab-btn active" data-tab="lich-hoc">📘 Lịch Học</button>
         <button class="tab-btn" data-tab="lich-thi">📝 Lịch Thi</button>
+        <button class="tab-btn" data-tab="bang-diem">📊 Bảng Điểm</button>
       </div>
 
       <!-- 📄 Nội dung từng tab -->
@@ -132,6 +133,11 @@
         <!-- Lịch Thi -->
         <div id="lich-thi-tab" class="tab-pane">
           <div id="schedule-container-thi" class="space-y-4"></div>
+        </div>
+
+        <!-- Bảng Điểm -->
+        <div id="bang-diem-tab" class="tab-pane">
+          <div id="diem-container">Đang tải...</div>
         </div>
       </div>
     </main>
@@ -253,4 +259,5 @@
       localStorage.removeItem("princessGreeted");
     });
   </script>
+  <script type="module" src="/diem.js"></script>
 </html>
