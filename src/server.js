@@ -6,7 +6,7 @@ const path = require("path");
 const fs = require("fs");
 const getLichThi = require("./getLichThi");
 const getLichHoc = require("./getLichHoc");
-const getDiemHoc = require("./getDiemHoc");
+const cron = require("node-cron");
 
 const app = express();
 app.set("view engine", "ejs");
@@ -63,15 +63,13 @@ app.post("/login", async (req, res) => {
   const { mssv, matkhau } = req.body;
 
   try {
-    const [lichThiRaw, lichHocRaw, diemRaw] = await Promise.all([
+    const [lichThiRaw, lichHocRaw] = await Promise.all([
       getLichThi(mssv, matkhau),
       getLichHoc(mssv, matkhau),
-      getDiemHoc(mssv, matkhau), // Lấy điểm
     ]);
 
     const lichThi = Array.isArray(lichThiRaw?.data) ? lichThiRaw.data : [];
     const lichHoc = Array.isArray(lichHocRaw?.data) ? lichHocRaw.data : [];
-    const diem = diemRaw || {};
 
     const name = lichHocRaw?.name || lichThiRaw?.name || "Không rõ tên";
     const mssvFromWeb = lichHocRaw?.mssv || lichThiRaw?.mssv || mssv;
@@ -89,10 +87,6 @@ app.post("/login", async (req, res) => {
     fs.writeFileSync(
       `./data/${mssvFromWeb}_lichhoc.json`,
       JSON.stringify(lichHoc, null, 2)
-    );
-    fs.writeFileSync(
-      `./data/${mssvFromWeb}_diem.json`,
-      JSON.stringify(diem, null, 2)
     );
 
     return res.redirect("/lichcanhan");
@@ -130,34 +124,6 @@ app.get("/logout", (req, res) => {
   req.session.destroy(() => {
     res.redirect("/");
   });
-});
-
-app.get("/api/diem", isAuthenticated, async (req, res) => {
-  try {
-    const { mssv, password } = req.session;
-    const diemData = await getDiemHoc(mssv, password);
-    res.json({ success: true, data: diemData });
-  } catch (err) {
-    console.error("Lỗi lấy điểm:", err.message);
-    res
-      .status(500)
-      .json({ success: false, message: "Không thể lấy bảng điểm" });
-  }
-});
-
-app.get("/api/diem-no-auth", isAuthenticated, (req, res) => {
-  const mssv = req.session.mssv;
-  try {
-    const data = JSON.parse(
-      fs.readFileSync(`./data/${mssv}_diem.json`, "utf8")
-    );
-    res.json({ success: true, data });
-  } catch (err) {
-    console.error("Lỗi đọc diem.json:", err.message);
-    res
-      .status(500)
-      .json({ success: false, message: "Không đọc được dữ liệu điểm" });
-  }
 });
 
 // API trả thông tin user
@@ -231,7 +197,6 @@ app.get("/api/lich-thi-no-auth", isAuthenticated, (req, res) => {
 });
 
 // API đồng bộ lịch từ hệ thống trường
-
 app.post("/sync", async (req, res) => {
   const { mssv, password } = req.session;
   if (!mssv || !password) {
@@ -239,15 +204,13 @@ app.post("/sync", async (req, res) => {
   }
 
   try {
-    const [lichThiRaw, lichHocRaw, diemRaw] = await Promise.all([
+    const [lichThiRaw, lichHocRaw] = await Promise.all([
       getLichThi(mssv, password),
       getLichHoc(mssv, password),
-      getDiemHoc(mssv, password), // Thêm lấy điểm
     ]);
 
     const lichThi = Array.isArray(lichThiRaw?.data) ? lichThiRaw.data : [];
     const lichHoc = Array.isArray(lichHocRaw?.data) ? lichHocRaw.data : [];
-    const diem = diemRaw || {};
 
     fs.writeFileSync(
       `./data/${mssv}_lichthi.json`,
@@ -257,15 +220,8 @@ app.post("/sync", async (req, res) => {
       `./data/${mssv}_lichhoc.json`,
       JSON.stringify(lichHoc, null, 2)
     );
-    fs.writeFileSync(`./data/${mssv}_diem.json`, JSON.stringify(diem, null, 2));
 
-    res.json({
-      success: true,
-      message: "Đồng bộ xong",
-      lichHoc,
-      lichThi,
-      diem,
-    });
+    res.json({ success: true, message: "Đồng bộ xong", lichHoc, lichThi });
   } catch (err) {
     console.error("❌ Lỗi khi đồng bộ:", err);
     res.status(500).json({
