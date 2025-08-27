@@ -22,12 +22,11 @@ function diffInWeeks(date1, date2) {
   return Math.floor((d2 - d1) / msPerWeek);
 }
 
-// Đây là bản cuối mình recommend
 function extractSessions(tietStr) {
   const result = [];
   const lines = tietStr
     .split("\n")
-    .map((l) => l.trim().replace(/[:：]$/, "")) // bỏ dấu ":" hoặc "：" ở cuối
+    .map((l) => l.trim().replace(/[:：]$/, ""))
     .filter(Boolean);
 
   let currentFrom = null;
@@ -35,7 +34,6 @@ function extractSessions(tietStr) {
   let groupCounter = 0;
 
   for (const line of lines) {
-    // 📌 Nhận dòng "Từ ... đến ..."
     const dateMatch = line.match(
       /Từ\s+(\d{2}\/\d{2}\/\d{4})\s+đến\s+(\d{2}\/\d{2}\/\d{4})/i
     );
@@ -46,7 +44,6 @@ function extractSessions(tietStr) {
       continue;
     }
 
-    // 📌 Nhận dòng "Thứ ... tiết ..." hoặc "Chủ nhật tiết ..."
     const thuMatch = line.match(/(Thứ\s?(\d)|Chủ\s*nhật)/i);
     const tietMatch = line.match(/tiết\s([\d,]+)/i);
 
@@ -118,7 +115,6 @@ function getRoomForWeek(roomStr, weekNumber) {
     }
   }
 
-  // fallback
   if (pairs.length === 0 && lines.length === 1) return lines[0];
   const lastLine = lines[lines.length - 1];
   if (!lastLine.match(/\(\d/)) return lastLine;
@@ -192,7 +188,6 @@ function getRoomByGroupNumber(roomStr, groupNumber, weekday = null) {
     .map((l) => l.trim())
     .filter(Boolean);
 
-  // 🆕 Ưu tiên xử lý dòng có [Tn] nếu weekday được cung cấp
   if (weekday !== null) {
     const tag = `[T${weekday}]`;
     const matchedLine = lines.find((line) => line.includes(tag));
@@ -201,7 +196,6 @@ function getRoomByGroupNumber(roomStr, groupNumber, weekday = null) {
     }
   }
 
-  // 1️⃣ Match kiểu (1,2,3)\nGĐTV1
   for (let i = 0; i < lines.length - 1; i++) {
     const groupMatch = lines[i].match(/^\(([\d,\s]+)\)$/);
     if (groupMatch) {
@@ -217,7 +211,6 @@ function getRoomByGroupNumber(roomStr, groupNumber, weekday = null) {
     }
   }
 
-  // 2️⃣ Fallback kiểu (1,2,3) C5.205
   const matches = [...roomStr.matchAll(/\(([\d,\s]+)\)\s*([^\n()]+)/g)];
   for (const match of matches) {
     const groups = match[1].split(",").map((s) => parseInt(s.trim(), 10));
@@ -252,12 +245,6 @@ export function transformTimetableData(rawData) {
     }
 
     const sessions = extractSessions(tiet);
-
-    // Debug xem dòng nào có session thực sự
-    console.log("✅ Parse dòng:", item);
-    console.log("➡️ Sessions:", sessions);
-    console.log("➡️ room:", phong);
-    console.log("➡️ room weeks:", getWeeksFromRoomString(phong));
 
     if (sessions.length === 0) {
       console.warn("⚠️ Không tách được session nào từ tiet:", tiet);
@@ -295,7 +282,6 @@ export function transformTimetableData(rawData) {
 
         let resolvedRoom = getRoomByGroupNumber(phong, ses.group, ses.thu);
 
-        // ✅ fallback nếu không tìm thấy theo group (vì không có (1,2,3))
         if (resolvedRoom === "Không rõ phòng") {
           const lines = phong
             .trim()
@@ -303,7 +289,6 @@ export function transformTimetableData(rawData) {
             .map((line) => line.trim())
             .filter(Boolean);
 
-          // Ưu tiên lấy dòng sau (1,2,3) nếu có
           let found = false;
           for (let i = 0; i < lines.length - 1; i++) {
             if (/^\((\d+(,\d+)*)\)$/.test(lines[i])) {
@@ -316,17 +301,14 @@ export function transformTimetableData(rawData) {
             }
           }
 
-          // Nếu không có dòng (1,2,3), dùng toàn bộ phong.trim()
           if (!found) {
             if (lines.length === 1) {
-              // Nếu chỉ có 1 dòng như "C5.402 C5", lấy token đầu tiên là phòng
               const tokens = lines[0].split(/\s+/);
               const maybeRoom = tokens.find((token) =>
                 /[A-Za-z]+\d+(\.\d+)?/.test(token)
               );
-              resolvedRoom = maybeRoom || lines[0]; // fallback dùng cả dòng nếu ko match gì
+              resolvedRoom = maybeRoom || lines[0];
             } else {
-              // Nếu nhiều dòng thì ưu tiên dòng có định dạng phòng
               const fallbackLine = lines.find((line) =>
                 /[A-Za-z]+\d+(\.\d+)?/.test(line)
               );

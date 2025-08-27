@@ -656,7 +656,7 @@ document.querySelectorAll(".tab-btn").forEach((btn) => {
       .forEach((b) => b.classList.remove("active"));
     btn.classList.add("active");
 
-    // 💥 Hiệu ứng ripple khi bấm tab
+
     const rect = btn.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
@@ -832,18 +832,18 @@ document.addEventListener("DOMContentLoaded", () => {
         );
       }
 
-      // Xoá cache cũ
+ 
       localStorage.removeItem("lichHocCache");
       localStorage.removeItem("lichThiCache");
 
       await renderFullTimetable();
       await renderLichThi();
 
-      // ✅ Thông báo thành công bằng modal đẹp
+    
       showSyncModal("✅ Đồng bộ thành công!");
     } catch (err) {
       console.warn("[SYNC] Lỗi:", err);
-      // ❌ Thông báo thất bại bằng modal (ẩn an toàn)
+     
       showSyncModal(
         "❌ Đồng bộ thất bại. Vui lòng thử lại hoặc đăng nhập lại."
       );
@@ -857,7 +857,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-// ✅ Hàm toast nổi đơn giản
+
 
 function showSyncModal(message) {
   const existing = document.getElementById("sync-modal");
@@ -866,7 +866,7 @@ function showSyncModal(message) {
   const modalOverlay = document.createElement("div");
   modalOverlay.id = "sync-modal";
 
-  // 👉 Dùng chiều cao thực tế thay vì '100vh'
+ 
   const screenHeight = window.innerHeight + "px";
 
   Object.assign(modalOverlay.style, {
@@ -893,7 +893,7 @@ function showSyncModal(message) {
     width: "80%",
     maxWidth: "360px",
     boxSizing: "border-box",
-    position: "relative", // ⚠ Đừng để fixed ở đây nữa
+    position: "relative", 
   });
 
   const text = document.createElement("div");

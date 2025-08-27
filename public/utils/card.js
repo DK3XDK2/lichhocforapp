@@ -92,10 +92,10 @@ export function transformTimetableData(rawData) {
       const endDate = parseDateVN(to);
       const weeksToLearn = getWeeksFromRoomString(phong);
 
-      // Tính ngày bắt đầu và kết thúc khoảng tuần hợp lệ dựa theo dữ liệu thực tế
-      const startOfValidRange = new Date(START_DATE); // tuần 1
+      
+      const startOfValidRange = new Date(START_DATE); 
       const weeksInRoom = getWeeksFromRoomString(phong);
-      const maxWeek = Math.max(...weeksInRoom, 20); // ép tối thiểu là 20
+      const maxWeek = Math.max(...weeksInRoom, 20); 
 
       const endOfValidRange = new Date(START_DATE);
       endOfValidRange.setDate(endOfValidRange.getDate() + maxWeek * 7 - 1);
@@ -239,7 +239,7 @@ function getRoomForWeek(roomStr, weekNumber) {
     }
   }
 
-  // 🐞 Debug cặp tuần–phòng
+ 
   console.log("🧩 Pairs tuần–phòng:");
   pairs.forEach((p, i) =>
     console.log(`  [${i}] Tuần: ${p.weeks.join(",")} → Phòng: ${p.room}`)
@@ -252,10 +252,10 @@ function getRoomForWeek(roomStr, weekNumber) {
     }
   }
 
-  // 🛑 Không match được
+ 
   console.warn(`⚠️ Tuần ${weekNumber} → KHÔNG tìm thấy phòng phù hợp.`);
 
-  // fallback nếu không có match
+ 
   if (pairs.length === 0 && lines.length === 1) {
     console.log(`💡 Fallback: chỉ có 1 dòng → dùng phòng: ${lines[0]}`);
     return lines[0];
@@ -272,7 +272,7 @@ function getRoomForWeek(roomStr, weekNumber) {
 }
 
 function resolveRoomByWeekAndSessionDates(roomStr, weekNumber, sessions) {
-  // B1: map group → [from, to, thu]
+ 
   const groupDateMap = {};
   for (const ses of sessions) {
     const { from, to, thu, group } = ses;
@@ -285,7 +285,6 @@ function resolveRoomByWeekAndSessionDates(roomStr, weekNumber, sessions) {
     groupDateMap[group].push({ startDate, endDate, thu });
   }
 
-  // B2: tạo map group → set(weekNumber)
   const groupToWeeks = {};
   for (const [group, periods] of Object.entries(groupDateMap)) {
     const weekSet = new Set();
@@ -303,7 +302,7 @@ function resolveRoomByWeekAndSessionDates(roomStr, weekNumber, sessions) {
     groupToWeeks[group] = weekSet;
   }
 
-  // B3: parse (1), (2)... và phòng tương ứng từ roomStr
+  
   const lines = roomStr
     .split("\n")
     .map((l) => l.trim())
@@ -323,7 +322,7 @@ function resolveRoomByWeekAndSessionDates(roomStr, weekNumber, sessions) {
     }
   }
 
-  // B4: So sánh weekNumber với các nhóm theo khoảng
+ 
   for (const pair of pairs) {
     for (const g of pair.groups) {
       const weeks = groupToWeeks[g];

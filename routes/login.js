@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const checkDangNhap = require("../path/to/checkDangNhap"); // Đảm bảo đúng đường dẫn
+const checkDangNhap = require("../path/to/checkDangNhap"); 
 
 const princessMSSV = "dtc245310153";
 router.post("/login", async (req, res) => {

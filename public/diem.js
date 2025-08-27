@@ -4,7 +4,7 @@ async function fetchAndRenderDiem() {
     const json = await res.json();
     console.log("Dữ liệu API điểm:", json);
 
-    // Nếu API có 2 lớp success/data
+  
     const innerData = json.data?.data || {};
     const { summary = [], details = [] } = innerData;
 
@@ -20,7 +20,7 @@ async function fetchAndRenderDiem() {
 
     let html = "";
 
-    // ==== PHẦN 1: CARD TÓM TẮT ====
+  
     html += `<h2 class="section-title">Tóm tắt kết quả học tập</h2>`;
     html += `<div class="summary-cards">`;
     summary.forEach((row) => {
@@ -39,7 +39,7 @@ async function fetchAndRenderDiem() {
     });
     html += `</div>`;
 
-    // ==== PHẦN 2: BẢNG CHI TIẾT ====
+   
     html += `<h2 class="section-title">Chi tiết điểm từng môn</h2>`;
     html += `<div class="table-wrapper"><table class="table-diem">
               <thead>
