@@ -8,6 +8,30 @@ const getLichThi = require("./getLichThi");
 const getLichHoc = require("./getLichHoc");
 const cron = require("node-cron");
 
+// Helper function để log vào cả console và file (nếu có thể)
+function logToFile(message, level = "info") {
+  const timestamp = new Date().toISOString();
+  const logMessage = `[${timestamp}] [${level.toUpperCase()}] ${message}\n`;
+
+  // Log vào console (Railway sẽ capture stdout/stderr)
+  if (level === "error") {
+    console.error(logMessage.trim());
+  } else {
+    console.log(logMessage.trim());
+  }
+
+  // Thử log vào file (nếu có quyền)
+  try {
+    const logDir = "./logs";
+    if (!fs.existsSync(logDir)) {
+      fs.mkdirSync(logDir, { recursive: true });
+    }
+    fs.appendFileSync(`${logDir}/app.log`, logMessage, "utf8");
+  } catch (err) {
+    // Ignore file logging errors (có thể không có quyền trên Railway)
+  }
+}
+
 const app = express();
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "../views"));
@@ -89,6 +113,11 @@ function timeoutPromise(ms, promise) {
 app.post("/login", async (req, res) => {
   const { mssv, matkhau } = req.body;
 
+  logToFile(
+    `🔐 Login attempt: ${mssv} (${
+      isProduction ? "Production" : "Development"
+    }) on ${process.platform}`
+  );
   console.log("🔐 Login attempt:", {
     mssv,
     isProduction,
@@ -106,6 +135,7 @@ app.post("/login", async (req, res) => {
 
   try {
     // Chạy tuần tự thay vì parallel để tránh quá tải memory trên Railway
+    logToFile("📥 Fetching LichThi...");
     console.log("📥 Fetching LichThi...");
     let lichThiRaw;
     try {
@@ -113,13 +143,17 @@ app.post("/login", async (req, res) => {
         loginTimeout / 2, // 90 giây cho mỗi request
         getLichThi(mssv, matkhau)
       );
+      logToFile("✅ LichThi fetched successfully");
       console.log("✅ LichThi fetched successfully");
     } catch (lichThiErr) {
+      logToFile(`❌ Lỗi khi fetch LichThi: ${lichThiErr.message}`, "error");
+      logToFile(`❌ LichThi error stack: ${lichThiErr.stack}`, "error");
       console.error("❌ Lỗi khi fetch LichThi:", lichThiErr.message);
       console.error("❌ LichThi error stack:", lichThiErr.stack);
       throw new Error(`Lỗi khi lấy lịch thi: ${lichThiErr.message}`);
     }
 
+    logToFile("📥 Fetching LichHoc...");
     console.log("📥 Fetching LichHoc...");
     let lichHocRaw;
     try {
@@ -127,8 +161,11 @@ app.post("/login", async (req, res) => {
         loginTimeout / 2, // 90 giây cho mỗi request
         getLichHoc(mssv, matkhau)
       );
+      logToFile("✅ LichHoc fetched successfully");
       console.log("✅ LichHoc fetched successfully");
     } catch (lichHocErr) {
+      logToFile(`❌ Lỗi khi fetch LichHoc: ${lichHocErr.message}`, "error");
+      logToFile(`❌ LichHoc error stack: ${lichHocErr.stack}`, "error");
       console.error("❌ Lỗi khi fetch LichHoc:", lichHocErr.message);
       console.error("❌ LichHoc error stack:", lichHocErr.stack);
       throw new Error(`Lỗi khi lấy lịch học: ${lichHocErr.message}`);
@@ -207,9 +244,7 @@ app.post("/login", async (req, res) => {
     return res.redirect("/lichcanhan");
   } catch (err) {
     // Log đầy đủ thông tin lỗi
-    console.error("❌ Lỗi đăng nhập:", err.message);
-    console.error("❌ Stack:", err.stack);
-    console.error("❌ Error details:", {
+    const errorDetails = {
       name: err.name,
       message: err.message,
       platform: process.platform,
@@ -217,7 +252,15 @@ app.post("/login", async (req, res) => {
       code: err.code,
       syscall: err.syscall,
       path: err.path,
-    });
+    };
+
+    logToFile(`❌ Lỗi đăng nhập: ${err.message}`, "error");
+    logToFile(`❌ Stack: ${err.stack}`, "error");
+    logToFile(`❌ Error details: ${JSON.stringify(errorDetails)}`, "error");
+
+    console.error("❌ Lỗi đăng nhập:", err.message);
+    console.error("❌ Stack:", err.stack);
+    console.error("❌ Error details:", errorDetails);
 
     // Log thêm nếu là Puppeteer error
     if (err.message.includes("Puppeteer") || err.message.includes("browser")) {
