@@ -1,0 +1,38 @@
+[
+  {
+    "thu": "1",
+    "lop": "Hệ thống thông tin quản lý-2-25 (K23A.MKTSO.K2.D1.N01)",
+    "monHoc": "MIS231",
+    "tiet": "Từ 03/11/2025 đến 04/01/2026:\n   Thứ 3 tiết 1,2,3,4,5 (LT)",
+    "phong": "C5.401 C5",
+    "giangVien": "Lý Thu Trang",
+    "tuan": "48"
+  },
+  {
+    "thu": "2",
+    "lop": "Phát triển hệ thống thông tin quản lý-2-25 (K23A.MKTSO.K2.D1.N01)",
+    "monHoc": "PTQ332",
+    "tiet": "Từ 03/11/2025 đến 04/01/2026:\n   Thứ 4 tiết 1,2,3,4,5 (LT)",
+    "phong": "C5.401 C5",
+    "giangVien": "Đỗ Thị Quyên",
+    "tuan": "48"
+  },
+  {
+    "thu": "3",
+    "lop": "Quản trị dữ liệu doanh nghiệp-2-25 (K23A.MKTSO.K2.D1.N01)",
+    "monHoc": "EDM231",
+    "tiet": "Từ 03/11/2025 đến 23/11/2025: (1)\n   Thứ 5 tiết 1,2,3,4,5 (LT)\nTừ 24/11/2025 đến 30/11/2025: (2)\n   Thứ 5 tiết 1,2,3,4,5 (LT)\nTừ 01/12/2025 đến 04/01/2026: (3)\n   Thứ 5 tiết 1,2,3,4,5 (LT)",
+    "phong": "(1,3)\nC5.401 C5\n(2)\nC2.202 C2",
+    "giangVien": "Trần Lê Duy",
+    "tuan": "48"
+  },
+  {
+    "thu": "4",
+    "lop": "Triết học Mác - Lênin-2-25 (K23.LOGISTIC.QTKDSO.MKTSO.KTĐ-ĐT.K2.D1.N01)",
+    "monHoc": "POL131",
+    "tiet": "Từ 10/11/2025 đến 16/11/2025: (1)\n   Thứ 2 tiết 6,7,8,9,10 (LT)\nTừ 17/11/2025 đến 23/11/2025: (2)\n   Thứ 2 tiết 6,7,8,9,10 (LT)\nTừ 24/11/2025 đến 30/11/2025: (3)\n   Thứ 2 tiết 6,7,8,9,10 (LT)\nTừ 01/12/2025 đến 07/12/2025: (4)\n   Thứ 2 tiết 6,7,8,9,10 (LT)\nTừ 08/12/2025 đến 14/12/2025: (5)\n   Thứ 2 tiết 6,7,8,9,10 (LT)\nTừ 15/12/2025 đến 21/12/2025: (6)\n   Thứ 2 tiết 6,7,8,9,10 (LT)\nTừ 22/12/2025 đến 28/12/2025: (7)\n   Thứ 2 tiết 6,7,8,9,10 (LT)\nTừ 29/12/2025 đến 04/01/2026: (8)\n   Thứ 2 tiết 6,7,8,9,10 (LT)\nTừ 05/01/2026 đến 11/01/2026: (9)\n   Thứ 2 tiết 6,7,8,9,10 (LT)",
+    "phong": "(1,4,7,9)\nGĐTV1 Thư viện đa chức năng\n(2,3,5,6,8)\nOnline 37 Giảng đường online",
+    "giangVien": "Hoàng Ngọc Bích ( Mã Meet: gsr-hcqm-rfv link: https://meet.google.com/gsr-hcqm-rfv )",
+    "tuan": "225"
+  }
+]

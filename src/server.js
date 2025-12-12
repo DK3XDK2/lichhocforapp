@@ -78,14 +78,14 @@ app.post("/login", async (req, res) => {
     req.session.mssv = mssvFromWeb;
     req.session.password = matkhau;
     req.session.isPrincess =
-      mssvFromWeb.trim().toLowerCase() === "dtc245310153";
+      mssvFromWeb.trim().toLowerCase() === "dtc245280019";
 
     fs.writeFileSync(
-      `./data/${mssvFromWeb}_lichthi.json`,
+      `./Data/${mssvFromWeb}_lichthi.json`,
       JSON.stringify(lichThi, null, 2)
     );
     fs.writeFileSync(
-      `./data/${mssvFromWeb}_lichhoc.json`,
+      `./Data/${mssvFromWeb}_lichhoc.json`,
       JSON.stringify(lichHoc, null, 2)
     );
 
@@ -103,8 +103,8 @@ app.get("/xem-lich", (req, res) => {
   const mssv = req.session.mssv;
   if (!mssv) return res.redirect("/");
 
-  const lichThiPath = `./data/${mssv}_lichthi.json`;
-  const lichHocPath = `./data/${mssv}_lichhoc.json`;
+  const lichThiPath = `./Data/${mssv}_lichthi.json`;
+  const lichHocPath = `./Data/${mssv}_lichhoc.json`;
 
   if (!fs.existsSync(lichThiPath) || !fs.existsSync(lichHocPath)) {
     return res.send("Không có dữ liệu lịch để hiển thị.");
@@ -128,9 +128,8 @@ app.get("/logout", (req, res) => {
 
 // API trả thông tin user
 app.get("/api/user-info", (req, res) => {
-  const { name, mssv } = req.session || {};
+  const { name, mssv, isPrincess } = req.session || {};
   if (name && mssv) {
-    const { name, mssv, isPrincess } = req.session || {};
     res.json({
       success: true,
       data: { name, mssv, isPrincess: !!isPrincess },
@@ -170,7 +169,7 @@ app.get("/api/lich-hoc-no-auth", isAuthenticated, (req, res) => {
   const mssv = req.session.mssv;
   try {
     const data = JSON.parse(
-      fs.readFileSync(`./data/${mssv}_lichhoc.json`, "utf8")
+      fs.readFileSync(`./Data/${mssv}_lichhoc.json`, "utf8")
     );
     res.json({ success: true, data });
   } catch (err) {
@@ -185,7 +184,7 @@ app.get("/api/lich-thi-no-auth", isAuthenticated, (req, res) => {
   const mssv = req.session.mssv;
   try {
     const data = JSON.parse(
-      fs.readFileSync(`./data/${mssv}_lichthi.json`, "utf8")
+      fs.readFileSync(`./Data/${mssv}_lichthi.json`, "utf8")
     );
     res.json({ success: true, data });
   } catch (err) {
@@ -213,11 +212,11 @@ app.post("/sync", async (req, res) => {
     const lichHoc = Array.isArray(lichHocRaw?.data) ? lichHocRaw.data : [];
 
     fs.writeFileSync(
-      `./data/${mssv}_lichthi.json`,
+      `./Data/${mssv}_lichthi.json`,
       JSON.stringify(lichThi, null, 2)
     );
     fs.writeFileSync(
-      `./data/${mssv}_lichhoc.json`,
+      `./Data/${mssv}_lichhoc.json`,
       JSON.stringify(lichHoc, null, 2)
     );
 

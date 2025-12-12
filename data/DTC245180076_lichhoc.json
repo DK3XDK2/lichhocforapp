@@ -1,47 +1,38 @@
 [
   {
     "thu": "1",
-    "lop": "Cơ sở dữ liệu-1-25 (K23B.KTPM.D1.K1.N14)",
-    "monHoc": "BAD131",
-    "tiet": "Từ 04/08/2025 đến 05/10/2025:\n   Thứ 5 tiết 1,2,3,4,5 (LT)",
-    "phong": "C5.304 C5",
+    "lop": "Phân tích thiết kế hệ thống-2-25 (KTPM.K23B.D1.K2.N08)",
+    "monHoc": "ASD232",
+    "tiet": "Từ 03/11/2025 đến 16/11/2025: (1)\n   Thứ 3 tiết 1,2,3,4,5 (LT)\nTừ 17/11/2025 đến 23/11/2025: (2)\n   Thứ 3 tiết 1,2,3,4,5 (LT)\nTừ 24/11/2025 đến 04/01/2026: (3)\n   Thứ 3 tiết 1,2,3,4,5 (LT)",
+    "phong": "(1,3)\nC5.206 C5\n(2)\nC5.405 C5",
     "giangVien": "Lê Thu Trang ( Mã Meet: ivx-bwna-ens link: meet.google.com/ivx-bwna-ens )",
     "tuan": "60"
   },
   {
     "thu": "2",
-    "lop": "Mạng máy tính-1-25 (K23B.KTPM.D1.K1.N14)",
-    "monHoc": "CON131",
-    "tiet": "Từ 04/08/2025 đến 10/08/2025: (1)\n   Thứ 7 tiết 1,2,3,4,5 (LT)\nTừ 11/08/2025 đến 24/08/2025: (2)\n   Thứ 7 tiết 1,2,3,4,5 (LT)\nTừ 01/09/2025 đến 28/09/2025: (3)\n   Thứ 7 tiết 1,2,3,4,5 (LT)\nTừ 29/09/2025 đến 05/10/2025: (4)\n   Thứ 7 tiết 1,2,3,4,5 (LT)\nTừ 06/10/2025 đến 12/10/2025: (5)\n   Thứ 7 tiết 1,2,3,4,5 (LT)",
-    "phong": "(1,4,5)\nC5.104 C5\n(2,3)\nC5.302 C5",
-    "giangVien": "Lê Tuấn Anh",
+    "lop": "Toán rời rạc-2-25 (KTPM.K23B.D1.K2.N14)",
+    "monHoc": "DEM231",
+    "tiet": "Từ 03/11/2025 đến 09/11/2025: (1)\n   Thứ 6 tiết 1,2,3,4,5 (LT)\nTừ 10/11/2025 đến 21/12/2025: (2)\n   Thứ 6 tiết 1,2,3,4,5 (LT)\nTừ 22/12/2025 đến 28/12/2025: (3)\n   Thứ 6 tiết 1,2,3,4,5 (LT)\n   Chủ nhật tiết 1,2,3,4,5 (LT)",
+    "phong": "(1)\nC2.302 C2\n(2)\nC5.206 C5\n(3)\n[T6] C5.206 C5\n[CN] C5.404 C5",
+    "giangVien": "Nguyễn Đình Dũng ( Mã Meet: huo-yfvq-enm link: http://meet.google.com/huo-yfvq-enm )",
     "tuan": "60"
   },
   {
     "thu": "3",
-    "lop": "Ngoại ngữ nhóm ngành máy tính và CNTT-1-25 (K23B.KTPM.D1.K1.N14)",
-    "monHoc": "FCI130",
-    "tiet": "Từ 04/08/2025 đến 31/08/2025: (1)\n   Thứ 3 tiết 1,2,3,4,5 (LT)\nTừ 08/09/2025 đến 05/10/2025: (2)\n   Thứ 3 tiết 1,2,3,4,5 (LT)\nTừ 06/10/2025 đến 12/10/2025: (3)\n   Thứ 3 tiết 1,2,3,4,5 (LT)",
-    "phong": "C3.101 C3",
-    "giangVien": "Hoàng Văn Sáu ( Mã Meet: wpk-nnjf-awm link: meet.google.com/wpk-nnjf-awm )",
-    "tuan": "60"
+    "lop": "Triết học Mác - Lênin-2-25 (KTPM_ABC.KHMT.K23.D1.K2.N05)",
+    "monHoc": "POL131",
+    "tiet": "Từ 03/11/2025 đến 09/11/2025: (1)\n   Thứ 4 tiết 1,2,3,4,5 (LT)\nTừ 10/11/2025 đến 16/11/2025: (2)\n   Thứ 4 tiết 1,2,3,4,5 (LT)\nTừ 17/11/2025 đến 23/11/2025: (3)\n   Thứ 4 tiết 1,2,3,4,5 (LT)\nTừ 24/11/2025 đến 30/11/2025: (4)\n   Thứ 4 tiết 1,2,3,4,5 (LT)\nTừ 01/12/2025 đến 07/12/2025: (5)\n   Thứ 4 tiết 1,2,3,4,5 (LT)\nTừ 08/12/2025 đến 14/12/2025: (6)\n   Thứ 4 tiết 1,2,3,4,5 (LT)\nTừ 15/12/2025 đến 21/12/2025: (7)\n   Thứ 4 tiết 1,2,3,4,5 (LT)\nTừ 22/12/2025 đến 28/12/2025: (8)\n   Thứ 4 tiết 1,2,3,4,5 (LT)\nTừ 29/12/2025 đến 04/01/2026: (9)\n   Thứ 4 tiết 1,2,3,4,5 (LT)",
+    "phong": "(1,4,7,9)\nGĐTV1 Thư viện đa chức năng\n(2,3,5,6,8)\nOnline 38 Giảng đường online",
+    "giangVien": "Đặng Thị Kim Dung ( Mã Meet: afg-woxj-ryd link: https://meet.google.com/afg-woxj-ryd )",
+    "tuan": "240"
   },
   {
     "thu": "4",
-    "lop": "Thiết kế web-1-25 (K23B.KTPM.D1.K1.N14)",
-    "monHoc": "WED331",
-    "tiet": "Từ 04/08/2025 đến 10/08/2025: (1)\n   Chủ nhật tiết 1,2,3,4,5 (LT)\nTừ 11/08/2025 đến 05/10/2025: (2)\n   Thứ 6 tiết 1,2,3,4,5 (LT)",
-    "phong": "C5.303 C5",
-    "giangVien": "Phạm Xuân Kiên ( Mã Meet: kwd-kgsx-tqc link: https://meet.google.com/kwd-kgsx-tqc )",
+    "lop": "Xác suất thống kê-2-25 (KTPM.K23B.D1.K2.N14)",
+    "monHoc": "PST231",
+    "tiet": "Từ 03/11/2025 đến 09/11/2025: (1)\n   Thứ 5 tiết 1,2,3,4,5 (LT)\nTừ 17/11/2025 đến 28/12/2025: (2)\n   Thứ 5 tiết 1,2,3,4,5 (LT)\nTừ 05/01/2026 đến 11/01/2026: (3)\n   Thứ 5 tiết 1,2,3,4,5 (LT)\nTừ 05/01/2026 đến 11/01/2026: (4)\n   Thứ 6 tiết 6,7,8,9,10 (LT)",
+    "phong": "(1)\nC2.303 C2\n(2,3)\nC5.206 C5\n(4)\nC5.205 C5",
+    "giangVien": "Trương Hà Hải ( Mã Meet: yvk-fmbq-jws link: https://meet.google.com/yvk-fmbq-jws )",
     "tuan": "60"
-  },
-  {
-    "thu": "",
-    "lop": "Tổng",
-    "monHoc": "",
-    "tiet": "",
-    "phong": "",
-    "giangVien": "",
-    "tuan": ""
   }
 ]

@@ -173,7 +173,8 @@ function renderDayCard(dateObj, lessons = []) {
   dayCard.className = "day-card";
 
   const dayNumber = dateObj.getDate();
-  const weekdayName = getWeekdayName(dateObj.getDay());
+  const dateStr = format(dateObj, "yyyy-MM-dd");
+  const weekdayName = getWeekdayLabel(dateStr);
 
   const headerHTML = `
     <div class="day-header">
@@ -362,9 +363,14 @@ async function renderLichThi() {
 
     if (Array.isArray(data)) {
       for (const item of data) {
-        const date = item.ngayThi;
-        if (!groupedByDay[date]) groupedByDay[date] = [];
-        groupedByDay[date].push(item);
+        // Convert date from dd/mm/yyyy to yyyy-mm-dd
+        const dateParts = item.ngayThi.split("/");
+        if (dateParts.length === 3) {
+          const [dd, mm, yyyy] = dateParts;
+          const date = `${yyyy}-${mm.padStart(2, "0")}-${dd.padStart(2, "0")}`;
+          if (!groupedByDay[date]) groupedByDay[date] = [];
+          groupedByDay[date].push(item);
+        }
       }
     }
 
@@ -934,6 +940,28 @@ function showSyncModal(message) {
   modalOverlay.appendChild(modalBox);
   document.body.appendChild(modalOverlay);
   document.body.style.overflow = "hidden";
+}
+
+function showOfflineNotice() {
+  // Tạo toast thông báo nếu chưa có
+  let toast = document.getElementById("offline-toast");
+  if (!toast) {
+    toast = document.createElement("div");
+    toast.id = "offline-toast";
+    toast.className =
+      "fixed bottom-4 right-4 bg-yellow-500 text-white px-4 py-2 rounded-lg shadow-lg z-50";
+    toast.textContent = "⚠️ Đang sử dụng dữ liệu đã lưu (offline)";
+    document.body.appendChild(toast);
+
+    // Tự động ẩn sau 3 giây
+    setTimeout(() => {
+      if (toast) {
+        toast.style.opacity = "0";
+        toast.style.transition = "opacity 0.3s";
+        setTimeout(() => toast.remove(), 300);
+      }
+    }, 3000);
+  }
 }
 
 async function fetchWithCache(url, cacheKey) {

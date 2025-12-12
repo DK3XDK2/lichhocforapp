@@ -1,0 +1,776 @@
+{
+    "code": "success",
+    "message": "Request success!",
+    "draw": 1,
+    "next": 2,
+    "count": 1,
+    "recordsTotal": 1726831,
+    "recordsFiltered": 1,
+    "data": [
+        {
+            "id": 1789381,
+            "class_plan_activity_id": 0,
+            "av": 0,
+            "class_id": 2572,
+            "time": 0,
+            "questions": [
+                99346,
+                99012,
+                99344,
+                98897,
+                98887,
+                100469,
+                99255,
+                99008,
+                99010,
+                98958,
+                99198,
+                99243,
+                98884,
+                98957,
+                98888,
+                100395,
+                100374,
+                99009,
+                99345,
+                100346,
+                99011,
+                98886,
+                99323,
+                100347,
+                100375,
+                99339,
+                98956,
+                100378,
+                98885
+            ],
+            "course_id": 20360,
+            "status": -1,
+            "created_at": "2025-08-14T23:53:43.000Z",
+            "week": 2,
+            "test": [
+                {
+                    "id": 98884,
+                    "question_number": 0,
+                    "question_direction": "<p><!--StartFragment--><span><strong>Kéo thả các thẻ HTML vào các ô tương ứng với mô tả trong cấu trúc của một tài liệu HTML:</strong></span><!--EndFragment--></p>",
+                    "question_type": "drag_drop",
+                    "answer_option": [
+                        {
+                            "id": "11",
+                            "value": "<html>"
+                        },
+                        {
+                            "id": "10",
+                            "value": "<head>"
+                        },
+                        {
+                            "id": "8",
+                            "value": "<body>"
+                        },
+                        {
+                            "id": "9",
+                            "value": "<title>"
+                        }
+                    ],
+                    "shuff": null,
+                    "part": 0,
+                    "group_id": 0,
+                    "media": null,
+                    "config": {
+                        "cols": 1,
+                        "invertedAnswer": true
+                    },
+                    "skill": null,
+                    "cdr": 2,
+                    "code": "",
+                    "number_answer_correct": 1
+                },
+                {
+                    "id": 98885,
+                    "question_number": 0,
+                    "question_direction": "Bao toàn bộ nội dung trang web",
+                    "question_type": "drag_drop",
+                    "answer_option": [],
+                    "shuff": null,
+                    "part": 0,
+                    "group_id": 98884,
+                    "media": null,
+                    "config": {
+                        "cols": 1,
+                        "invertedAnswer": true
+                    },
+                    "skill": null,
+                    "cdr": 2,
+                    "code": "",
+                    "number_answer_correct": 1
+                },
+                {
+                    "id": 98886,
+                    "question_number": 0,
+                    "question_direction": "Chứa thông tin cấu hình như tiêu đề, charset, CSS,...",
+                    "question_type": "drag_drop",
+                    "answer_option": [],
+                    "shuff": null,
+                    "part": 0,
+                    "group_id": 98884,
+                    "media": null,
+                    "config": {
+                        "cols": 1,
+                        "invertedAnswer": true
+                    },
+                    "skill": null,
+                    "cdr": 2,
+                    "code": "",
+                    "number_answer_correct": 1
+                },
+                {
+                    "id": 98887,
+                    "question_number": 0,
+                    "question_direction": "Chứa nội dung chính sẽ hiển thị trên trình duyệt",
+                    "question_type": "drag_drop",
+                    "answer_option": [],
+                    "shuff": null,
+                    "part": 0,
+                    "group_id": 98884,
+                    "media": null,
+                    "config": {
+                        "cols": 1,
+                        "invertedAnswer": true
+                    },
+                    "skill": null,
+                    "cdr": 2,
+                    "code": "",
+                    "number_answer_correct": 1
+                },
+                {
+                    "id": 98888,
+                    "question_number": 0,
+                    "question_direction": "Hiển thị tiêu đề trang trên tab trình duyệt",
+                    "question_type": "drag_drop",
+                    "answer_option": [],
+                    "shuff": null,
+                    "part": 0,
+                    "group_id": 98884,
+                    "media": null,
+                    "config": {
+                        "cols": 1,
+                        "invertedAnswer": true
+                    },
+                    "skill": null,
+                    "cdr": 2,
+                    "code": "",
+                    "number_answer_correct": 1
+                },
+                {
+                    "id": 98897,
+                    "question_number": 0,
+                    "question_direction": "<p><!--StartFragment--><span><strong>Để hiển thị một đoạn mã lập trình (code) trên trang web nhằm giúp người đọc nhận biết đó là mã nguồn, thẻ HTML nào nên được sử dụng?</strong></span><!--EndFragment--></p>",
+                    "question_type": "radio",
+                    "answer_option": [
+                        {
+                            "id": "1",
+                            "value": "<p><!--StartFragment--><span>&lt;code&gt;&nbsp;&nbsp;</span><!--EndFragment--></p>"
+                        },
+                        {
+                            "id": "2",
+                            "value": "<p><!--StartFragment--><span>&lt;source&gt;</span><!--EndFragment--></p>"
+                        },
+                        {
+                            "id": "3",
+                            "value": "<p><!--StartFragment--><span>&lt;text&gt;</span><!--EndFragment--></p>"
+                        },
+                        {
+                            "id": "4",
+                            "value": "<p><!--StartFragment--><span>&lt;pre&gt;</span><!--EndFragment--></p>"
+                        }
+                    ],
+                    "shuff": null,
+                    "part": 0,
+                    "group_id": 0,
+                    "media": null,
+                    "config": {
+                        "cols": 2,
+                        "invertedAnswer": true
+                    },
+                    "skill": null,
+                    "cdr": 2,
+                    "code": "",
+                    "number_answer_correct": 1
+                },
+                {
+                    "id": 98956,
+                    "question_number": 0,
+                    "question_direction": "<!--StartFragment--><p class=\"MsoNormal\" align=\"left\"><span style=\"color:black;\">Hãy điền các thẻ HTML phù hợp vào chỗ trống để đoạn văn bản “W3School” trở thành một liên kết tới tài liệu “</span><span style=\"color:blue;\">https://www.w3schools.com”</span><span style=\"color:black;\">.</span></p><figure class=\"image\"><img src=\"295814\" alt=\"295814|serverAws\" data-org=\"serverAws\"></figure><p><!--StartFragment--><span>(Với cách điền theo ví dụ: </span><!--StartFragment--><span style=\"background-color:rgb(255,255,255);color:rgb(153,0,85);\">p</span><span style=\"background-color:rgb(255,255,255);color:green;\"><span class=\"attributecolor\">&nbsp;style</span></span><span style=\"background-color:rgb(255,255,255);color:rgb(0,92,197);\"><span class=\"attributecolor attributevaluecolor\">=\"color:red;\"</span></span><!--EndFragment--><span>)</span><!--EndFragment--></p><p class=\"MsoNormal\" align=\"left\"><o:p></o:p></p><!--EndFragment-->",
+                    "question_type": "group-input",
+                    "answer_option": [],
+                    "shuff": null,
+                    "part": 0,
+                    "group_id": 0,
+                    "media": null,
+                    "config": {
+                        "cols": 2,
+                        "invertedAnswer": true
+                    },
+                    "skill": null,
+                    "cdr": 3,
+                    "code": "",
+                    "number_answer_correct": 1
+                },
+                {
+                    "id": 98957,
+                    "question_number": 0,
+                    "question_direction": "Đáp án tại vị trí (1) là::",
+                    "question_type": "group-input",
+                    "answer_option": [],
+                    "shuff": null,
+                    "part": 0,
+                    "group_id": 98956,
+                    "media": null,
+                    "config": {
+                        "cols": 1,
+                        "invertedAnswer": true
+                    },
+                    "skill": null,
+                    "cdr": 3,
+                    "code": "",
+                    "number_answer_correct": 1
+                },
+                {
+                    "id": 98958,
+                    "question_number": 0,
+                    "question_direction": "Đáp án tại vị trí (2) là: ",
+                    "question_type": "group-input",
+                    "answer_option": [],
+                    "shuff": null,
+                    "part": 0,
+                    "group_id": 98956,
+                    "media": null,
+                    "config": {
+                        "cols": 1,
+                        "invertedAnswer": true
+                    },
+                    "skill": null,
+                    "cdr": 3,
+                    "code": "",
+                    "number_answer_correct": 1
+                },
+                {
+                    "id": 99008,
+                    "question_number": 0,
+                    "question_direction": "<!--StartFragment--><p class=\"MsoNormal\" align=\"left\"><span style=\"color:black;\"><strong>Hãy điền các thẻ HTML phù hợp vào chỗ trống trong đoạn mã sau:</strong></span></p><figure class=\"image image_resized image-style-align-center\" style=\"width:528px;\"><img src=\"296008\" alt=\"296008|serverAws\" data-org=\"serverAws\"></figure><p class=\"MsoNormal\" align=\"left\"><!--StartFragment--><span style=\"color:black;\">(Với cách điền theo ví dụ: &lt;b&gt; )</span><o:p></o:p><!--EndFragment--><o:p></o:p></p><!--EndFragment-->",
+                    "question_type": "group-input",
+                    "answer_option": [],
+                    "shuff": null,
+                    "part": 0,
+                    "group_id": 0,
+                    "media": null,
+                    "config": {
+                        "cols": 2,
+                        "invertedAnswer": true
+                    },
+                    "skill": null,
+                    "cdr": 3,
+                    "code": "",
+                    "number_answer_correct": 1
+                },
+                {
+                    "id": 99009,
+                    "question_number": 0,
+                    "question_direction": "Đáp án (1): ",
+                    "question_type": "group-input",
+                    "answer_option": [],
+                    "shuff": null,
+                    "part": 0,
+                    "group_id": 99008,
+                    "media": null,
+                    "config": {
+                        "cols": 1,
+                        "invertedAnswer": true
+                    },
+                    "skill": null,
+                    "cdr": 3,
+                    "code": "",
+                    "number_answer_correct": 1
+                },
+                {
+                    "id": 99010,
+                    "question_number": 0,
+                    "question_direction": "Đáp án (2): ",
+                    "question_type": "group-input",
+                    "answer_option": [],
+                    "shuff": null,
+                    "part": 0,
+                    "group_id": 99008,
+                    "media": null,
+                    "config": {
+                        "cols": 1,
+                        "invertedAnswer": true
+                    },
+                    "skill": null,
+                    "cdr": 3,
+                    "code": "",
+                    "number_answer_correct": 1
+                },
+                {
+                    "id": 99011,
+                    "question_number": 0,
+                    "question_direction": "Đáp án (3): ",
+                    "question_type": "group-input",
+                    "answer_option": [],
+                    "shuff": null,
+                    "part": 0,
+                    "group_id": 99008,
+                    "media": null,
+                    "config": {
+                        "cols": 1,
+                        "invertedAnswer": true
+                    },
+                    "skill": null,
+                    "cdr": 3,
+                    "code": "",
+                    "number_answer_correct": 1
+                },
+                {
+                    "id": 99012,
+                    "question_number": 0,
+                    "question_direction": "Đáp án (4): ",
+                    "question_type": "group-input",
+                    "answer_option": [],
+                    "shuff": null,
+                    "part": 0,
+                    "group_id": 99008,
+                    "media": null,
+                    "config": {
+                        "cols": 1,
+                        "invertedAnswer": true
+                    },
+                    "skill": null,
+                    "cdr": 3,
+                    "code": "",
+                    "number_answer_correct": 1
+                },
+                {
+                    "id": 99198,
+                    "question_number": 0,
+                    "question_direction": "<p><!--StartFragment--><span><strong>Trong HTML5, đâu là cách chính xác để tạo một trang web cần tích hợp phần tử video có thể phát trên nhiều trình duyệt bằng cách cung cấp nhiều định dạng nguồn, đồng thời hiển thị thông báo nếu trình duyệt không hỗ trợ thẻ video:</strong></span><!--EndFragment--></p>",
+                    "question_type": "radio",
+                    "answer_option": [
+                        {
+                            "id": "1",
+                            "value": "<figure class=\"image\"><img data-org=\"serverAws\" src=\"296222\" alt=\"296222|serverAws\"></figure>"
+                        },
+                        {
+                            "id": "2",
+                            "value": "<figure class=\"image\"><img data-org=\"serverAws\" src=\"296236\" alt=\"296236|serverAws\"></figure>"
+                        },
+                        {
+                            "id": "3",
+                            "value": "<figure class=\"image\"><img data-org=\"serverAws\" src=\"296240\" alt=\"296240|serverAws\"></figure>"
+                        },
+                        {
+                            "id": "4",
+                            "value": "<figure class=\"image\"><img data-org=\"serverAws\" src=\"296248\" alt=\"296248|serverAws\"></figure>"
+                        }
+                    ],
+                    "shuff": null,
+                    "part": 0,
+                    "group_id": 0,
+                    "media": null,
+                    "config": {
+                        "cols": 2,
+                        "invertedAnswer": true
+                    },
+                    "skill": null,
+                    "cdr": 3,
+                    "code": "",
+                    "number_answer_correct": 1
+                },
+                {
+                    "id": 99243,
+                    "question_number": 0,
+                    "question_direction": "<p><!--StartFragment--><span style=\"color:black;\"><strong>Một trang web cần hiển thị danh sách không có thứ tự gồm ba mục: \"Apple\", \"Banana\", và \"Orange\". Cú pháp HTML nào sau đây là phù hợp?</strong></span><!--EndFragment--></p>",
+                    "question_type": "radio",
+                    "answer_option": [
+                        {
+                            "id": "1",
+                            "value": "<figure class=\"image image_resized\" style=\"width:361px;\"><img src=\"296290\" alt=\"296290|serverAws\" data-org=\"serverAws\"></figure>"
+                        },
+                        {
+                            "id": "2",
+                            "value": "<figure class=\"image image_resized\" style=\"width:365px;\"><img src=\"296289\" alt=\"296289|serverAws\" data-org=\"serverAws\"></figure>"
+                        },
+                        {
+                            "id": "3",
+                            "value": "<figure class=\"image image_resized\" style=\"width:375px;\"><img src=\"296288\" alt=\"296288|serverAws\" data-org=\"serverAws\"></figure>"
+                        },
+                        {
+                            "id": "4",
+                            "value": "<figure class=\"image image_resized\" style=\"width:366px;\"><img src=\"296283\" alt=\"296283|serverAws\" data-org=\"serverAws\"></figure>"
+                        }
+                    ],
+                    "shuff": null,
+                    "part": 0,
+                    "group_id": 0,
+                    "media": null,
+                    "config": {
+                        "cols": 2,
+                        "invertedAnswer": true
+                    },
+                    "skill": null,
+                    "cdr": 3,
+                    "code": "",
+                    "number_answer_correct": 1
+                },
+                {
+                    "id": 99255,
+                    "question_number": 0,
+                    "question_direction": "<p><!--StartFragment--><span style=\"color:black;\"><strong>Một trang web cần hiển thị đoạn video có kích thước 320x240 pixel. Cú pháp HTML nào sau đây là phù hợp?</strong></span><!--EndFragment--></p>",
+                    "question_type": "radio",
+                    "answer_option": [
+                        {
+                            "id": "1",
+                            "value": "<p><!--StartFragment--><span style=\"color:maroon;\">&lt;video</span><span style=\"color:black;\"> </span><span style=\"color:#E50000;\">width</span><span style=\"color:black;\">=</span><span style=\"color:blue;\">\"320\"</span><span style=\"color:black;\"> </span><span style=\"color:#E50000;\">height</span><span style=\"color:black;\">=</span><span style=\"color:blue;\">\"240\"</span><span style=\"color:maroon;\">&gt;&lt;/video&gt;&nbsp;</span><!--EndFragment--></p>"
+                        },
+                        {
+                            "id": "2",
+                            "value": "<!--StartFragment--><p class=\"MsoListParagraph\" align=\"left\"><!--[if !supportLists]--><span style=\"color:black;\"><span>&nbsp;</span></span><!--[endif]--><span style=\"color:maroon;\">&lt;video&gt;</span><span style=\"color:black;\"> </span><span style=\"color:maroon;\">&lt;width=\"320\"</span><span style=\"color:black;\"> </span><span style=\"color:#E50000;\">height</span><span style=\"color:black;\">=</span><span style=\"color:blue;\">\"240\"</span><span style=\"color:maroon;\">&gt;&lt;/video&gt;</span><o:p></o:p></p><!--EndFragment-->"
+                        },
+                        {
+                            "id": "3",
+                            "value": "<!--StartFragment--><p class=\"MsoListParagraph\" align=\"left\"><!--[endif]--><!--[if !supportLists]--><span style=\"color:maroon;\">&lt;video</span><span style=\"color:black;\"> </span><span style=\"color:#E50000;\">width</span><span style=\"color:black;\">=</span><span style=\"color:blue;\">\"320\"</span><span style=\"color:black;\"> </span><span style=\"color:#E50000;\">height</span><span style=\"color:black;\">=</span><span style=\"color:blue;\">\"240\"</span><span style=\"color:black;\"> </span><span style=\"color:#CD3131;\">/video</span><span style=\"color:maroon;\">&gt;</span><span style=\"color:black;\">&nbsp;</span><o:p></o:p></p><!--EndFragment-->"
+                        },
+                        {
+                            "id": "4",
+                            "value": "<!--StartFragment--><p class=\"MsoListParagraphCxSpFirst\" align=\"left\"><!--[endif]--><!--[if !supportLists]--><span style=\"color:maroon;\">&lt;video&gt;</span><span style=\"color:black;\"> </span><span style=\"color:maroon;\">&lt;width=\"320\"</span><span style=\"color:black;\"> </span><span style=\"color:#E50000;\">height</span><span style=\"color:black;\">=</span><span style=\"color:blue;\">\"240\"</span><span style=\"color:maroon;\">&gt;</span><o:p></o:p></p><p class=\"MsoListParagraphCxSpLast\" align=\"left\"><span style=\"color:maroon;\">&lt;source</span><span style=\"color:black;\"> </span><span style=\"color:#E50000;\">src</span><span style=\"color:black;\">=</span><span style=\"color:blue;\">\"movie.mp4\"</span><span style=\"color:maroon;\">&gt;&lt;/source&gt;&lt;/video&gt;</span><o:p></o:p></p><!--EndFragment-->"
+                        }
+                    ],
+                    "shuff": null,
+                    "part": 0,
+                    "group_id": 0,
+                    "media": null,
+                    "config": {
+                        "cols": 2,
+                        "invertedAnswer": true
+                    },
+                    "skill": null,
+                    "cdr": 3,
+                    "code": "",
+                    "number_answer_correct": 1
+                },
+                {
+                    "id": 99323,
+                    "question_number": 0,
+                    "question_direction": "<p><!--StartFragment--><span><strong>Đâu là cú pháp đúng để tạo một tiêu đề cho bảng trong HTML?&nbsp;</strong></span><!--EndFragment--></p>",
+                    "question_type": "radio",
+                    "answer_option": [
+                        {
+                            "id": "1",
+                            "value": "<figure class=\"image\"><img data-org=\"serverAws\" src=\"296343\" alt=\"296343|serverAws\"></figure>"
+                        },
+                        {
+                            "id": "2",
+                            "value": "<figure class=\"image\"><img data-org=\"serverAws\" src=\"296349\" alt=\"296349|serverAws\"></figure>"
+                        },
+                        {
+                            "id": "3",
+                            "value": "<figure class=\"image\"><img data-org=\"serverAws\" src=\"296350\" alt=\"296350|serverAws\"></figure>"
+                        },
+                        {
+                            "id": "4",
+                            "value": "<figure class=\"image image_resized\" style=\"width:490px;\"><img data-org=\"serverAws\" src=\"296355\" alt=\"296355|serverAws\"></figure>"
+                        }
+                    ],
+                    "shuff": null,
+                    "part": 0,
+                    "group_id": 0,
+                    "media": null,
+                    "config": {
+                        "cols": 2,
+                        "invertedAnswer": true
+                    },
+                    "skill": null,
+                    "cdr": 2,
+                    "code": "",
+                    "number_answer_correct": 1
+                },
+                {
+                    "id": 99339,
+                    "question_number": 0,
+                    "question_direction": "<p><!--StartFragment--><span><strong>Đâu là cú pháp đúng để gộp 4 dòng cho ô \"Ghi chú\" trong HTML</strong></span><!--EndFragment--></p>",
+                    "question_type": "radio",
+                    "answer_option": [
+                        {
+                            "id": "1",
+                            "value": "<p><!--StartFragment--><span style=\"color:maroon;\">&lt;td</span><span style=\"color:black;\"> </span><span style=\"color:#E50000;\">rowspan</span><span style=\"color:black;\">=</span><span style=\"color:blue;\">\"4\"</span><span style=\"color:maroon;\">&gt;</span><span> Ghi chú</span><span style=\"color:maroon;\"><span> &lt;/td&gt;&nbsp;</span></span><!--EndFragment--></p>"
+                        },
+                        {
+                            "id": "2",
+                            "value": "<!--StartFragment--><p class=\"MsoListParagraph\" align=\"left\"><!--[endif]--><!--[if !supportLists]--><span style=\"color:maroon;\">&lt;td</span><span style=\"color:black;\"> </span><span style=\"color:#E50000;\">colspan</span><span style=\"color:black;\">=</span><span style=\"color:blue;\">\"4\"</span><span style=\"color:maroon;\">&gt;</span><span style=\"color:black;\"> Ghi chú</span><span style=\"color:maroon;\"> &lt;/td&gt;</span><o:p></o:p></p><!--EndFragment-->"
+                        },
+                        {
+                            "id": "3",
+                            "value": "<!--StartFragment--><p class=\"MsoListParagraph\" align=\"left\"><!--[endif]--><!--[if !supportLists]--><span style=\"color:maroon;\">&lt;td</span><span style=\"color:black;\"> </span><span style=\"color:#E50000;\">merge</span><span style=\"color:black;\">=</span><span style=\"color:blue;\">\"4\"</span><span style=\"color:maroon;\">&gt;</span><span style=\"color:black;\"> Ghi chú</span><span style=\"color:maroon;\"> &lt;/td&gt;</span><o:p></o:p></p><!--EndFragment-->"
+                        },
+                        {
+                            "id": "4",
+                            "value": "<!--StartFragment--><p class=\"MsoListParagraph\" align=\"left\"><!--[endif]--><!--[if !supportLists]--><span style=\"color:maroon;\">&lt;td</span><span style=\"color:black;\"> </span><span style=\"color:#E50000;\">span</span><span style=\"color:black;\">=</span><span style=\"color:blue;\">\"4\"</span><span style=\"color:maroon;\">&gt;</span><span style=\"color:black;\"> Ghi chú</span><span style=\"color:maroon;\"> &lt;/td&gt;</span><o:p></o:p></p><!--EndFragment-->"
+                        }
+                    ],
+                    "shuff": null,
+                    "part": 0,
+                    "group_id": 0,
+                    "media": null,
+                    "config": {
+                        "cols": 2,
+                        "invertedAnswer": true
+                    },
+                    "skill": null,
+                    "cdr": 2,
+                    "code": "",
+                    "number_answer_correct": 1
+                },
+                {
+                    "id": 99344,
+                    "question_number": 0,
+                    "question_direction": "<p><!--StartFragment--><span><strong>Hoàn thành đoạn code HTML sau để thực hiện tạo một bảng sau bảng?</strong></span><!--StartFragment--><!--EndFragment--></p><figure class=\"image\"><img data-org=\"serverAws\" src=\"296390\" alt=\"296390|serverAws\"></figure><!--StartFragment--><p class=\"MsoNormal\" align=\"left\"><span style=\"color:black;\">(Với cách điền theo ví dụ: html)</span><o:p></o:p></p><!--EndFragment-->",
+                    "question_type": "group-input",
+                    "answer_option": [],
+                    "shuff": null,
+                    "part": 0,
+                    "group_id": 0,
+                    "media": null,
+                    "config": {
+                        "cols": 2,
+                        "invertedAnswer": true
+                    },
+                    "skill": null,
+                    "cdr": 3,
+                    "code": "",
+                    "number_answer_correct": 1
+                },
+                {
+                    "id": 99345,
+                    "question_number": 0,
+                    "question_direction": "Đáp án tại vị trí (1) là: ",
+                    "question_type": "group-input",
+                    "answer_option": [],
+                    "shuff": null,
+                    "part": 0,
+                    "group_id": 99344,
+                    "media": null,
+                    "config": {
+                        "cols": 1,
+                        "invertedAnswer": true
+                    },
+                    "skill": null,
+                    "cdr": 3,
+                    "code": "",
+                    "number_answer_correct": 1
+                },
+                {
+                    "id": 99346,
+                    "question_number": 0,
+                    "question_direction": "Đáp án tại vị trí (2) là:",
+                    "question_type": "group-input",
+                    "answer_option": [],
+                    "shuff": null,
+                    "part": 0,
+                    "group_id": 99344,
+                    "media": null,
+                    "config": {
+                        "cols": 1,
+                        "invertedAnswer": true
+                    },
+                    "skill": null,
+                    "cdr": 3,
+                    "code": "",
+                    "number_answer_correct": 1
+                },
+                {
+                    "id": 100346,
+                    "question_number": 0,
+                    "question_direction": "<p><!--StartFragment--><span><strong>Hoàn thành đoạn code HTML sau để thực hiện hợp nhất 3 hàng của bảng:</strong></span><!--EndFragment--></p><figure class=\"image\"><img data-org=\"serverAws\" src=\"297163\" alt=\"297163|serverAws\"></figure>",
+                    "question_type": "group-input",
+                    "answer_option": [],
+                    "shuff": null,
+                    "part": 0,
+                    "group_id": 0,
+                    "media": null,
+                    "config": {
+                        "cols": 2,
+                        "invertedAnswer": true
+                    },
+                    "skill": null,
+                    "cdr": 3,
+                    "code": "",
+                    "number_answer_correct": 1
+                },
+                {
+                    "id": 100347,
+                    "question_number": 0,
+                    "question_direction": "Đáp án: ",
+                    "question_type": "group-input",
+                    "answer_option": [],
+                    "shuff": null,
+                    "part": 0,
+                    "group_id": 100346,
+                    "media": null,
+                    "config": {
+                        "cols": 1,
+                        "invertedAnswer": true
+                    },
+                    "skill": null,
+                    "cdr": 3,
+                    "code": "",
+                    "number_answer_correct": 1
+                },
+                {
+                    "id": 100374,
+                    "question_number": 0,
+                    "question_direction": "<p><!--StartFragment--><span style=\"color:black;\"><strong>Hoàn thành đoạn code HTML sau để hợp nhất 3 cột trong bảng:</strong></span><!--EndFragment--></p><figure class=\"image\"><img data-org=\"serverAws\" src=\"297042\" alt=\"297042|serverAws\"></figure>",
+                    "question_type": "group-input",
+                    "answer_option": [],
+                    "shuff": null,
+                    "part": 0,
+                    "group_id": 0,
+                    "media": null,
+                    "config": {
+                        "cols": 2,
+                        "invertedAnswer": true
+                    },
+                    "skill": null,
+                    "cdr": 3,
+                    "code": "",
+                    "number_answer_correct": 1
+                },
+                {
+                    "id": 100375,
+                    "question_number": 0,
+                    "question_direction": "Đáp án:",
+                    "question_type": "group-input",
+                    "answer_option": [],
+                    "shuff": null,
+                    "part": 0,
+                    "group_id": 100374,
+                    "media": null,
+                    "config": {
+                        "cols": 1,
+                        "invertedAnswer": true
+                    },
+                    "skill": null,
+                    "cdr": 3,
+                    "code": "",
+                    "number_answer_correct": 1
+                },
+                {
+                    "id": 100378,
+                    "question_number": 0,
+                    "question_direction": "<!--StartFragment--><p class=\"MsoListParagraph\" align=\"left\"><!--[endif]--><!--[if !supportLists]--><span style=\"color:black;\">Kết quả hiển thị của đoạn mã HTML sau là gì?</span></p><p class=\"MsoListParagraph\" align=\"left\"><span style=\"color:black;\"><img data-org=\"serverAws\" src=\"297047\" alt=\"297047|serverAws\"></span><o:p></o:p></p><!--EndFragment-->",
+                    "question_type": "radio",
+                    "answer_option": [
+                        {
+                            "id": "1",
+                            "value": "<p><!--StartFragment--><span style=\"color:black;\">Hiển thị bảng với 2 cột và 2 hàng&nbsp;</span><!--EndFragment--></p>"
+                        },
+                        {
+                            "id": "2",
+                            "value": "<!--StartFragment--><p class=\"MsoListParagraph\" align=\"left\"><!--[endif]--><!--[if !supportLists]--><span style=\"color:black;\">Hiển thị bảng với 1 cột và 2 hàng</span><o:p></o:p></p><!--EndFragment-->"
+                        },
+                        {
+                            "id": "3",
+                            "value": "<!--StartFragment--><p class=\"MsoListParagraph\" align=\"left\"><!--[endif]--><!--[if !supportLists]--><span style=\"color:black;\">Hiển thị bảng với 2 cột và 1 hàng</span><o:p></o:p></p><!--EndFragment-->"
+                        },
+                        {
+                            "id": "4",
+                            "value": "<!--StartFragment--><p class=\"MsoListParagraph\" align=\"left\"><!--[endif]--><!--[if !supportLists]--><span style=\"color:black;\">Hiển thị bảng không có viền</span><o:p></o:p></p><!--EndFragment-->"
+                        }
+                    ],
+                    "shuff": null,
+                    "part": 0,
+                    "group_id": 0,
+                    "media": null,
+                    "config": {
+                        "cols": 2,
+                        "invertedAnswer": true
+                    },
+                    "skill": null,
+                    "cdr": 3,
+                    "code": "",
+                    "number_answer_correct": 1
+                },
+                {
+                    "id": 100395,
+                    "question_number": 0,
+                    "question_direction": "<p><!--StartFragment--><strong>Cho đoạn mã HTML sau, kết quả hiển thị trên trình duyệt sẽ như thế nào?</strong><!--EndFragment--></p><figure class=\"image\"><img data-org=\"serverAws\" src=\"297064\" alt=\"297064|serverAws\"></figure>",
+                    "question_type": "radio",
+                    "answer_option": [
+                        {
+                            "id": "1",
+                            "value": "<p><!--StartFragment--><span>Bảng với 2 hàng và 2 cột, trong đó \"Cell 1\" kéo dài qua 2 hàng.&nbsp;</span><!--EndFragment--></p>"
+                        },
+                        {
+                            "id": "2",
+                            "value": "<p><!--StartFragment--><span>Bảng có 2 hàng và 1 cột.</span><!--EndFragment--></p>"
+                        },
+                        {
+                            "id": "3",
+                            "value": "<p><!--StartFragment--><span>Lỗi do thuộc tính </span><span style=\"color:#E50000;\">rowspan</span><span> không hợp lệ.</span><!--StartFragment--><!--EndFragment--></p>"
+                        },
+                        {
+                            "id": "4",
+                            "value": "<!--StartFragment--><p class=\"MsoNormal\" align=\"left\"><span style=\"color:black;\">Bảng có 3 hàng và 2 cột.</span><o:p></o:p></p><!--EndFragment-->"
+                        }
+                    ],
+                    "shuff": null,
+                    "part": 0,
+                    "group_id": 0,
+                    "media": null,
+                    "config": {
+                        "cols": 2,
+                        "invertedAnswer": true
+                    },
+                    "skill": null,
+                    "cdr": 3,
+                    "code": "",
+                    "number_answer_correct": 1
+                },
+                {
+                    "id": 100469,
+                    "question_number": 0,
+                    "question_direction": "<p><!--StartFragment--><strong>Cho đoạn mã HTML sau, kết quả hiển thị trên trình duyệt sẽ như thế nào?</strong><!--EndFragment--></p><figure class=\"image image_resized\" style=\"width:790px;\"><img data-org=\"serverAws\" src=\"297155\" alt=\"297155|serverAws\"></figure>",
+                    "question_type": "radio",
+                    "answer_option": [
+                        {
+                            "id": "1",
+                            "value": "<p><!--StartFragment--><span>Bảng với khoảng cách giữa các ô là 5px và khoảng cách nội dung trong ô là 10px.&nbsp;</span><!--EndFragment--></p>"
+                        },
+                        {
+                            "id": "2",
+                            "value": "<!--StartFragment--><p class=\"MsoListParagraph\" align=\"left\"><!--[endif]--><!--[if !supportLists]--><span style=\"color:black;\">Không có khoảng cách giữa các ô và khoảng cách nội dung là 0px.</span><o:p></o:p></p><!--EndFragment-->"
+                        },
+                        {
+                            "id": "3",
+                            "value": "<p><!--StartFragment--><span>Cả hai khoảng cách là 10px.</span><!--EndFragment--></p>"
+                        },
+                        {
+                            "id": "4",
+                            "value": "<!--StartFragment--><p class=\"MsoListParagraph\" align=\"left\"><!--[endif]--><!--[if !supportLists]--><span style=\"color:black;\">Cả hai khoảng cách là 5px.</span><o:p></o:p></p><!--EndFragment-->"
+                        }
+                    ],
+                    "shuff": null,
+                    "part": 0,
+                    "group_id": 0,
+                    "media": null,
+                    "config": {
+                        "cols": 2,
+                        "invertedAnswer": true
+                    },
+                    "skill": null,
+                    "cdr": 3,
+                    "code": "",
+                    "number_answer_correct": 1
+                }
+            ]
+        }
+    ]
+}

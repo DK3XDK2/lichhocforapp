@@ -15,12 +15,13 @@
     "@capacitor/cli": "^7.4.2",
     "@capacitor/core": "^5.0.5",
     "body-parser": "^2.2.0",
+    "cheerio": "^1.1.2",
     "cors": "^2.8.5",
     "ejs": "^3.1.10",
     "express": "^5.1.0",
     "express-session": "^1.18.1",
     "node-cron": "^4.2.0",
-    "puppeteer": "^24.16.0"
+    "puppeteer": "^24.24.0"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.21",
