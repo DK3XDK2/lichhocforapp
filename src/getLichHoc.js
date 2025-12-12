@@ -128,10 +128,22 @@ async function getLichHoc(mssv, matkhau) {
 
     if (loginUrl.includes("Login.aspx") && !loginUrl.includes("url=")) {
       // Vẫn ở trang login, có thể là lỗi
-      const loginError = await page.evaluate(() => {
-        const el = document.querySelector(".labelError");
-        return el ? el.innerText.trim() : null;
-      });
+      let loginError = null;
+      try {
+        loginError = await page.evaluate(() => {
+          const el = document.querySelector(".labelError");
+          return el ? el.innerText.trim() : null;
+        });
+      } catch (evalErr) {
+        // Nếu execution context bị destroy, bỏ qua check này
+        if (evalErr.message.includes("Execution context was destroyed")) {
+          console.warn(
+            "⚠️ Execution context destroyed khi check login error, bỏ qua..."
+          );
+        } else {
+          throw evalErr;
+        }
+      }
       if (loginError) {
         throw new Error("❌ Sai mã sinh viên hoặc mật khẩu!");
       }
@@ -525,16 +537,37 @@ async function getLichHoc(mssv, matkhau) {
         // Hàm chọn đợt học và trigger postback
         async function selectTerm(termValue) {
           await page.select("#drpTerm", termValue);
-          await delay(500); // Giảm từ 1s xuống 0.5s
+          await delay(500);
 
-          await page.evaluate(() => {
-            if (typeof __doPostBack === "function") {
-              __doPostBack("drpTerm", "");
+          // Trigger postback với try-catch để handle navigation
+          try {
+            await page.evaluate(() => {
+              if (typeof __doPostBack === "function") {
+                __doPostBack("drpTerm", "");
+              }
+            });
+          } catch (evalErr) {
+            // Execution context có thể bị destroy ngay sau khi PostBack
+            if (evalErr.message.includes("Execution context was destroyed")) {
+              console.log(
+                "ℹ️ Execution context destroyed (expected after PostBack)"
+              );
+            } else {
+              throw evalErr;
             }
-          });
+          }
 
-          // Chờ bảng reload (giảm từ 3s xuống 2s)
-          await delay(2000);
+          // Chờ page navigate/reload hoàn toàn sau PostBack
+          try {
+            await page.waitForNavigation({
+              waitUntil: "domcontentloaded",
+              timeout: 10000,
+            });
+          } catch (navErr) {
+            // Có thể không có navigation, chỉ là reload
+            console.log("ℹ️ No navigation detected, waiting for reload...");
+            await delay(2000); // Chờ 2 giây để page reload
+          }
 
           // Chờ bảng thay đổi
           try {
@@ -549,6 +582,8 @@ async function getLichHoc(mssv, matkhau) {
             console.warn("⚠️ Timeout chờ bảng reload");
           }
 
+          // Đảm bảo page đã stable trước khi tiếp tục
+          await delay(500);
           await waitForTableData(page);
         }
 
@@ -715,50 +750,75 @@ async function getLichHoc(mssv, matkhau) {
         console.warn("⚠️ Timeout chờ bảng, tiếp tục lấy dữ liệu...");
       });
 
-    const data = await page.evaluate(() => {
-      const tbl = document.querySelector("#gridRegistered");
-      if (!tbl) return [];
+    // Lấy dữ liệu với retry logic
+    let data = [];
+    let retries = 3;
+    while (retries > 0) {
+      try {
+        data = await page.evaluate(() => {
+          const tbl = document.querySelector("#gridRegistered");
+          if (!tbl) return [];
 
-      // Kiểm tra xem có thông báo "Không có dữ liệu" không
-      if (
-        tbl.innerText.includes("Không có dữ liệu") ||
-        tbl.innerText.includes("không có dữ liệu")
-      ) {
-        return [];
-      }
-
-      const rows = Array.from(tbl.querySelectorAll("tr")).slice(1);
-      return rows
-        .map((row) => {
-          const cells = row.querySelectorAll("td");
-          if (cells.length < 7) return null;
-
-          const thu = cells[0]?.innerText.trim() || "";
-          const lop = cells[1]?.innerText.trim() || "";
-          const monHoc = cells[2]?.innerText.trim() || "";
-
-          // Bỏ qua dòng "Tổng" hoặc các dòng không có dữ liệu thực
+          // Kiểm tra xem có thông báo "Không có dữ liệu" không
           if (
-            thu === "Tổng" ||
-            lop === "Tổng" ||
-            (!thu && !lop && !monHoc) ||
-            (thu === "" && lop === "" && monHoc === "")
+            tbl.innerText.includes("Không có dữ liệu") ||
+            tbl.innerText.includes("không có dữ liệu")
           ) {
-            return null;
+            return [];
           }
 
-          return {
-            thu,
-            lop,
-            monHoc,
-            tiet: cells[3]?.innerText.trim() || "",
-            phong: cells[4]?.innerText.trim() || "",
-            giangVien: cells[5]?.innerText.trim() || "",
-            tuan: cells[6]?.innerText.trim() || "",
-          };
-        })
-        .filter(Boolean); // Loại bỏ null
-    });
+          const rows = Array.from(tbl.querySelectorAll("tr")).slice(1);
+          return rows
+            .map((row) => {
+              const cells = row.querySelectorAll("td");
+              if (cells.length < 7) return null;
+
+              const thu = cells[0]?.innerText.trim() || "";
+              const lop = cells[1]?.innerText.trim() || "";
+              const monHoc = cells[2]?.innerText.trim() || "";
+
+              // Bỏ qua dòng "Tổng" hoặc các dòng không có dữ liệu thực
+              if (
+                thu === "Tổng" ||
+                lop === "Tổng" ||
+                (!thu && !lop && !monHoc) ||
+                (thu === "" && lop === "" && monHoc === "")
+              ) {
+                return null;
+              }
+
+              return {
+                thu,
+                lop,
+                monHoc,
+                tiet: cells[3]?.innerText.trim() || "",
+                phong: cells[4]?.innerText.trim() || "",
+                giangVien: cells[5]?.innerText.trim() || "",
+                tuan: cells[6]?.innerText.trim() || "",
+              };
+            })
+            .filter(Boolean); // Loại bỏ null
+        });
+        break; // Thành công, thoát loop
+      } catch (evalErr) {
+        if (evalErr.message.includes("Execution context was destroyed")) {
+          retries--;
+          if (retries > 0) {
+            console.warn(
+              `⚠️ Execution context destroyed khi lấy dữ liệu, retrying... (${retries} left)`
+            );
+            await delay(1000); // Chờ page stable
+          } else {
+            console.error(
+              "❌ Execution context destroyed, không thể lấy dữ liệu"
+            );
+            data = []; // Trả về mảng rỗng
+          }
+        } else {
+          throw evalErr;
+        }
+      }
+    }
 
     if (data.length === 0) {
       console.warn("⚠️ Không có dữ liệu lịch học trong bảng");
