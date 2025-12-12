@@ -705,8 +705,21 @@ async function getLichHoc(mssv, matkhau) {
       console.log(`✅ Đã lấy được ${data.length} môn học`);
     }
 
-    const savePath = `./Data/${mssvFromWeb}_lichhoc.json`;
-    fs.writeFileSync(savePath, JSON.stringify(data, null, 2), "utf-8");
+    // Đảm bảo thư mục Data tồn tại
+    const dataDir = "./Data";
+    if (!fs.existsSync(dataDir)) {
+      fs.mkdirSync(dataDir, { recursive: true });
+      console.log("✅ Created Data directory in getLichHoc");
+    }
+
+    const savePath = `${dataDir}/${mssvFromWeb}_lichhoc.json`;
+    try {
+      fs.writeFileSync(savePath, JSON.stringify(data, null, 2), "utf-8");
+      console.log(`✅ Saved lichhoc.json to ${savePath}`);
+    } catch (writeErr) {
+      console.error("❌ Error writing lichhoc.json:", writeErr);
+      throw new Error(`Không thể lưu file lịch học: ${writeErr.message}`);
+    }
 
     console.log(`✅ Đã lưu lịch học vào: ${savePath}`);
     return { name, mssv: mssvFromWeb, data };

@@ -249,8 +249,21 @@ async function getLichThi(mssv, matkhau) {
         .filter(Boolean);
     });
 
-    const savePath = `./Data/${mssvFromWeb}_lichthi.json`;
-    fs.writeFileSync(savePath, JSON.stringify(data, null, 2), "utf-8");
+    // Đảm bảo thư mục Data tồn tại
+    const dataDir = "./Data";
+    if (!fs.existsSync(dataDir)) {
+      fs.mkdirSync(dataDir, { recursive: true });
+      console.log("✅ Created Data directory in getLichThi");
+    }
+
+    const savePath = `${dataDir}/${mssvFromWeb}_lichthi.json`;
+    try {
+      fs.writeFileSync(savePath, JSON.stringify(data, null, 2), "utf-8");
+      console.log(`✅ Saved lichthi.json to ${savePath}`);
+    } catch (writeErr) {
+      console.error("❌ Error writing lichthi.json:", writeErr);
+      throw new Error(`Không thể lưu file lịch thi: ${writeErr.message}`);
+    }
 
     console.log(`✅ Đã lưu lịch thi vào: ${savePath}`);
     return { name, mssv: mssvFromWeb, data };
