@@ -262,17 +262,41 @@ async function getLichHoc(mssv, matkhau) {
 
       await page.select("#drpSemester", value);
 
-      // Chờ một chút để ASPX xử lý (giảm từ 500ms xuống 300ms)
-      await delay(300);
+      // Chờ một chút để ASPX xử lý
+      await delay(500);
 
-      // Trigger postback
-      await page.evaluate(() => {
-        if (typeof __doPostBack === "function") {
-          __doPostBack("drpSemester", "");
+      // Trigger postback với try-catch để handle navigation
+      try {
+        await page.evaluate(() => {
+          if (typeof __doPostBack === "function") {
+            __doPostBack("drpSemester", "");
+          }
+        });
+      } catch (evalErr) {
+        // Execution context có thể bị destroy ngay sau khi PostBack
+        // Đây là behavior bình thường của ASPX
+        if (evalErr.message.includes("Execution context was destroyed")) {
+          console.log(
+            "ℹ️ Execution context destroyed (expected after PostBack)"
+          );
+        } else {
+          throw evalErr;
         }
-      });
+      }
 
-      // Chờ load lại bảng (hoặc chờ ít nhất 2 giây)
+      // Chờ page navigate/reload hoàn toàn sau PostBack
+      try {
+        await page.waitForNavigation({
+          waitUntil: "domcontentloaded",
+          timeout: 10000,
+        });
+      } catch (navErr) {
+        // Có thể không có navigation, chỉ là reload
+        console.log("ℹ️ No navigation detected, waiting for reload...");
+        await delay(2000); // Chờ 2 giây để page reload
+      }
+
+      // Chờ load lại bảng
       try {
         await page.waitForFunction(
           (old) => {
@@ -284,8 +308,11 @@ async function getLichHoc(mssv, matkhau) {
         );
       } catch (err) {
         console.warn("⚠️ Timeout chờ reload bảng, tiếp tục...");
-        await delay(1000); // Giảm từ 2s xuống 1s
+        await delay(2000); // Tăng delay lên 2s để đảm bảo page load xong
       }
+
+      // Đảm bảo page đã stable trước khi tiếp tục
+      await delay(500);
 
       const currentValue = await page
         .$eval("#drpSemester", (el) => el.value)
@@ -303,25 +330,47 @@ async function getLichHoc(mssv, matkhau) {
     // 📋 Lấy danh sách kỳ từ dropdown và học kỳ hiện tại
     let semesterInfo;
     try {
-      semesterInfo = await page.evaluate(() => {
-        const dropdown = document.querySelector("#drpSemester");
-        if (!dropdown) return null;
+      // Retry logic nếu execution context bị destroy
+      let retries = 3;
+      while (retries > 0) {
+        try {
+          semesterInfo = await page.evaluate(() => {
+            const dropdown = document.querySelector("#drpSemester");
+            if (!dropdown) return null;
 
-        const options = Array.from(dropdown.options);
-        const currentValue = dropdown.value;
-        const currentText =
-          dropdown.options[dropdown.selectedIndex]?.textContent.trim() || "";
+            const options = Array.from(dropdown.options);
+            const currentValue = dropdown.value;
+            const currentText =
+              dropdown.options[dropdown.selectedIndex]?.textContent.trim() ||
+              "";
 
-        return {
-          currentValue,
-          currentText,
-          options: options.map((o) => ({
-            text: o.textContent.trim(),
-            value: o.value,
-            selected: o.selected,
-          })),
-        };
-      });
+            return {
+              currentValue,
+              currentText,
+              options: options.map((o) => ({
+                text: o.textContent.trim(),
+                value: o.value,
+                selected: o.selected,
+              })),
+            };
+          });
+          break; // Thành công, thoát loop
+        } catch (evalErr) {
+          if (evalErr.message.includes("Execution context was destroyed")) {
+            retries--;
+            if (retries > 0) {
+              console.log(
+                `ℹ️ Execution context destroyed, retrying... (${retries} left)`
+              );
+              await delay(1000); // Chờ page stable
+            } else {
+              throw evalErr;
+            }
+          } else {
+            throw evalErr;
+          }
+        }
+      }
     } catch (err) {
       if (err.message.includes("Execution context was destroyed")) {
         console.warn("⚠️ Execution context destroyed, chờ và thử lại...");
@@ -508,47 +557,59 @@ async function getLichHoc(mssv, matkhau) {
           await selectTerm(termValue);
 
           let hasData = false;
-          try {
-            hasData = await page.evaluate(() => {
-              const tbl = document.querySelector("#gridRegistered");
-              if (!tbl) return false;
+          let retries = 3;
+          while (retries > 0) {
+            try {
+              hasData = await page.evaluate(() => {
+                const tbl = document.querySelector("#gridRegistered");
+                if (!tbl) return false;
 
-              // Kiểm tra xem có dòng "Tổng" và các dòng khác không
-              const rows = tbl.querySelectorAll("tr");
-              if (rows.length <= 1) return false;
+                // Kiểm tra xem có dòng "Tổng" và các dòng khác không
+                const rows = tbl.querySelectorAll("tr");
+                if (rows.length <= 1) return false;
 
-              // Kiểm tra xem có dữ liệu thực sự (không phải chỉ dòng "Tổng")
-              let hasRealData = false;
-              for (let i = 1; i < rows.length; i++) {
-                const cells = rows[i].querySelectorAll("td");
-                if (cells.length > 0) {
-                  const firstCell = cells[0]?.innerText.trim();
-                  const secondCell = cells[1]?.innerText.trim();
-                  const thirdCell = cells[2]?.innerText.trim();
-                  // Nếu không phải dòng "Tổng" và có dữ liệu môn học
-                  if (
-                    firstCell !== "Tổng" &&
-                    secondCell !== "Tổng" &&
-                    thirdCell &&
-                    thirdCell !== "Tổng" &&
-                    thirdCell.trim() !== ""
-                  ) {
-                    hasRealData = true;
-                    break;
+                // Kiểm tra xem có dữ liệu thực sự (không phải chỉ dòng "Tổng")
+                let hasRealData = false;
+                for (let i = 1; i < rows.length; i++) {
+                  const cells = rows[i].querySelectorAll("td");
+                  if (cells.length > 0) {
+                    const firstCell = cells[0]?.innerText.trim();
+                    const secondCell = cells[1]?.innerText.trim();
+                    const thirdCell = cells[2]?.innerText.trim();
+                    // Nếu không phải dòng "Tổng" và có dữ liệu môn học
+                    if (
+                      firstCell !== "Tổng" &&
+                      secondCell !== "Tổng" &&
+                      thirdCell &&
+                      thirdCell !== "Tổng" &&
+                      thirdCell.trim() !== ""
+                    ) {
+                      hasRealData = true;
+                      break;
+                    }
                   }
                 }
-              }
 
-              return hasRealData && !tbl.innerText.includes("Không có dữ liệu");
-            });
-          } catch (err) {
-            if (err.message.includes("Execution context was destroyed")) {
-              console.warn(
-                "⚠️ Execution context destroyed khi kiểm tra đợt học, bỏ qua..."
-              );
-              hasData = false;
-            } else {
-              throw err;
+                return (
+                  hasRealData && !tbl.innerText.includes("Không có dữ liệu")
+                );
+              });
+              break; // Thành công
+            } catch (err) {
+              if (err.message.includes("Execution context was destroyed")) {
+                retries--;
+                if (retries > 0) {
+                  console.warn(
+                    `⚠️ Execution context destroyed khi kiểm tra đợt học, retrying... (${retries} left)`
+                  );
+                  await delay(1000);
+                } else {
+                  console.warn("⚠️ Execution context destroyed, skip check...");
+                  hasData = false;
+                }
+              } else {
+                throw err;
+              }
             }
           }
 
