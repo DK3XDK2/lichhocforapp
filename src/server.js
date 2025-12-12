@@ -89,6 +89,15 @@ app.post("/login", async (req, res) => {
       JSON.stringify(lichHoc, null, 2)
     );
 
+    // Trả về JSON với thông tin session để frontend lưu vào localStorage
+    if (req.headers.accept && req.headers.accept.includes("application/json")) {
+      return res.json({
+        success: true,
+        message: "Đăng nhập thành công",
+        data: { name, mssv: mssvFromWeb, password: matkhau },
+      });
+    }
+
     return res.redirect("/lichcanhan");
   } catch (err) {
     console.error("❌ Lỗi đăng nhập:", err.message);
@@ -119,9 +128,70 @@ app.get("/lichcanhan", isAuthenticated, (req, res) => {
   res.sendFile(path.join(__dirname, "../public/lichcanhan.html"));
 });
 
+// API restore session từ localStorage (không cần Puppeteer)
+app.post("/api/restore-session", async (req, res) => {
+  const { mssv, password } = req.body;
+
+  if (!mssv || !password) {
+    return res.status(400).json({
+      success: false,
+      message: "Thiếu thông tin đăng nhập",
+    });
+  }
+
+  try {
+    // Kiểm tra xem có file data không (đã từng login trước đó)
+    const lichHocPath = `./Data/${mssv}_lichhoc.json`;
+    const lichThiPath = `./Data/${mssv}_lichthi.json`;
+
+    if (!fs.existsSync(lichHocPath) || !fs.existsSync(lichThiPath)) {
+      return res.status(404).json({
+        success: false,
+        message: "Chưa có dữ liệu, vui lòng đăng nhập lại",
+      });
+    }
+
+    // Đọc dữ liệu từ file để lấy thông tin user
+    const lichHoc = JSON.parse(fs.readFileSync(lichHocPath, "utf8"));
+    const lichThi = JSON.parse(fs.readFileSync(lichThiPath, "utf8"));
+
+    // Tìm name và mssv từ dữ liệu (nếu có)
+    let name = "Không rõ tên";
+    let mssvFromWeb = mssv;
+
+    // Thử lấy từ lichHoc hoặc lichThi nếu có
+    if (Array.isArray(lichHoc) && lichHoc.length > 0) {
+      // Có thể có thông tin trong data
+    }
+
+    // Restore session
+    req.session.name = name;
+    req.session.mssv = mssvFromWeb;
+    req.session.password = password;
+    req.session.isPrincess =
+      mssvFromWeb.trim().toLowerCase() === "dtc245280019";
+
+    res.json({
+      success: true,
+      message: "Đã khôi phục session",
+      data: { name, mssv: mssvFromWeb },
+    });
+  } catch (err) {
+    console.error("❌ Lỗi restore session:", err.message);
+    res.status(500).json({
+      success: false,
+      message: "Không thể khôi phục session",
+    });
+  }
+});
+
 // Logout
 app.get("/logout", (req, res) => {
   req.session.destroy(() => {
+    // Trả về JSON để frontend xóa localStorage
+    if (req.headers.accept && req.headers.accept.includes("application/json")) {
+      return res.json({ success: true, message: "Đã đăng xuất" });
+    }
     res.redirect("/");
   });
 });

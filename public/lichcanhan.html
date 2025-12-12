@@ -146,9 +146,13 @@
   </body>
   <script>
     document.getElementById("logout-btn")?.addEventListener("click", () => {
+      // Xóa tất cả localStorage liên quan đến session
       localStorage.removeItem("autoLogin");
       localStorage.removeItem("mssv");
       localStorage.removeItem("matkhau");
+      localStorage.removeItem("savedSession");
+      localStorage.removeItem("lichHocCache");
+      localStorage.removeItem("lichThiCache");
       window.location.href = "/logout";
     });
   </script>

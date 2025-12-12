@@ -313,6 +313,77 @@ function renderCalendarMonthView(dayData, type = "hoc") {
   });
 }
 
+// Lưu session vào localStorage
+function saveSessionToLocalStorage(mssv, password) {
+  try {
+    const sessionData = {
+      mssv: mssv,
+      password: password,
+      timestamp: Date.now(),
+    };
+    localStorage.setItem("savedSession", JSON.stringify(sessionData));
+    console.log("✅ Đã lưu session vào localStorage");
+  } catch (err) {
+    console.error("❌ Lỗi khi lưu session:", err);
+  }
+}
+
+// Xóa session khỏi localStorage
+function clearSessionFromLocalStorage() {
+  try {
+    localStorage.removeItem("savedSession");
+    console.log("✅ Đã xóa session khỏi localStorage");
+  } catch (err) {
+    console.error("❌ Lỗi khi xóa session:", err);
+  }
+}
+
+// Khôi phục session từ localStorage
+async function restoreSessionFromLocalStorage() {
+  try {
+    const saved = localStorage.getItem("savedSession");
+    if (!saved) {
+      console.log("ℹ️ Không có session đã lưu");
+      return false;
+    }
+
+    const sessionData = JSON.parse(saved);
+    const { mssv, password, timestamp } = sessionData;
+
+    // Kiểm tra xem session có quá cũ không (30 ngày)
+    const maxAge = 30 * 24 * 60 * 60 * 1000; // 30 ngày
+    if (Date.now() - timestamp > maxAge) {
+      console.log("ℹ️ Session đã hết hạn");
+      clearSessionFromLocalStorage();
+      return false;
+    }
+
+    // Gọi API để restore session
+    const res = await fetch("/api/restore-session", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({ mssv, password }),
+    });
+
+    const json = await res.json();
+    if (json.success) {
+      console.log("✅ Đã khôi phục session từ localStorage");
+      return true;
+    } else {
+      console.warn("⚠️ Không thể khôi phục session:", json.message);
+      clearSessionFromLocalStorage();
+      return false;
+    }
+  } catch (err) {
+    console.error("❌ Lỗi khi khôi phục session:", err);
+    clearSessionFromLocalStorage();
+    return false;
+  }
+}
+
 async function renderStudentInfo() {
   try {
     const res = await fetch("/api/user-info");
@@ -323,12 +394,30 @@ async function renderStudentInfo() {
       const { name, mssv } = json.data;
       document.getElementById("student-name").textContent = name;
       document.getElementById("student-mssv").textContent = mssv;
+
+      // Lưu session vào localStorage nếu chưa có
+      const saved = localStorage.getItem("savedSession");
+      if (!saved) {
+        // Cần lấy password từ đâu đó - nhưng không có trong response
+        // Sẽ lưu khi login thành công thay vì ở đây
+      }
     } else {
+      // Nếu không có session, thử restore từ localStorage
+      const restored = await restoreSessionFromLocalStorage();
+      if (restored) {
+        // Retry sau khi restore
+        return renderStudentInfo();
+      }
       document.getElementById("student-info").innerHTML =
         "<p class='text-red-500'>Không thể tải thông tin sinh viên.</p>";
     }
   } catch (err) {
     console.error("Lỗi khi lấy thông tin sinh viên:", err);
+    // Thử restore từ localStorage nếu có lỗi
+    const restored = await restoreSessionFromLocalStorage();
+    if (restored) {
+      return renderStudentInfo();
+    }
     document.getElementById("student-info").innerHTML =
       "<p class='text-red-500'>Lỗi kết nối máy chủ.</p>";
   }
@@ -478,9 +567,59 @@ async function renderFullTimetable() {
   }
 }
 
-renderFullTimetable();
-renderStudentInfo();
-renderLichThi();
+// Tự động restore session khi app load
+(async function initApp() {
+  // Kiểm tra xem có session trên server không
+  try {
+    const userInfoRes = await fetch("/api/user-info");
+    const userInfo = await userInfoRes.json();
+
+    if (!userInfo.success) {
+      // Không có session trên server, thử restore từ localStorage
+      console.log(
+        "🔄 Không có session trên server, đang thử restore từ localStorage..."
+      );
+      const restored = await restoreSessionFromLocalStorage();
+      if (restored) {
+        console.log("✅ Đã restore session thành công");
+        // Retry sau khi restore
+        const retryRes = await fetch("/api/user-info");
+        const retryInfo = await retryRes.json();
+        if (!retryInfo.success) {
+          // Vẫn không được, redirect về login
+          if (window.location.pathname !== "/") {
+            window.location.href = "/";
+          }
+          return;
+        }
+      } else {
+        // Không có session, redirect về login
+        if (window.location.pathname !== "/") {
+          window.location.href = "/";
+        }
+        return;
+      }
+    } else {
+      // Có session trên server, OK
+      console.log("✅ Đã có session trên server");
+    }
+  } catch (err) {
+    console.error("❌ Lỗi khi kiểm tra session:", err);
+    // Thử restore từ localStorage
+    const restored = await restoreSessionFromLocalStorage();
+    if (!restored) {
+      if (window.location.pathname !== "/") {
+        window.location.href = "/";
+      }
+      return;
+    }
+  }
+
+  // Render dữ liệu
+  renderFullTimetable();
+  renderStudentInfo();
+  renderLichThi();
+})();
 function switchTab(tab) {
   const tabHoc = document.getElementById("lich-hoc-tab");
   const tabThi = document.getElementById("lich-thi-tab");

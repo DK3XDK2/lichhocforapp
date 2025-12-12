@@ -250,17 +250,58 @@
          <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />`;
       });
 
-      function handleSubmit() {
+      async function handleSubmit() {
         const btn = document.getElementById("loginButton");
         const text = document.getElementById("loginText");
         const spinner = document.getElementById("spinner");
+        const form = document.querySelector("form");
 
         btn.disabled = true;
         btn.classList.add("opacity-70", "cursor-not-allowed");
         text.textContent = "Đang xử lý...";
         spinner.classList.remove("hidden");
 
-        return true;
+        // Lấy thông tin từ form
+        const formData = new FormData(form);
+        const mssv = formData.get("mssv");
+        const matkhau = formData.get("matkhau");
+
+        try {
+          // Gửi request login
+          const res = await fetch("/login", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+            },
+            body: new URLSearchParams({ mssv, matkhau }),
+            credentials: "include",
+          });
+
+          if (res.ok) {
+            // Lưu session vào localStorage
+            const sessionData = {
+              mssv: mssv,
+              password: matkhau,
+              timestamp: Date.now(),
+            };
+            localStorage.setItem("savedSession", JSON.stringify(sessionData));
+            console.log("✅ Đã lưu session vào localStorage");
+
+            // Redirect về trang lịch
+            window.location.href = "/lichcanhan";
+          } else {
+            throw new Error("Đăng nhập thất bại");
+          }
+        } catch (err) {
+          console.error("Lỗi đăng nhập:", err);
+          alert("Đăng nhập thất bại. Vui lòng thử lại.");
+          btn.disabled = false;
+          btn.classList.remove("opacity-70", "cursor-not-allowed");
+          text.textContent = "Đăng Nhập";
+          spinner.classList.add("hidden");
+        }
+
+        return false; // Ngăn form submit mặc định
       }
     </script>
 
