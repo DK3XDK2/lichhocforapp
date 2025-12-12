@@ -36,9 +36,17 @@ app.use(
     origin: true, // Cho phép tất cả origins (hoặc set cụ thể domain của bạn)
     credentials: true, // Quan trọng: cho phép gửi cookies
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    allowedHeaders: ["Content-Type", "Authorization", "Accept"],
+    maxAge: 86400, // Cache preflight requests
   })
 );
+
+// Thêm timeout cho tất cả requests (5 phút)
+app.use((req, res, next) => {
+  req.setTimeout(300000); // 5 phút
+  res.setTimeout(300000); // 5 phút
+  next();
+});
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json({ limit: "1mb" }));
 app.use(express.static(path.join(__dirname, "../public")));

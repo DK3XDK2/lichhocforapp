@@ -267,10 +267,11 @@
         const matkhau = formData.get("matkhau");
 
         try {
-          // Gửi request login với timeout
+          // Gửi request login với timeout (tăng lên 4 phút vì Puppeteer cần thời gian)
           const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 120000); // 2 phút timeout
+          const timeoutId = setTimeout(() => controller.abort(), 240000); // 4 phút timeout
 
+          console.log("📤 Sending login request...");
           const res = await fetch("/login", {
             method: "POST",
             headers: {
@@ -280,9 +281,15 @@
             body: new URLSearchParams({ mssv, matkhau }),
             credentials: "include",
             signal: controller.signal,
+            // Thêm keepalive để tránh connection timeout
+            keepalive: true,
+          }).catch((fetchError) => {
+            console.error("❌ Fetch error:", fetchError);
+            throw fetchError;
           });
 
           clearTimeout(timeoutId);
+          console.log("📥 Response received:", res.status, res.statusText);
 
           // Nếu là JSON response (success hoặc error)
           if (res.headers.get("content-type")?.includes("application/json")) {
@@ -321,11 +328,15 @@
             throw new Error("Đăng nhập thất bại");
           }
         } catch (err) {
-          console.error("Lỗi đăng nhập:", err);
+          console.error("❌ Lỗi đăng nhập:", err);
+          console.error("❌ Error name:", err.name);
+          console.error("❌ Error message:", err.message);
           
           let errorMessage = "Đăng nhập thất bại. Vui lòng thử lại.";
           if (err.name === "AbortError") {
-            errorMessage = "Đăng nhập quá lâu. Vui lòng thử lại sau hoặc kiểm tra kết nối mạng.";
+            errorMessage = "Đăng nhập quá lâu (hơn 4 phút). Vui lòng thử lại sau hoặc kiểm tra kết nối mạng.";
+          } else if (err.name === "TypeError" && err.message.includes("fetch")) {
+            errorMessage = "Không thể kết nối đến server. Vui lòng kiểm tra kết nối mạng hoặc thử lại sau.";
           } else if (err.message) {
             errorMessage = err.message;
           }
