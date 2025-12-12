@@ -132,14 +132,37 @@ app.post("/login", async (req, res) => {
     req.session.isPrincess =
       mssvFromWeb.trim().toLowerCase() === "dtc245280019";
 
-    fs.writeFileSync(
-      `./Data/${mssvFromWeb}_lichthi.json`,
-      JSON.stringify(lichThi, null, 2)
-    );
-    fs.writeFileSync(
-      `./Data/${mssvFromWeb}_lichhoc.json`,
-      JSON.stringify(lichHoc, null, 2)
-    );
+    // Đảm bảo thư mục Data tồn tại
+    const dataDir = "./Data";
+    if (!fs.existsSync(dataDir)) {
+      fs.mkdirSync(dataDir, { recursive: true });
+      console.log("✅ Created Data directory");
+    }
+
+    // Ghi file với error handling
+    try {
+      fs.writeFileSync(
+        `${dataDir}/${mssvFromWeb}_lichthi.json`,
+        JSON.stringify(lichThi, null, 2),
+        "utf8"
+      );
+      console.log(`✅ Saved lichthi.json for ${mssvFromWeb}`);
+    } catch (writeErr) {
+      console.error("❌ Error writing lichthi.json:", writeErr);
+      throw new Error("Không thể lưu dữ liệu lịch thi");
+    }
+
+    try {
+      fs.writeFileSync(
+        `${dataDir}/${mssvFromWeb}_lichhoc.json`,
+        JSON.stringify(lichHoc, null, 2),
+        "utf8"
+      );
+      console.log(`✅ Saved lichhoc.json for ${mssvFromWeb}`);
+    } catch (writeErr) {
+      console.error("❌ Error writing lichhoc.json:", writeErr);
+      throw new Error("Không thể lưu dữ liệu lịch học");
+    }
 
     // Trả về JSON với thông tin session để frontend lưu vào localStorage
     if (req.headers.accept && req.headers.accept.includes("application/json")) {
@@ -152,6 +175,7 @@ app.post("/login", async (req, res) => {
 
     return res.redirect("/lichcanhan");
   } catch (err) {
+    // Log đầy đủ thông tin lỗi
     console.error("❌ Lỗi đăng nhập:", err.message);
     console.error("❌ Stack:", err.stack);
     console.error("❌ Error details:", {
@@ -159,7 +183,24 @@ app.post("/login", async (req, res) => {
       message: err.message,
       platform: process.platform,
       isProduction,
+      code: err.code,
+      syscall: err.syscall,
+      path: err.path,
     });
+
+    // Log thêm nếu là Puppeteer error
+    if (err.message.includes("Puppeteer") || err.message.includes("browser")) {
+      console.error("❌ Puppeteer error detected");
+    }
+
+    // Log thêm nếu là file system error
+    if (
+      err.code === "ENOENT" ||
+      err.code === "EACCES" ||
+      err.code === "EMFILE"
+    ) {
+      console.error("❌ File system error detected:", err.code);
+    }
 
     // Xác định loại lỗi để trả về message phù hợp
     let errorMessage = "Sai mã sinh viên hoặc mật khẩu hoặc lỗi hệ thống!";
