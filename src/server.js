@@ -67,6 +67,16 @@ app.get("/", (req, res) => {
   res.render("index", { error: null });
 });
 
+// Helper function để timeout Promise
+function timeoutPromise(ms, promise) {
+  return Promise.race([
+    promise,
+    new Promise((_, reject) =>
+      setTimeout(() => reject(new Error(`Timeout after ${ms}ms`)), ms)
+    ),
+  ]);
+}
+
 // Login route
 app.post("/login", async (req, res) => {
   const { mssv, matkhau } = req.body;
@@ -77,11 +87,14 @@ app.post("/login", async (req, res) => {
     platform: process.platform,
   });
 
+  // Set timeout cho toàn bộ request (120 giây cho Railway)
+  const loginTimeout = 120000; // 2 phút
+
   try {
-    const [lichThiRaw, lichHocRaw] = await Promise.all([
-      getLichThi(mssv, matkhau),
-      getLichHoc(mssv, matkhau),
-    ]);
+    const [lichThiRaw, lichHocRaw] = await timeoutPromise(
+      loginTimeout,
+      Promise.all([getLichThi(mssv, matkhau), getLichHoc(mssv, matkhau)])
+    );
 
     const lichThi = Array.isArray(lichThiRaw?.data) ? lichThiRaw.data : [];
     const lichHoc = Array.isArray(lichHocRaw?.data) ? lichHocRaw.data : [];
@@ -116,8 +129,23 @@ app.post("/login", async (req, res) => {
     return res.redirect("/lichcanhan");
   } catch (err) {
     console.error("❌ Lỗi đăng nhập:", err.message);
+    console.error("❌ Stack:", err.stack);
+
+    // Trả về JSON nếu là AJAX request
+    if (req.headers.accept && req.headers.accept.includes("application/json")) {
+      return res.status(500).json({
+        success: false,
+        message: err.message.includes("Timeout")
+          ? "Đăng nhập quá lâu. Vui lòng thử lại sau."
+          : "Sai mã sinh viên hoặc mật khẩu hoặc lỗi hệ thống!",
+        error: err.message,
+      });
+    }
+
     return res.render("index", {
-      error: "Sai mã sinh viên hoặc mật khẩu hoặc lỗi hệ thống!",
+      error: err.message.includes("Timeout")
+        ? "Đăng nhập quá lâu. Vui lòng thử lại sau."
+        : "Sai mã sinh viên hoặc mật khẩu hoặc lỗi hệ thống!",
     });
   }
 });

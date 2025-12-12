@@ -36,10 +36,29 @@ async function getLichThi(mssv, matkhau) {
   if (isWindows) {
     launchOptions.executablePath =
       "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
+  } else {
+    // Trên Railway/Linux, thử dùng Chromium từ system hoặc bundled
+    // Railway có thể có Chromium trong PATH
+    if (process.env.CHROMIUM_PATH) {
+      launchOptions.executablePath = process.env.CHROMIUM_PATH;
+    }
+    // Nếu không có, Puppeteer sẽ dùng bundled Chromium
   }
-  // Trên Railway/Linux, Puppeteer sẽ dùng bundled Chromium
 
-  const browser = await puppeteer.launch(launchOptions);
+  console.log("🚀 Launching Puppeteer (LichThi)...", {
+    platform: process.platform,
+    isWindows,
+    hasExecutablePath: !!launchOptions.executablePath,
+  });
+
+  let browser;
+  try {
+    browser = await puppeteer.launch(launchOptions);
+    console.log("✅ Puppeteer launched successfully (LichThi)");
+  } catch (err) {
+    console.error("❌ Puppeteer launch error (LichThi):", err.message);
+    throw new Error(`Không thể khởi động trình duyệt: ${err.message}`);
+  }
 
   const page = await browser.newPage();
 

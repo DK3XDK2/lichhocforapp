@@ -267,15 +267,43 @@
         const matkhau = formData.get("matkhau");
 
         try {
-          // Gửi request login
+          // Gửi request login với timeout
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 120000); // 2 phút timeout
+
           const res = await fetch("/login", {
             method: "POST",
             headers: {
               "Content-Type": "application/x-www-form-urlencoded",
+              Accept: "application/json", // Request JSON để nhận error message
             },
             body: new URLSearchParams({ mssv, matkhau }),
             credentials: "include",
+            signal: controller.signal,
           });
+
+          clearTimeout(timeoutId);
+
+          // Nếu là JSON response (success hoặc error)
+          if (res.headers.get("content-type")?.includes("application/json")) {
+            const json = await res.json();
+            if (json.success) {
+              // Lưu session vào localStorage
+              const sessionData = {
+                mssv: mssv,
+                password: matkhau,
+                timestamp: Date.now(),
+              };
+              localStorage.setItem("savedSession", JSON.stringify(sessionData));
+              console.log("✅ Đã lưu session vào localStorage");
+
+              // Redirect về trang lịch
+              window.location.href = "/lichcanhan";
+              return false;
+            } else {
+              throw new Error(json.message || "Đăng nhập thất bại");
+            }
+          }
 
           if (res.ok) {
             // Lưu session vào localStorage
@@ -294,7 +322,15 @@
           }
         } catch (err) {
           console.error("Lỗi đăng nhập:", err);
-          alert("Đăng nhập thất bại. Vui lòng thử lại.");
+          
+          let errorMessage = "Đăng nhập thất bại. Vui lòng thử lại.";
+          if (err.name === "AbortError") {
+            errorMessage = "Đăng nhập quá lâu. Vui lòng thử lại sau hoặc kiểm tra kết nối mạng.";
+          } else if (err.message) {
+            errorMessage = err.message;
+          }
+          
+          alert(errorMessage);
           btn.disabled = false;
           btn.classList.remove("opacity-70", "cursor-not-allowed");
           text.textContent = "Đăng Nhập";
