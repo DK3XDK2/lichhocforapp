@@ -87,14 +87,30 @@ app.post("/login", async (req, res) => {
     platform: process.platform,
   });
 
-  // Set timeout cho toàn bộ request (120 giây cho Railway)
-  const loginTimeout = 120000; // 2 phút
+  // Set timeout cho toàn bộ request (180 giây cho Railway - Puppeteer cần thời gian)
+  const loginTimeout = 180000; // 3 phút
+
+  console.log(
+    "⏱️ Starting login with timeout:",
+    loginTimeout / 1000,
+    "seconds"
+  );
 
   try {
-    const [lichThiRaw, lichHocRaw] = await timeoutPromise(
-      loginTimeout,
-      Promise.all([getLichThi(mssv, matkhau), getLichHoc(mssv, matkhau)])
+    // Chạy tuần tự thay vì parallel để tránh quá tải memory trên Railway
+    console.log("📥 Fetching LichThi...");
+    const lichThiRaw = await timeoutPromise(
+      loginTimeout / 2, // 90 giây cho mỗi request
+      getLichThi(mssv, matkhau)
     );
+    console.log("✅ LichThi fetched successfully");
+
+    console.log("📥 Fetching LichHoc...");
+    const lichHocRaw = await timeoutPromise(
+      loginTimeout / 2, // 90 giây cho mỗi request
+      getLichHoc(mssv, matkhau)
+    );
+    console.log("✅ LichHoc fetched successfully");
 
     const lichThi = Array.isArray(lichThiRaw?.data) ? lichThiRaw.data : [];
     const lichHoc = Array.isArray(lichHocRaw?.data) ? lichHocRaw.data : [];
