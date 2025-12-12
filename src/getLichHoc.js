@@ -57,6 +57,9 @@ async function getLichHoc(mssv, matkhau) {
     console.log("✅ Puppeteer launched successfully");
   } catch (err) {
     console.error("❌ Puppeteer launch error:", err.message);
+    console.error("❌ Launch options:", JSON.stringify(launchOptions, null, 2));
+    console.error("❌ Platform:", process.platform);
+    console.error("❌ Full error:", err);
     throw new Error(`Không thể khởi động trình duyệt: ${err.message}`);
   }
 

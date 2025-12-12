@@ -130,22 +130,39 @@ app.post("/login", async (req, res) => {
   } catch (err) {
     console.error("❌ Lỗi đăng nhập:", err.message);
     console.error("❌ Stack:", err.stack);
+    console.error("❌ Error details:", {
+      name: err.name,
+      message: err.message,
+      platform: process.platform,
+      isProduction,
+    });
+
+    // Xác định loại lỗi để trả về message phù hợp
+    let errorMessage = "Sai mã sinh viên hoặc mật khẩu hoặc lỗi hệ thống!";
+    if (err.message.includes("Timeout")) {
+      errorMessage = "Đăng nhập quá lâu. Vui lòng thử lại sau.";
+    } else if (
+      err.message.includes("Puppeteer") ||
+      err.message.includes("trình duyệt")
+    ) {
+      errorMessage =
+        "Lỗi hệ thống: Không thể khởi động trình duyệt. Vui lòng thử lại sau.";
+    } else if (err.message.includes("Sai mã sinh viên")) {
+      errorMessage = "Sai mã sinh viên hoặc mật khẩu!";
+    }
 
     // Trả về JSON nếu là AJAX request
     if (req.headers.accept && req.headers.accept.includes("application/json")) {
       return res.status(500).json({
         success: false,
-        message: err.message.includes("Timeout")
-          ? "Đăng nhập quá lâu. Vui lòng thử lại sau."
-          : "Sai mã sinh viên hoặc mật khẩu hoặc lỗi hệ thống!",
+        message: errorMessage,
         error: err.message,
+        errorType: err.name,
       });
     }
 
     return res.render("index", {
-      error: err.message.includes("Timeout")
-        ? "Đăng nhập quá lâu. Vui lòng thử lại sau."
-        : "Sai mã sinh viên hoặc mật khẩu hoặc lỗi hệ thống!",
+      error: errorMessage,
     });
   }
 });
@@ -343,8 +360,22 @@ app.post("/sync", async (req, res) => {
   }
 });
 
+// Error handler middleware (phải đặt sau tất cả routes)
+app.use((err, req, res, next) => {
+  console.error("❌ Unhandled error:", err);
+  console.error("❌ Stack:", err.stack);
+  res.status(500).json({
+    success: false,
+    message: "Lỗi hệ thống không xác định",
+    error: err.message,
+  });
+});
+
 // Start server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`🚀 Server chạy tại: http://localhost:${PORT}`);
+  console.log(`🌍 Environment: ${isProduction ? "Production" : "Development"}`);
+  console.log(`🖥️  Platform: ${process.platform}`);
+  console.log(`📦 Node version: ${process.version}`);
 });
