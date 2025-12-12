@@ -26,11 +26,19 @@ function isAuthenticated(req, res, next) {
   return res.status(401).json({ error: "Bạn chưa đăng nhập!" });
 }
 
-const isProduction = process.env.NODE_ENV === "production";
+const isProduction =
+  process.env.NODE_ENV === "production" || process.env.RAILWAY_ENVIRONMENT;
 app.set("trust proxy", 1);
 
-// Middlewares
-app.use(cors());
+// Middlewares - CORS config cho production
+app.use(
+  cors({
+    origin: true, // Cho phép tất cả origins (hoặc set cụ thể domain của bạn)
+    credentials: true, // Quan trọng: cho phép gửi cookies
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json({ limit: "1mb" }));
 app.use(express.static(path.join(__dirname, "../public")));
@@ -41,9 +49,10 @@ app.use(
     resave: false,
     saveUninitialized: true,
     cookie: {
-      secure: isProduction,
-      sameSite: isProduction ? "none" : "lax",
-      maxAge: 1000 * 60 * 60 * 24 * 30, // 1 hour
+      secure: isProduction, // true trên HTTPS (Railway)
+      sameSite: isProduction ? "none" : "lax", // "none" cần cho cross-site trên HTTPS
+      maxAge: 1000 * 60 * 60 * 24 * 30, // 30 ngày
+      httpOnly: true, // Bảo vệ cookie khỏi JavaScript
     },
   })
 );
@@ -61,6 +70,12 @@ app.get("/", (req, res) => {
 // Login route
 app.post("/login", async (req, res) => {
   const { mssv, matkhau } = req.body;
+
+  console.log("🔐 Login attempt:", {
+    mssv,
+    isProduction,
+    platform: process.platform,
+  });
 
   try {
     const [lichThiRaw, lichHocRaw] = await Promise.all([

@@ -7,10 +7,10 @@ function delay(ms) {
 }
 
 async function getLichThi(mssv, matkhau) {
-  const browser = await puppeteer.launch({
+  // Detect environment: Railway/Linux không có Chrome ở đường dẫn Windows
+  const isWindows = process.platform === "win32";
+  const launchOptions = {
     headless: true, // ✅ Headless mode để nhanh hơn ~30-40%
-    executablePath:
-      "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
     args: [
       "--no-sandbox",
       "--disable-setuid-sandbox",
@@ -30,7 +30,16 @@ async function getLichThi(mssv, matkhau) {
       "--no-default-browser-check",
       "--disable-default-apps",
     ],
-  });
+  };
+
+  // Chỉ set executablePath trên Windows (local dev)
+  if (isWindows) {
+    launchOptions.executablePath =
+      "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
+  }
+  // Trên Railway/Linux, Puppeteer sẽ dùng bundled Chromium
+
+  const browser = await puppeteer.launch(launchOptions);
 
   const page = await browser.newPage();
 
@@ -59,7 +68,11 @@ async function getLichThi(mssv, matkhau) {
     await page.setRequestInterception(true);
     page.on("request", (req) => {
       const resourceType = req.resourceType();
-      if (resourceType === "image" || resourceType === "stylesheet" || resourceType === "font") {
+      if (
+        resourceType === "image" ||
+        resourceType === "stylesheet" ||
+        resourceType === "font"
+      ) {
         req.abort();
       } else {
         req.continue();

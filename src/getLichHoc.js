@@ -7,10 +7,10 @@ function delay(ms) {
 }
 
 async function getLichHoc(mssv, matkhau) {
-  const browser = await puppeteer.launch({
+  // Detect environment: Railway/Linux không có Chrome ở đường dẫn Windows
+  const isWindows = process.platform === "win32";
+  const launchOptions = {
     headless: true, // ✅ Headless mode để nhanh hơn ~30-40%
-    executablePath:
-      "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
     args: [
       "--no-sandbox",
       "--disable-setuid-sandbox",
@@ -30,7 +30,16 @@ async function getLichHoc(mssv, matkhau) {
       "--no-default-browser-check",
       "--disable-default-apps",
     ],
-  });
+  };
+
+  // Chỉ set executablePath trên Windows (local dev)
+  if (isWindows) {
+    launchOptions.executablePath =
+      "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
+  }
+  // Trên Railway/Linux, Puppeteer sẽ dùng bundled Chromium
+
+  const browser = await puppeteer.launch(launchOptions);
 
   const page = await browser.newPage();
 
@@ -60,7 +69,11 @@ async function getLichHoc(mssv, matkhau) {
     await page.setRequestInterception(true);
     page.on("request", (req) => {
       const resourceType = req.resourceType();
-      if (resourceType === "image" || resourceType === "stylesheet" || resourceType === "font") {
+      if (
+        resourceType === "image" ||
+        resourceType === "stylesheet" ||
+        resourceType === "font"
+      ) {
         req.abort();
       } else {
         req.continue();
@@ -340,7 +353,9 @@ async function getLichHoc(mssv, matkhau) {
 
     if (semester1_2025_2026) {
       targetSemester = semester1_2025_2026.value;
-      console.log(`✅ Tìm thấy học kỳ 1_2025_2026: ${semester1_2025_2026.text}`);
+      console.log(
+        `✅ Tìm thấy học kỳ 1_2025_2026: ${semester1_2025_2026.text}`
+      );
     } else {
       // Ưu tiên 2: Tìm học kỳ 1 bất kỳ (có thể là năm khác)
       const semester1 = semesterInfo.options.find(
@@ -355,10 +370,10 @@ async function getLichHoc(mssv, matkhau) {
         console.log(`✅ Tìm thấy học kỳ 1: ${semester1.text}`);
       } else {
         // Ưu tiên 3: Kiểm tra học kỳ hiện tại có phải kỳ 1 không
-        const isCurrentSemester1 = 
+        const isCurrentSemester1 =
           semesterInfo.currentText.includes("1_") ||
           semesterInfo.currentValue.includes("1_");
-        
+
         if (isCurrentSemester1) {
           // Nếu học kỳ hiện tại là kỳ 1, kiểm tra có dữ liệu không
           await waitForTableData(page);
@@ -368,7 +383,9 @@ async function getLichHoc(mssv, matkhau) {
               const tbl = document.querySelector("#gridRegistered");
               if (!tbl) return false;
               const rows = tbl.querySelectorAll("tr");
-              return rows.length > 1 && !tbl.innerText.includes("Không có dữ liệu");
+              return (
+                rows.length > 1 && !tbl.innerText.includes("Không có dữ liệu")
+              );
             });
           } catch (err) {
             if (err.message.includes("Execution context was destroyed")) {
@@ -386,7 +403,7 @@ async function getLichHoc(mssv, matkhau) {
             targetSemester = semesterInfo.currentValue;
           }
         }
-        
+
         // Fallback: Dùng học kỳ đầu tiên trong danh sách
         if (!targetSemester) {
           targetSemester = semesterInfo.options[0]?.value;
@@ -526,13 +543,13 @@ async function getLichHoc(mssv, matkhau) {
 
         // 🎯 QUAN TRỌNG: Ưu tiên đợt học 2 (đợt học thực tế)
         let foundTerm = null;
-        
+
         // Ưu tiên 1: Tìm đợt học 2 cụ thể
         const term2 = termInfo.options.find((o) => o.value === "2");
         if (term2) {
           console.log("🔍 Ưu tiên kiểm tra đợt học 2...");
           const term2HasData = await checkTermHasData("2");
-          
+
           if (term2HasData) {
             console.log("✅ Đợt học 2 đã có dữ liệu!");
             foundTerm = "2";
@@ -545,11 +562,11 @@ async function getLichHoc(mssv, matkhau) {
         if (!foundTerm) {
           const targetTerm = termInfo.currentValue;
           console.log(`🔍 Kiểm tra đợt học hiện tại: ${targetTerm}...`);
-          
+
           // Chỉ thử đợt hiện tại nếu nó không phải đợt 1 (vì đã biết đang ở đợt 2)
           if (targetTerm !== "1") {
             const currentHasData = await checkTermHasData(targetTerm);
-            
+
             if (currentHasData) {
               console.log(`✅ Đợt học ${targetTerm} đã có dữ liệu`);
               foundTerm = targetTerm;
@@ -560,7 +577,7 @@ async function getLichHoc(mssv, matkhau) {
         // Ưu tiên 3: Thử tất cả các đợt học từ cao xuống thấp (nếu chưa tìm thấy)
         if (!foundTerm) {
           console.log("⚠️ Chưa tìm thấy dữ liệu, thử tất cả các đợt học...");
-          
+
           // Thử tất cả các đợt học từ cao xuống thấp (trừ đợt 1 và đợt đã thử)
           const sortedTerms = [...termInfo.options]
             .filter((o) => o.value !== "1" && o.value !== foundTerm) // Bỏ qua đợt 1 và đợt đã thử
