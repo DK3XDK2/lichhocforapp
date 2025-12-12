@@ -107,24 +107,55 @@ app.post("/login", async (req, res) => {
   try {
     // Chạy tuần tự thay vì parallel để tránh quá tải memory trên Railway
     console.log("📥 Fetching LichThi...");
-    const lichThiRaw = await timeoutPromise(
-      loginTimeout / 2, // 90 giây cho mỗi request
-      getLichThi(mssv, matkhau)
-    );
-    console.log("✅ LichThi fetched successfully");
+    let lichThiRaw;
+    try {
+      lichThiRaw = await timeoutPromise(
+        loginTimeout / 2, // 90 giây cho mỗi request
+        getLichThi(mssv, matkhau)
+      );
+      console.log("✅ LichThi fetched successfully");
+    } catch (lichThiErr) {
+      console.error("❌ Lỗi khi fetch LichThi:", lichThiErr.message);
+      console.error("❌ LichThi error stack:", lichThiErr.stack);
+      throw new Error(`Lỗi khi lấy lịch thi: ${lichThiErr.message}`);
+    }
 
     console.log("📥 Fetching LichHoc...");
-    const lichHocRaw = await timeoutPromise(
-      loginTimeout / 2, // 90 giây cho mỗi request
-      getLichHoc(mssv, matkhau)
-    );
-    console.log("✅ LichHoc fetched successfully");
+    let lichHocRaw;
+    try {
+      lichHocRaw = await timeoutPromise(
+        loginTimeout / 2, // 90 giây cho mỗi request
+        getLichHoc(mssv, matkhau)
+      );
+      console.log("✅ LichHoc fetched successfully");
+    } catch (lichHocErr) {
+      console.error("❌ Lỗi khi fetch LichHoc:", lichHocErr.message);
+      console.error("❌ LichHoc error stack:", lichHocErr.stack);
+      throw new Error(`Lỗi khi lấy lịch học: ${lichHocErr.message}`);
+    }
+
+    // Validate data trước khi xử lý
+    if (!lichThiRaw) {
+      throw new Error("LichThi response is null or undefined");
+    }
+    if (!lichHocRaw) {
+      throw new Error("LichHoc response is null or undefined");
+    }
+
+    console.log("📊 Processing data...", {
+      lichThiHasData: !!lichThiRaw.data,
+      lichHocHasData: !!lichHocRaw.data,
+      lichThiDataType: typeof lichThiRaw.data,
+      lichHocDataType: typeof lichHocRaw.data,
+    });
 
     const lichThi = Array.isArray(lichThiRaw?.data) ? lichThiRaw.data : [];
     const lichHoc = Array.isArray(lichHocRaw?.data) ? lichHocRaw.data : [];
 
     const name = lichHocRaw?.name || lichThiRaw?.name || "Không rõ tên";
     const mssvFromWeb = lichHocRaw?.mssv || lichThiRaw?.mssv || mssv;
+
+    console.log("👤 User info:", { name, mssvFromWeb });
 
     req.session.name = name;
     req.session.mssv = mssvFromWeb;
